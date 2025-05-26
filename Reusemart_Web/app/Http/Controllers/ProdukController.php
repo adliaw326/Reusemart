@@ -26,7 +26,10 @@ class ProdukController extends Controller
             return redirect('/produk')->with('error', 'Produk tidak ditemukan.');
         }
 
-        return view('produk.show', compact('produk')); // Return product detail view from 'produk' folder
+        // Ambil produk lain untuk ditampilkan sebagai "produk lainnya"
+        $produk_lainnya = Produk::where('KODE_PRODUK', '!=', $kode_produk)->limit(6)->get();
+
+        return view('produk.show', compact('produk', 'produk_lainnya'));
     }
 
     public function findbyId($kode_produk)

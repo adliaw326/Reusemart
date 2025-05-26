@@ -130,7 +130,7 @@
             </li>
             <!-- Updated link to direct to the 'create_pegawai' page -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ url('pegawai/create_pegawai') }}">Tambah Pegawai</a>
+                <a class="nav-link" href="{{ url('pegawai/create') }}">Tambah Pegawai</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Tambah Produk</a>
@@ -156,7 +156,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Pegawai</h5>
-                            <p class="card-text">{{ $pegawais->count() }}</p>
+                            <p class="card-text">{{ $pegawai->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Produk</h5>
-                            <p class="card-text">{{ $produks->count() }}</p>
+                            <p class="card-text">{{ $produk->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -172,33 +172,41 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Penitip</h5>
-                            <p class="card-text">{{ $penitips->count() }}</p>
+                            <p class="card-text">{{ $penitip->count() }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Search Bar -->
+            <div class="mb-3">
+                <input type="text" id="searchPegawai" class="form-control" placeholder="Cari Nama atau Email Pegawai...">
+            </div>
+
+
             <!-- Tabel Pegawai -->
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="tablePegawai">
                 <thead>
                     <tr>
                         <th>Role</th>
                         <th>Nama Pegawai</th>
                         <th>Email Pegawai</th>
-                        <th>Password Pegawai</th>
                         <th>Option</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($pegawais as $pegawai)
+                    @foreach($pegawai as $p)
                     <tr>
-                        <td>{{ $pegawai->role }}</td>
-                        <td>{{ $pegawai->nama }}</td>
-                        <td>{{ $pegawai->email }}</td>
-                        <td>{{ $pegawai->password }}</td>
+                        <td>{{ $p->role ? $p->role->NAMA_ROLE : '-' }}</td>
+                        <td>{{ $p->NAMA_PEGAWAI }}</td>
+                        <td>{{ $p->EMAIL_PEGAWAI }}</td>
                         <td>
-                            <a href="{{ url('pegawai/update_pegawai/'.$pegawai->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <button class="btn btn-danger btn-sm">Hapus</button>
+                            <a href="{{ url('pegawai/update/'.$p->ID_PEGAWAI) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="{{ url('pegawai/delete/'.$p->ID_PEGAWAI) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin hapus?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -219,14 +227,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($produks as $produk)
+                    @foreach($produk as $produk)
                     <tr>
-                        <td>{{ $produk->nama }}</td>
-                        <td>{{ $produk->kategori }}</td>
-                        <td>{{ $produk->berat }}</td>
-                        <td>{{ $produk->harga }}</td>
-                        <td>{{ $produk->garansi }}</td>
-                        <td>{{ $produk->rating }}</td>
+                        <td>{{ $produk->NAMA_PRODUK }}</td>
+                        <td>{{ $produk->KATEGORI }}</td>
+                        <td>{{ $produk->BERAT }}</td>
+                        <td>{{ $produk->HARGA }}</td>
+                        <td>{{ $produk->GARANSI }}</td>
+                        <td>{{ $produk->RATING }}</td>
                         <td>
                             <button class="btn btn-warning btn-sm">Edit</button>
                             <button class="btn btn-danger btn-sm">Hapus</button>
@@ -241,7 +249,7 @@
             <thead>
                 <tr>
                     <th>Email Penitip</th>
-                    <th>Password Penitip</th>
+                    {{-- <th>Password Penitip</th>  --}} {{-- Jangan tampilkan password --}}
                     <th>Nama Penitip</th>
                     <th>NIK</th>
                     <th>Rating Rata-Rata Penitip</th>
@@ -249,27 +257,49 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($penitips as $penitip)
+                @foreach($penitip as $pt)
                 <tr>
-                    <td>{{ $penitip->email }}</td>
-                    <td>{{ $penitip->password }}</td>
-                    <td>{{ $penitip->nama }}</td>
-                    <td>{{ $penitip->nik }}</td>
-                    <td>{{ $penitip->rating }}</td>
+                    <td>{{ $pt->EMAIL_PENITIP }}</td>
+                    <td>{{ $pt->NAMA_PENITIP }}</td>
+                    <td>{{ $pt->NIK }}</td>
+                    <td>{{ $pt->RATING_RATA_RATA_P }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm">Edit</button>
-                        <button class="btn btn-danger btn-sm">Hapus</button>
+                        <a href="{{ url('penitip/update/'.$pt->ID_PENITIP) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ url('penitip/delete/'.$pt->ID_PENITIP) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus?')">Hapus</button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+
     </div>
 
     <!-- Include Footer -->
     @include('outer.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    document.getElementById('searchPegawai').addEventListener('keyup', function() {
+        const searchValue = this.value.toLowerCase();
+        const table = document.getElementById('tablePegawai');
+        const rows = table.querySelectorAll('tbody tr');
 
+        rows.forEach(row => {
+            const nama = row.cells[1].textContent.toLowerCase();
+            const email = row.cells[2].textContent.toLowerCase();
+
+            if (nama.includes(searchValue) || email.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    </script>
 </body>
 </html>

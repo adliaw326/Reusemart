@@ -70,13 +70,13 @@
         <div id="productCarousel" class="carousel slide my-5" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="https://placehold.co/400x600" class="d-block w-100" alt="Produk Elektronik Bekas">
+                    <img src="https://placehold.co/400x600?text=Foto+Carousell+1" class="d-block w-100" alt="Foto Carousell 1">
                 </div>
                 <div class="carousel-item">
-                    <img src="https://placehold.co/400x600" class="d-block w-100" alt="Perabot Rumah Bekas">
+                    <img src="https://placehold.co/400x600?text=Foto+Carousell+2" class="d-block w-100" alt="Foto Carousell 2">
                 </div>
                 <div class="carousel-item">
-                    <img src="https://placehold.co/400x600" class="d-block w-100" alt="Pakaian Bekas">
+                    <img src="https://placehold.co/400x600?text=Foto+Carousell+3" class="d-block w-100" alt="Foto Carousell 3">
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
@@ -96,7 +96,8 @@
                 @foreach($kategori as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-4 category-item">
                     <div class="text-center">
-                        <img src="https://placehold.co/200x200" class="category-image" data-category-id="{{ $item->ID_KATEGORI }}" alt="{{ $item->NAMA_KATEGORI }}">
+                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="category-image" data-category-id="{{ $item->ID_KATEGORI }}" alt="{{ $item->NAMA_KATEGORI }} Foto Thumbnail">
+
                         <p class="category-title">{{ $item->NAMA_KATEGORI }}</p>
                     </div>
                 </div>
@@ -111,7 +112,8 @@
                 @foreach($produk as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-3 product-item" data-category-id="{{ $item->ID_KATEGORI }}">
                     <a href="/produk/{{ $item->KODE_PRODUK }}" class="product-card h-100">
-                        <img src="https://placehold.co/200x200" class="category-image" alt="{{ $item->NAMA_PRODUK }}">
+                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="category-image" alt="{{ $item->NAMA_PRODUK }} Foto Thumbnail">
+
                         <div class="product-card-body">
                             <p class="product-card-title">{{ $item->NAMA_PRODUK }}</p>
                             <p class="product-card-price">Rp{{ number_format($item->HARGA, 0, ',', '.') }}</p>

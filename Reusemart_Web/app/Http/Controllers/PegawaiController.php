@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pegawai;
+use App\Models\RolePegawai;
 
 class PegawaiController extends Controller
 {
@@ -11,6 +12,26 @@ class PegawaiController extends Controller
     public function index()
     {
         return response()->json(Pegawai::all());
+    }
+
+    public function create()
+    {
+        // Ambil pegawai terakhir berdasarkan ID_PEGAWAI
+        $lastPegawai = Pegawai::orderBy('ID_PEGAWAI', 'desc')->first();
+
+        if ($lastPegawai) {
+            $lastId = $lastPegawai->ID_PEGAWAI;
+            $num = (int)substr($lastId, 1); // Ambil angka setelah "P"
+            $num++;
+            $newId = 'P' . str_pad($num, 2, '0', STR_PAD_LEFT); // Format ke P01, P02, dst
+        } else {
+            $newId = 'P01';
+        }
+
+        // Ambil semua role untuk dropdown
+        $roles = RolePegawai::all();
+
+        return view('pegawai.create_pegawai', compact('newId', 'roles'));
     }
 
     // Simpan pegawai baru
@@ -22,11 +43,11 @@ class PegawaiController extends Controller
             'NAMA_PEGAWAI' => 'required|string|max:255',
             'EMAIL_PEGAWAI' => 'required|email|unique:pegawai,EMAIL_PEGAWAI',
             'PASSWORD_PEGAWAI' => 'required|string|min:6',
-            'TANGGAL_LAHIR' => 'required|date',
+            // 'TANGGAL_LAHIR' => 'required|date',
         ]);
 
         $pegawai = Pegawai::create($request->all());
-        return response()->json(['message' => 'Pegawai berhasil ditambahkan', 'data' => $pegawai]);
+         return redirect('/admin/dashboard')->with('success', 'Pegawai berhasil ditambahkan!');
     }
 
     // Tampilkan satu pegawai
@@ -39,23 +60,42 @@ class PegawaiController extends Controller
         return response()->json($pegawai);
     }
 
-    // Perbarui data pegawai
     public function update(Request $request, $id)
     {
+        if ($request->isMethod('get')) {
+            $pegawai = Pegawai::find($id);
+            if (!$pegawai) {
+                return redirect('admin/dashboard')->with('error', 'Pegawai tidak ditemukan');
+            }
+            $roles = RolePegawai::all();
+            return view('pegawai.update_pegawai', compact('pegawai', 'roles'));
+        }
+
+        // Handle PUT request (update data)
         $pegawai = Pegawai::find($id);
         if (!$pegawai) {
-            return response()->json(['message' => 'Pegawai tidak ditemukan'], 404);
+            return redirect('admin/dashboard')->with('error', 'Pegawai tidak ditemukan');
         }
 
         $request->validate([
-            'NAMA_PEGAWAI' => 'sometimes|required|string|max:255',
-            'EMAIL_PEGAWAI' => 'sometimes|required|email|unique:pegawai,EMAIL_PEGAWAI,' . $id . ',ID_PEGAWAI',
-            'PASSWORD_PEGAWAI' => 'sometimes|required|string|min:6',
-            'TANGGAL_LAHIR' => 'sometimes|required|date',
+            'NAMA_PEGAWAI' => 'required|string|max:255',
+            'EMAIL_PEGAWAI' => 'required|email|unique:pegawai,EMAIL_PEGAWAI,' . $id . ',ID_PEGAWAI',
+            'PASSWORD_PEGAWAI' => 'nullable|string|min:6',
+            'ID_ROLE' => 'required',
         ]);
 
-        $pegawai->update($request->all());
-        return response()->json(['message' => 'Pegawai berhasil diperbarui', 'data' => $pegawai]);
+        $pegawai->NAMA_PEGAWAI = $request->NAMA_PEGAWAI;
+        $pegawai->EMAIL_PEGAWAI = $request->EMAIL_PEGAWAI;
+        $pegawai->ID_ROLE = $request->ID_ROLE;
+
+    if ($request->filled('PASSWORD_PEGAWAI')) {
+        // Simpan password apa adanya, tanpa hash
+        $pegawai->PASSWORD_PEGAWAI = $request->PASSWORD_PEGAWAI;
+    }
+
+        $pegawai->save();
+
+        return redirect('admin/dashboard')->with('success', 'Pegawai berhasil diperbarui');
     }
 
     // Hapus pegawai
@@ -63,9 +103,9 @@ class PegawaiController extends Controller
     {
         $pegawai = Pegawai::find($id);
         if (!$pegawai) {
-            return response()->json(['message' => 'Pegawai tidak ditemukan'], 404);
+            return redirect()->back()->with('error', 'Pegawai tidak ditemukan');
         }
         $pegawai->delete();
-        return response()->json(['message' => 'Pegawai berhasil dihapus']);
+        return redirect()->back()->with('success', 'Pegawai berhasil dihapus');
     }
 }

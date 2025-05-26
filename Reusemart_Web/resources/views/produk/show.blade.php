@@ -128,7 +128,23 @@
         <div class="row product-detail-container">
             <!-- Product Image Section (Left) -->
             <div class="col-md-6 product-image-container">
-                <img src="https://placehold.co/400x400" class="product-image" alt="{{ $produk->NAMA_PRODUK }}">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <!-- Carousel Images -->
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://placehold.co/400x400?text=Foto+Thumbnail" class="d-block w-100 rounded" alt="{{ $produk->NAMA_PRODUK }} Foto Thumbnail">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://placehold.co/400x400?text=Foto+2" class="d-block w-100 rounded" alt="{{ $produk->NAMA_PRODUK }} Foto 2">
+                        </div>
+                    </div>
+
+                    <!-- Carousel Indicators (bulat di bawah) -->
+                    <div class="carousel-indicators mt-3">
+                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active rounded-circle bg-dark" style="width: 12px; height: 12px;" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" class="rounded-circle bg-dark" style="width: 12px; height: 12px;" aria-label="Slide 2"></button>
+                    </div>
+                </div>
             </div>
 
             <!-- Product Info Section (Right) -->
@@ -142,7 +158,23 @@
                         <p class="product-card-description">
                             <span class="product-card-label">Deskripsi:</span> {{ $produk->KATEGORI }}<br>
                             <span class="product-card-label">Berat:</span> {{ $produk->BERAT }} Kg<br>
-                            <span class="product-card-label">Garansi:</span> {{ $produk->GARANSI ?? 'Tidak ada' }}<br>
+                            @php
+                                use Carbon\Carbon;
+                                $hariIni = Carbon::now()->startOfDay(); // Pastikan hanya tanggal, tanpa jam
+                                $garansiTanggal = $produk->GARANSI ? Carbon::parse($produk->GARANSI)->startOfDay() : null;
+                            @endphp
+
+                            <span class="product-card-label">Garansi:</span>
+                            @if($garansiTanggal)
+                                @if($garansiTanggal->gt($hariIni))
+                                    Tersisa {{ $hariIni->diffInDays($garansiTanggal) }} hari
+                                @else
+                                    Garansi sudah habis
+                                @endif
+                            @else
+                                Tidak ada
+                            @endif
+                            <br>
                             <span class="product-card-label">Kategori:</span> {{ $produk->kategori->NAMA_KATEGORI }}<br>
                             <span class="product-card-label">Rating:</span> {{ $produk->RATING ?? 'Tidak ada' }}<br>
                         </p>
@@ -164,10 +196,10 @@
         <!-- Other Products Section -->
         <h2 class="other-products-title">Produk Lainnya</h2>
         <div class="row g-3 other-products-section">
-            @foreach($otherProducts as $item) <!-- Loop to display 5 other products -->
+            @foreach($produk_lainnya as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-3">
                     <a href="/produk/{{ $item->KODE_PRODUK }}" class="card product-card-custom">
-                        <img src="https://placehold.co/200x200" class="product-card-img-top" alt="{{ $item->NAMA_PRODUK }}">
+                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="product-card-img-top" alt="{{ $item->NAMA_PRODUK }} Foto Thumbnail">
                         <div class="card-body">
                             <h5 class="product-card-title">{{ $item->NAMA_PRODUK }}</h5>
                             <p class="product-card-price">Rp{{ number_format($item->HARGA, 0, ',', '.') }}</p>

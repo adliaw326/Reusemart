@@ -50,42 +50,48 @@
             <h2 class="form-title">Ubah Data Pegawai</h2>
 
             <!-- Employee Data Form -->
-            <form>
+            <form action="{{ url('pegawai/update/' . $pegawai->ID_PEGAWAI) }}" method="POST">
+                @csrf
+                @method('PUT')
+
                 <!-- Nama Pegawai -->
                 <div class="form-group mb-3">
                     <label for="namaPegawai">Nama Pegawai</label>
-                    <input type="text" class="form-control" id="namaPegawai" name="namaPegawai" placeholder="Masukkan Nama Pegawai" required>
+                    <input type="text" class="form-control" id="namaPegawai" name="NAMA_PEGAWAI"
+                        value="{{ old('NAMA_PEGAWAI', $pegawai->NAMA_PEGAWAI) }}" required>
                 </div>
 
                 <!-- Email Pegawai -->
                 <div class="form-group mb-3">
                     <label for="emailPegawai">Email Pegawai</label>
-                    <input type="email" class="form-control" id="emailPegawai" name="emailPegawai" placeholder="Masukkan Email Pegawai" required>
+                    <input type="email" class="form-control" id="emailPegawai" name="EMAIL_PEGAWAI"
+                        value="{{ old('EMAIL_PEGAWAI', $pegawai->EMAIL_PEGAWAI) }}" required>
                 </div>
 
                 <!-- Password Pegawai -->
                 <div class="form-group mb-3">
                     <label for="passwordPegawai">Password Pegawai</label>
-                    <input type="password" class="form-control" id="passwordPegawai" name="passwordPegawai" placeholder="Masukkan Password Pegawai" required>
+                    <input type="password" class="form-control" id="passwordPegawai" name="PASSWORD_PEGAWAI"
+                        placeholder="Masukkan Password Baru (Opsional)">
                 </div>
 
                 <!-- Role Selection -->
                 <div class="form-group mb-3">
                     <label for="rolePegawai">Role</label>
-                    <select class="form-control" id="rolePegawai" name="rolePegawai" required>
-                        <option value="" disabled selected>Pilih Role</option>
-                        <option value="Customer Service">Customer Service</option>
-                        <option value="Owner">Owner</option>
-                        <option value="Hunter">Hunter</option>
-                        <option value="Kurir">Kurir</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Pegawai Gudang">Pegawai Gudang</option>
+                    <select class="form-control" id="rolePegawai" name="ID_ROLE" required>
+                        <option value="" disabled>-- Pilih Role --</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->ID_ROLE }}"
+                                {{ $pegawai->ID_ROLE == $role->ID_ROLE ? 'selected' : '' }}>
+                                {{ $role->NAMA_ROLE }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary mt-3">Simpan</button>
+                    <button type="submit" class="btn btn-primary mt-3">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
