@@ -50,36 +50,47 @@
             <h2 class="form-title">Tambah Data Pegawai</h2>
 
             <!-- Employee Data Form -->
-            <form>
+            <form method="POST" action="{{ route('pegawai.store') }}">
+                @csrf
+
+                <!-- ID Pegawai -->
+                <div class="form-group mb-3">
+                    <label for="ID_PEGAWAI">ID Pegawai</label>
+                    <input type="text" class="form-control" id="ID_PEGAWAI" name="ID_PEGAWAI" value="{{ $newId }}" readonly>
+                </div>
+
                 <!-- Nama Pegawai -->
                 <div class="form-group mb-3">
-                    <label for="namaPegawai">Nama Pegawai</label>
-                    <input type="text" class="form-control" id="namaPegawai" name="namaPegawai" placeholder="Masukkan Nama Pegawai" required>
+                    <label for="NAMA_PEGAWAI">Nama Pegawai</label>
+                    <input type="text" class="form-control" id="NAMA_PEGAWAI" name="NAMA_PEGAWAI" placeholder="Masukkan Nama Pegawai" required>
                 </div>
 
                 <!-- Email Pegawai -->
                 <div class="form-group mb-3">
-                    <label for="emailPegawai">Email Pegawai</label>
-                    <input type="email" class="form-control" id="emailPegawai" name="emailPegawai" placeholder="Masukkan Email Pegawai" required>
+                    <label for="EMAIL_PEGAWAI">Email Pegawai</label>
+                    <input type="email" class="form-control" id="EMAIL_PEGAWAI" name="EMAIL_PEGAWAI" placeholder="Masukkan Email Pegawai" required>
                 </div>
 
                 <!-- Password Pegawai -->
                 <div class="form-group mb-3">
-                    <label for="passwordPegawai">Password Pegawai</label>
-                    <input type="password" class="form-control" id="passwordPegawai" name="passwordPegawai" placeholder="Masukkan Password Pegawai" required>
+                    <label for="PASSWORD_PEGAWAI">Password Pegawai</label>
+                    <input type="password" class="form-control" id="PASSWORD_PEGAWAI" name="PASSWORD_PEGAWAI" placeholder="Masukkan Password Pegawai" required>
                 </div>
+
+                <!-- Tanggal Lahir -->
+                <!-- <div class="form-group mb-3">
+                    <label for="TANGGAL_LAHIR">Tanggal Lahir</label>
+                    <input type="date" class="form-control" id="TANGGAL_LAHIR" name="TANGGAL_LAHIR" required>
+                </div> -->
 
                 <!-- Role Selection -->
                 <div class="form-group mb-3">
-                    <label for="rolePegawai">Role</label>
-                    <select class="form-control" id="rolePegawai" name="rolePegawai" required>
+                    <label for="ID_ROLE">Role</label>
+                    <select class="form-control" id="rolePegawai" name="ID_ROLE" required>
                         <option value="" disabled selected>Pilih Role</option>
-                        <option value="Customer Service">Customer Service</option>
-                        <option value="Owner">Owner</option>
-                        <option value="Hunter">Hunter</option>
-                        <option value="Kurir">Kurir</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Pegawai Gudang">Pegawai Gudang</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->ID_ROLE }}">{{ $role->NAMA_ROLE }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -88,6 +99,7 @@
                     <button type="submit" class="btn btn-primary mt-3">Simpan</button>
                 </div>
             </form>
+
         </div>
     </div>
 
