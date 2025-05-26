@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #013c58; height: 60px;">
     <div class="container-fluid align-items-center h-100">
         <!-- Logo -->
-        <a class="navbar-brand ms-2 me-3 d-flex align-items-center" href="{{ url('/home') }}">
+        <a class="navbar-brand ms-2 me-3 d-flex align-items-center" href="{{ url('/') }}">
             <img src="{{ asset('icon/logo.webp') }}" alt="Barang Bekas Murah Logo" style="max-height: 200px;">
         </a>
 
@@ -38,9 +38,10 @@
                 </li>
                 <li class="nav-item mx-2 d-none d-lg-block" style="border-left: 2px solid #ffba42; height: 25px;"></li>
                 <li class="nav-item mx-2">
-                    <a class="nav-link text-warning" href="{{ url('/home') }}">Beranda</a>
+                    <a class="nav-link text-warning" href="{{ url('/') }}">Beranda</a>
                 </li>
                 <li class="nav-item mx-2">
+                    <!-- Updated link for Tentang Kami -->
                     <a class="nav-link text-warning" href="{{ url('/tentang-kami') }}">Tentang Kami</a>
                 </li>
                 <li class="nav-item mx-1" id="loginBtnNav">
@@ -76,7 +77,6 @@
             <script>
                 // Ambil tipe user dari sessionStorage
                 const userType = sessionStorage.getItem('user_type');
-                console.log(sessionStorage.getItem('pembeli'));
                 let userName = null;
                 let profileUrl = '#';
 
