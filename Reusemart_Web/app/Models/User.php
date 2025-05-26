@@ -10,8 +10,10 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
+    use HasFactory, Notifiable, HasApiTokens;
+    public $timestamps = false;
+    protected $table = "users";
+    protected $primaryKey = "id";
     /**
      * The attributes that are mass assignable.
      *
@@ -23,26 +25,47 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function pegawai()
+    {
+        return $this->hasMany(Pegawai::class);
+    }
+
+    public function pembeli()
+    {
+        return $this->hasMany(Pembeli::class);
+    }
+
+    public function penitip()
+    {
+        return $this->hasMany(Penitip::class);
+    }
+
+    public function organisasi()
+    {
+        return $this->hasMany(Organisasi::class);
+    }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
 
     /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         'password' => 'hashed',
+    //     ];
+    // }
 }

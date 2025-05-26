@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class TransaksiPembelian extends Model
+{
+    protected $table = 'transaksi_pembelian'; // Nama tabel di database
+    protected $primaryKey = 'ID_PEMBELIAN';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'ID_PEMBELIAN',
+        'ID_PEMBELI',
+        'STATUS_TRANSAKSI',
+        'TANGGAL_PESAN',
+        'TANGGAL_LUNAS',
+        'TANGGAL_KIRIM',
+        'TANGGAL_SAMPAI'
+    ];
+
+    protected $dates = [
+        'TANGGAL_PESAN',
+        'TANGGAL_LUNAS',
+        'TANGGAL_KIRIM',
+    ];
+
+    // Relasi ke Pembeli
+    public function pembeli()
+    {
+        return $this->belongsTo(Pembeli::class, 'ID_PEMBELI', 'ID_PEMBELI');
+    }
+}
