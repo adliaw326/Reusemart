@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ]
         'pegawai' => [
             'driver' => 'session',
             'provider' => 'pegawai',

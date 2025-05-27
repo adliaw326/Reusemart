@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-
-
 Route::middleware('auth:api')->group(function () {
 
 });
+
