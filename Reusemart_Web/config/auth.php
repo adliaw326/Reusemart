@@ -43,11 +43,11 @@ return [
         'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',
-        ]
+        ],
         'pegawai' => [
             'driver' => 'session',
             'provider' => 'pegawai',
-            ],
+        ],
         'organisasi' => [
             'driver' => 'session',
             'provider' => 'organisasi',
@@ -59,8 +59,9 @@ return [
         'penitip' => [
             'driver' => 'session',
             'provider' => 'penitip',
-        ],   
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
