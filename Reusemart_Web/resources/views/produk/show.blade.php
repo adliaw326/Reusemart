@@ -108,15 +108,16 @@
             margin-top: 30px;
         }
 
+        .produk-rating {
+            font-size: 16px;
+            color: black; /* Change text color to black */
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
         /* Star Rating */
         .star-rating i {
             color: #ffbc00; /* Gold color for the stars */
-        }
-
-        .rating-number {
-            font-size: 16px;
-            color: #f5a201; /* Gold color for the rating number */
-            margin-right: 5px;
         }
 
         /* Penitip's Name Styles */
@@ -207,7 +208,7 @@
                             @endif
                             <br>
                             <span class="product-card-label">Kategori:</span> {{ $produk->kategori->NAMA_KATEGORI }}<br>
-                            <span class="product-card-label">Rating:</span>
+                            <span class="produk-rating">Rating:</span>
                             <span class="product-card-label">{{ number_format($produk->RATING, 1) }}</span>
                             <div class="star-rating">
                                 @php
@@ -238,29 +239,48 @@
                         </div>
                         
                         <!-- Display Penitip's Name and Rating Below the Product -->
-<div>
-    <p class="penitip-name">
-        @if($produk->penitip)
-            <span class="product-card-label">Nama Penitip: </span>{{ $produk->penitip->NAMA_PENITIP }}
-        @else
-            <span class="product-card-label">Nama Penitip: </span>Tidak Ditemukan
-        @endif
-    </p>
+                        <div>
+                            <p class="penitip-name">
+                                @if($produk->transaksiPenitipan->first() && $produk->transaksiPenitipan->first()->penitip)
+                                    <span class="product-card-label">Nama Penitip: </span>{{ $produk->transaksiPenitipan->first()->penitip->NAMA_PENITIP }}
+                                @else
+                                    <span class="product-card-label">Nama Penitip: </span>Tidak Ditemukan
+                                @endif
+                            </p>
 
-    <p class="penitip-rating">
-        <span class="product-card-label">Rating Penitip: </span>
-        @if($produk->penitip && $produk->penitip->RATING_RATA_RATA_P)
-            <i class="fas fa-star"></i>
-            {{ number_format($produk->penitip->RATING_RATA_RATA_P, 1) }}
-        @else
-            0 
-            @for($i = 0; $i < 5; $i++) 
-                <i class="far fa-star"></i>
-            @endfor
-        @endif
-    </p>
-</div>
-
+                            <!-- Rating Penitip -->
+                            <p class="penitip-rating">
+                                <span class="product-card-label">Rating rata-rata penitip: </span>
+                                @if($produk->transaksiPenitipan->first() && $produk->transaksiPenitipan->first()->penitip && $produk->transaksiPenitipan->first()->penitip->RATING_RATA_RATA_P)
+                                    @php
+                                        $rating = $produk->transaksiPenitipan->first()->penitip->RATING_RATA_RATA_P;
+                                        $fullStars = floor($rating); // Full stars
+                                        $halfStars = ($rating - $fullStars) >= 0.5 ? 1 : 0; // Half star if more than 0.5
+                                    @endphp
+                                    <!-- Loop for full stars -->
+                                    @for($i = 0; $i < $fullStars; $i++)
+                                        <i class="fas fa-star"></i>
+                                    @endfor
+                                    
+                                    <!-- Add half star if needed -->
+                                    @if($halfStars)
+                                        <i class="fas fa-star-half-alt"></i>
+                                    @endif
+                                    
+                                    <!-- Loop for empty stars to complete 5 stars -->
+                                    @for($i = $fullStars + $halfStars; $i < 5; $i++)
+                                        <i class="far fa-star"></i>
+                                    @endfor
+                                    
+                                    {{ number_format($rating, 1) }} <!-- Display the rating number -->
+                                @else
+                                    0 
+                                    @for($i = 0; $i < 5; $i++) 
+                                        <i class="far fa-star"></i>
+                                    @endfor
+                                @endif
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
