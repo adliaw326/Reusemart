@@ -5,31 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Produk - Barang Bekas Murah</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
             color: white;
         }
 
+        /* Product Image Styles */
         .product-image {
             width: 100%;
             height: auto;
             object-fit: cover;
         }
 
+        /* Product Details Container */
         .product-detail-container {
             margin-top: 20px;
             padding: 20px;
         }
 
-        .product-image-container {
-            max-width: 50%; /* Image on the left */
-        }
-
-        .product-info-container {
-            max-width: 50%; /* Information on the right */
-            padding-left: 30px; /* Space between image and details */
-        }
-
+        /* Product Info Styles */
         .product-card-title {
             font-size: 24px;
             font-weight: bold;
@@ -38,7 +33,7 @@
 
         .product-card-price {
             font-size: 18px;
-            color: #f5a201;
+            color: black; /* Make the price text black */
         }
 
         .product-card-description {
@@ -46,56 +41,57 @@
             color: #333;
         }
 
+        /* Bold Labels */
         .product-card-label {
             font-weight: bold;
         }
 
-        /* Card Custom Styles */
+        /* Custom Card Styles */
         .product-card-custom {
-            background-color: #f0f0f0; /* Gray background */
-            border-radius: 15px; /* Rounded corners */
+            background-color: #f0f0f0;
+            border-radius: 15px;
             padding: 20px;
         }
 
         .product-card-custom .card-body {
-            background-color: #f0f0f0; /* Same gray background */
+            background-color: #f0f0f0;
         }
 
         .product-card-custom .card-header {
-            background-color: #e0e0e0; /* Lighter gray for header */
-            border-radius: 15px 15px 0 0; /* Rounded corners for the header */
+            background-color: #e0e0e0;
+            border-radius: 15px 15px 0 0;
         }
 
         /* Button Styles */
         .product-buttons {
             display: flex;
-            gap: 10px; /* Space between buttons */
+            gap: 10px;
         }
 
         .product-button {
-            flex: 1; /* Ensure buttons have equal width */
-            padding: 15px; /* Add padding to make buttons look proportional */
+            flex: 1;
+            padding: 15px;
             font-size: 16px;
             font-weight: bold;
         }
 
         .product-button.add-to-cart {
-            background-color: #4CAF50; /* Green color */
+            background-color: #4CAF50;
             color: white;
         }
 
         .product-button.buy-now {
-            background-color: #f44336; /* Red color */
+            background-color: #f44336;
             color: white;
         }
 
         .product-button:hover {
-            opacity: 0.8; /* Slight opacity on hover */
+            opacity: 0.8;
         }
 
         /* Other Products Section */
         .other-products-title {
-            margin-top: 40px; /* Add top margin for more space above the title */
+            margin-top: 40px;
             font-size: 22px;
             font-weight: bold;
             color: #0b1e33;
@@ -108,9 +104,39 @@
             height: 150px;
         }
 
-        /* Space between the "Produk Lainnya" section and the products */
         .other-products-section {
-            margin-top: 30px; /* Add space above the products */
+            margin-top: 30px;
+        }
+
+        /* Star Rating */
+        .star-rating i {
+            color: #ffbc00; /* Gold color for the stars */
+        }
+
+        .rating-number {
+            font-size: 16px;
+            color: #f5a201; /* Gold color for the rating number */
+            margin-right: 5px;
+        }
+
+        /* Penitip's Name Styles */
+        .penitip-name {
+            margin-top: 30px; /* Add distance from the "Masukkan Keranjang" button */
+            font-size: 18px;
+            font-weight: bold;
+            color: #0b1e33;
+        }
+
+        /* Penitip's Rating Styles - Set color to black for text, yellow for stars */
+        .penitip-rating {
+            font-size: 16px;
+            color: black; /* Change text color to black */
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .penitip-rating i {
+            color: #ffbc00; /* Gold color for the stars */
         }
     </style>
 </head>
@@ -123,6 +149,10 @@
 
     <div class="container my-5">
         <h2 class="text-center mb-4" style="color: #0b1e33;">Detail Produk</h2>
+
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
         <!-- Product Detail Card -->
         <div class="row product-detail-container">
@@ -139,7 +169,7 @@
                         </div>
                     </div>
 
-                    <!-- Carousel Indicators (bulat di bawah) -->
+                    <!-- Carousel Indicators -->
                     <div class="carousel-indicators mt-3">
                         <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active rounded-circle bg-dark" style="width: 12px; height: 12px;" aria-current="true" aria-label="Slide 1"></button>
                         <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" class="rounded-circle bg-dark" style="width: 12px; height: 12px;" aria-label="Slide 2"></button>
@@ -154,13 +184,14 @@
                         <h5 class="product-card-title">{{ $produk->NAMA_PRODUK }}</h5>
                     </div>
                     <div class="card-body">
-                        <p class="product-card-price">Harga: Rp{{ number_format($produk->HARGA, 0, ',', '.') }}</p>
+                        <p class="product-card-price"> </p>
                         <p class="product-card-description">
+                            <span class="product-card-label">Harga: Rp </span> {{ number_format($produk->HARGA, 0, ',', '.') }}<br>
                             <span class="product-card-label">Deskripsi:</span> {{ $produk->KATEGORI }}<br>
                             <span class="product-card-label">Berat:</span> {{ $produk->BERAT }} Kg<br>
                             @php
                                 use Carbon\Carbon;
-                                $hariIni = Carbon::now()->startOfDay(); // Pastikan hanya tanggal, tanpa jam
+                                $hariIni = Carbon::now()->startOfDay();
                                 $garansiTanggal = $produk->GARANSI ? Carbon::parse($produk->GARANSI)->startOfDay() : null;
                             @endphp
 
@@ -176,7 +207,24 @@
                             @endif
                             <br>
                             <span class="product-card-label">Kategori:</span> {{ $produk->kategori->NAMA_KATEGORI }}<br>
-                            <span class="product-card-label">Rating:</span> {{ $produk->RATING ?? 'Tidak ada' }}<br>
+                            <span class="product-card-label">Rating:</span>
+                            <span class="product-card-label">{{ number_format($produk->RATING, 1) }}</span>
+                            <div class="star-rating">
+                                @php
+                                    $rating = $produk->RATING ?? 0;
+                                    $fullStars = floor($rating);
+                                    $halfStars = $rating - $fullStars >= 0.5 ? 1 : 0;
+                                @endphp
+                                @for($i = 0; $i < $fullStars; $i++)
+                                    <i class="fas fa-star"></i>
+                                @endfor
+                                @if($halfStars)
+                                    <i class="fas fa-star-half-alt"></i>
+                                @endif
+                                @for($i = $fullStars + $halfStars; $i < 5; $i++)
+                                    <i class="far fa-star"></i>
+                                @endfor
+                            </div><br>
                         </p>
 
                         <!-- Buttons -->
@@ -188,6 +236,31 @@
                                 Beli Langsung
                             </a>
                         </div>
+                        
+                        <!-- Display Penitip's Name and Rating Below the Product -->
+<div>
+    <p class="penitip-name">
+        @if($produk->penitip)
+            <span class="product-card-label">Nama Penitip: </span>{{ $produk->penitip->NAMA_PENITIP }}
+        @else
+            <span class="product-card-label">Nama Penitip: </span>Tidak Ditemukan
+        @endif
+    </p>
+
+    <p class="penitip-rating">
+        <span class="product-card-label">Rating Penitip: </span>
+        @if($produk->penitip && $produk->penitip->RATING_RATA_RATA_P)
+            <i class="fas fa-star"></i>
+            {{ number_format($produk->penitip->RATING_RATA_RATA_P, 1) }}
+        @else
+            0 
+            @for($i = 0; $i < 5; $i++) 
+                <i class="far fa-star"></i>
+            @endfor
+        @endif
+    </p>
+</div>
+
                     </div>
                 </div>
             </div>

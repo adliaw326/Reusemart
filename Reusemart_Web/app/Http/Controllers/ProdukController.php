@@ -20,17 +20,24 @@ class ProdukController extends Controller
 
     public function show($kode_produk)
     {
+        // Ambil produk berdasarkan KODE_PRODUK
         $produk = Produk::where('KODE_PRODUK', $kode_produk)->first();
 
         if (!$produk) {
             return redirect('/produk')->with('error', 'Produk tidak ditemukan.');
         }
 
-        // Ambil produk lain untuk ditampilkan sebagai "produk lainnya"
-        $produk_lainnya = Produk::where('KODE_PRODUK', '!=', $kode_produk)->limit(6)->get();
+        // Ambil produk lainnya yang sedang dalam status penitipan 'sedang berlangsung'
+        $produk_lainnya = Produk::whereHas('transaksiPenitipan', function ($query) {
+            $query->where('STATUS_PENITIPAN', 'sedang berlangsung');
+        })->where('KODE_PRODUK', '!=', $kode_produk)->limit(6)->get();
 
-        return view('produk.show', compact('produk', 'produk_lainnya'));
+        // Ambil penitip terkait produk
+        $penitip = $produk->penitip;  // Mengambil penitip yang terkait dengan produk
+
+        return view('produk.show', compact('produk', 'produk_lainnya', 'penitip'));
     }
+
 
     public function findbyId($kode_produk)
     {
