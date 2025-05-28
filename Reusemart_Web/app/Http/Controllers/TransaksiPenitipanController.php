@@ -16,8 +16,8 @@ class TransaksiPenitipanController extends Controller
         // Get the product codes associated with ongoing transactions
         $ongoingProductCodes = $ongoingTransactions->pluck('KODE_PRODUK');
 
-        // Retrieve the products related to the ongoing transactions along with penitip data
-        $produk = Produk::with(['penitip'])->whereIn('KODE_PRODUK', $ongoingProductCodes)->get();
+        // Retrieve the products related to the ongoing transactions
+        $produk = Produk::whereIn('KODE_PRODUK', $ongoingProductCodes)->get();
 
         // Retrieve categories or any other data you need
         $kategori = KategoriProduk::all();
