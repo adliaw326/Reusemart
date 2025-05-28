@@ -7,6 +7,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Organisasi extends Authenticatable
 {
     use HasApiTokens;
+    
     protected $table = 'organisasi';
     public $timestamps = false;
     protected $primaryKey = 'ID_ORGANISASI';
@@ -19,9 +20,10 @@ class Organisasi extends Authenticatable
         'EMAIL_ORGANISASI',
         'PASSWORD_ORGANISASI',
     ];
-}
 
-public function users()
-{
-    return $this->belongsTo(User::class, 'user_organisasi', 'ID_ORGANISASI', 'ID_USER');
+    // Define the relationship method inside the class
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_organisasi', 'ID_ORGANISASI', 'ID_USER');
+    }
 }

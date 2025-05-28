@@ -6,7 +6,7 @@ use App\Models\Pegawai;
 use App\Models\Produk;
 use App\Models\Penitip;
 
-class DashboardController extends Controller
+class DashboardAdminController extends Controller
 {
     public function index()
     {

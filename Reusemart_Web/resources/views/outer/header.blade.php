@@ -7,7 +7,7 @@
 
         <!-- Search Bar -->
         <form class="d-none d-lg-flex flex-grow-1 mx-2 position-relative" style="max-width: 500px;">
-            <input class="form-control pe-5 mt-3" type="search" placeholder="Cari produk..." aria-label="Search">
+            <input class="form-control pe-5" type="search" placeholder="Cari produk..." aria-label="Search">
             <i class="fa fa-search position-absolute" style="right: 20px; top: 50%; transform: translateY(-50%); color: #013c58;"></i>
         </form>
 
