@@ -41,7 +41,7 @@ Route::put('/produk/{id}', [ProdukController::class, 'update']);
 // Route to delete a product
 Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index']);
+Route::get('/admin/dashboard', [DashboardAdminController::class, 'index']);
 
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
 Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
