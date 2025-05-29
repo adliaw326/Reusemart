@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardAdminController;
+use App\Http\Controllers\DashboardOwnerController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\TransaksiPenitipanController;
 
 Route::get('/', function () {
     return view('login.login');
@@ -39,10 +41,25 @@ Route::put('/produk/{id}', [ProdukController::class, 'update']);
 // Route to delete a product
 Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index']);
+Route::get('/admin/dashboard', [DashboardAdminController::class, 'index']);
 
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
 Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
 Route::put('pegawai/update/{id}', [PegawaiController::class, 'update']);
-Route::match(['get', 'put'], 'pegawai/update/{id}', [PegawaiController::class, 'update']);
 Route::delete('pegawai/delete/{id}', [PegawaiController::class, 'destroy']);
+Route::match(['get', 'put'], 'pegawai/update/{id}', [PegawaiController::class, 'update']);
+Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
+Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+
+Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
+
+//Kevin
+Route::get('/registrasi', function () {
+    return view('general/registrasi');
+})->name('registrasi');
+Route::get('/registrasi/pembeli', function () {
+    return view('general/registrasi_pembeli');
+});
+Route::get('/registrasi/organisasi', function () {
+    return view('general/registrasi_organisasi');
+});

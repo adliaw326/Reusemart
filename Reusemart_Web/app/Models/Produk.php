@@ -52,4 +52,9 @@ class Produk extends Model
     {
         return $this->belongsTo(KategoriProduk::class, 'ID_KATEGORI');
     }
+
+    public function transaksiPenitipan()
+    {
+        return $this->hasMany(TransaksiPenitipan::class, 'KODE_PRODUK', 'KODE_PRODUK');
+    }
 }
