@@ -27,6 +27,10 @@ Route::get('/create_penitip', function () {
     return view('penitip.create_penitip');
 })->name('createPenitip');
 
+Route::get('/update_penitip/{id}', function ($id) {
+    return view('penitip.update_penitip', ['id_penitip' => $id]);
+})->name('updatePenitip');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 
 

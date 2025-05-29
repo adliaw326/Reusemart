@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Penitip;
-use Illuminate\Support\Str; // ⬅ Tambahkan ini
+use App\Models\Alamat;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PenitipPegawaiController extends Controller
 {
@@ -35,13 +37,66 @@ class PenitipPegawaiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validasi input
+        $request->validate([
+            'email_penitip' => 'required|email|unique:penitip,EMAIL_PENITIP',
+            'password_penitip' => 'required',
+            'nama_penitip' => 'required',
+            'nik' => 'required',
+            'no_telp_penitip' => 'required',
+            'alamat' => 'required',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Simpan penitip
+            $penitip = Penitip::create([
+                'EMAIL_PENITIP' => $request->email_penitip,
+                'PASSWORD_PENITIP' => $request->password_penitip, // Nanti diganti hash
+                // 'PASSWORD_PENITIP' => bcrypt($request->password_penitip), // Aktifkan ini nanti
+                'NAMA_PENITIP' => $request->nama_penitip,
+                'NIK' => $request->nik,
+                'NO_TELP_PENITIP' => $request->no_telp_penitip,
+                'RATING_RATA_RATA_P' => null,
+                'SALDO_PENITIP' => 0,
+                'POIN_PENITIP' => 0,
+            ]);
+
+            // Simpan alamat default untuk penitip
+            Alamat::create([
+                'ID_PEMBELI' => null,
+                'ID_ORGANISASI' => null,
+                'ID_PENITIP' => $penitip->ID_PENITIP,
+                'LOKASI' => $request->alamat,
+                'STATUS_DEFAULT' => 1,
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Penitip berhasil ditambahkan.'], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Gagal menyimpan penitip: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show(string $id)
+    {
+        $penitip = Penitip::with(['alamatDefault' => function ($query) {
+            $query->where('STATUS_DEFAULT', 1);
+        }])->find($id);
+
+        if (!$penitip) {
+            return response()->json(['message' => 'Penitip tidak ditemukan'], 404);
+        }
+
+        return response()->json($penitip);
+    }
+
+    public function search(Request $request)
     {
         $query = $request->q;
 
@@ -89,7 +144,32 @@ class PenitipPegawaiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'email_penitip' => 'required|email|unique:penitip,EMAIL_PENITIP,' . $id . ',ID_PENITIP',
+            'nama_penitip' => 'required',
+            'nik' => 'required',
+            'no_telp_penitip' => 'required',
+            'alamat' => 'required',
+        ]);
+
+        $penitip = Penitip::find($id);
+        if (!$penitip) {
+            return response()->json(['message' => 'Penitip tidak ditemukan'], 404);
+        }
+
+        $penitip->EMAIL_PENITIP = $request->email_penitip;
+        $penitip->NAMA_PENITIP = $request->nama_penitip;
+        $penitip->NIK = $request->nik;
+        $penitip->NO_TELP_PENITIP = $request->no_telp_penitip;
+        $penitip->save();
+        // Update alamat default
+        $alamat = Alamat::where('ID_PENITIP', $id)->where('STATUS_DEFAULT', 1)->first();
+        if ($alamat) {
+            $alamat->LOKASI = $request->alamat;
+            $alamat->save();
+        }
+
+        return response()->json(['message' => 'Data berhasil diperbarui']);
     }
 
     /**
@@ -97,6 +177,17 @@ class PenitipPegawaiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $penitip = Penitip::find($id);
+
+        if (!$penitip) {
+            return response()->json(['message' => 'Penitip tidak ditemukan'], 404);
+        }
+
+        try {
+            $penitip->delete();
+            return response()->json(['message' => 'Data penitip berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menghapus data'], 500);
+        }
     }
 }
