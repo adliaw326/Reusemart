@@ -14,6 +14,7 @@ class Alamat extends Model
     protected $fillable = [
         'ID_PEMBELI',
         'ID_ORGANISASI',
+        'ID_PENITIP',
         'ID_ALAMAT',
         'LOKASI',
         'STATUS_DEFAULT',

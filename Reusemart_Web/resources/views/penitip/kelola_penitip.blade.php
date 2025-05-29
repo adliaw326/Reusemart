@@ -8,17 +8,6 @@
     <title>Kelola Penitip</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const user = JSON.parse(sessionStorage.getItem('pegawai'));
-
-            // Jika tidak ada user atau ID_ROLE bukan RL001, redirect
-            if (!user || user.ID_ROLE !== 'RL001') {
-                alert('Anda tidak memiliki akses ke halaman ini.');
-                window.location.href = '/admin/dashboard'; // arahkan ke halaman lain, misal home atau login
-            }
-        });
-    </script>
     <style>
         body {
             background-color: #0b1e33;
@@ -106,109 +95,5 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let allPenitip = [];
-
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('http://localhost:8000/api/dashboard')
-                .then(response => response.json())
-                .then(data => {
-                    allPenitip = data.penitip || [];
-                    renderPenitipTable(allPenitip);
-                })
-                .catch(() => {
-                    document.getElementById('penitipTableBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>';
-                });
-
-            document.getElementById('searchPenitip').addEventListener('input', function() {
-                const keyword = this.value.toLowerCase();
-                const filtered = allPenitip.filter(pt =>
-                    (pt.EMAIL_PENITIP ?? '').toLowerCase().includes(keyword) ||
-                    (pt.NAMA_PENITIP ?? '').toLowerCase().includes(keyword) ||
-                    (pt.NIK ?? '').toLowerCase().includes(keyword)
-                );
-                renderPenitipTable(filtered);
-            });
-        });
-
-        function renderPenitipTable(data) {
-            let penitipRows = '';
-            if (!data || data.length === 0) {
-                penitipRows = '<tr><td colspan="6" class="text-center">Tidak ada data</td></tr>';
-            } else {
-                data.forEach(pt => {
-                    penitipRows += `<tr>
-                        <td>${pt.ID_PENITIP ?? '-'}</td>
-                        <td>${pt.EMAIL_PENITIP ?? '-'}</td>
-                        <td>${pt.NAMA_PENITIP ?? '-'}</td>
-                        <td>${pt.NIK ?? '-'}</td>
-                        <td>
-                            ${
-                                pt.RATING_RATA_RATA_P
-                                ? `<span class="text-warning">` +
-                                    Array.from({length: 5}, (_, i) =>
-                                        i < Math.round(pt.RATING_RATA_RATA_P)
-                                        ? '<i class="fa fa-star"></i>'
-                                        : '<i class="fa fa-star-o"></i>'
-                                    ).join('') +
-                                    `</span> <span class="text-white">${pt.RATING_RATA_RATA_P}</span>`
-                                : '-'
-                            }
-                        </td>
-                        <td class="text-center">
-                            <a href="/kelola_penitip/update_penitip/${pt.ID_PENITIP}" class="btn btn-warning btn-sm me-1">
-                                <i class="fa fa-edit"></i> Update
-                            </a>
-                            <button class="btn btn-danger btn-sm" onclick="hapusPenitip('${pt.ID_PENITIP}')">
-                                <i class="fa fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>`;
-                });
-            }
-            document.getElementById('penitipTableBody').innerHTML = penitipRows;
-        }
-
-        function hapusPenitip(id) {
-            console.log('ID yang dikirim:', id);
-            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-            console.log('Meta CSRF:', csrfMeta);
-            if (!id) {
-                alert('ID Penitip tidak valid');
-                return;
-            }
-            if (!csrfMeta) {
-                alert('CSRF token tidak ditemukan, silakan refresh halaman.');
-                return;
-            }
-
-            const csrfToken = csrfMeta.getAttribute('content');
-            console.log('CSRF Token:', csrfToken);
-
-            if (confirm('Yakin ingin menghapus penitip ini?')) {
-                fetch(`http://localhost:8000/api/penitip/${encodeURIComponent(id)}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                })
-                .then(response => response.json())
-                .then(res => {
-                    if (res.success) {
-                        alert('Penitip berhasil dihapus!');
-                        location.reload();
-                    } else {
-                        alert(res.message || 'Gagal menghapus penitip.');
-                    }
-                })
-                .catch(() => {
-                    alert('Terjadi kesalahan server.');
-                });
-            }
-        }
-
-    </script>
 </body>
 </html>
