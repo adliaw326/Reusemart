@@ -10,8 +10,6 @@ class Penitip extends Authenticatable
 
     protected $table = 'penitip'; // Nama tabel
     protected $primaryKey = 'ID_PENITIP'; // Primary key
-    public $incrementing = false; // Karena primary key bukan auto-increment
-    protected $keyType = 'string'; // Tipe primary key
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,7 +18,16 @@ class Penitip extends Authenticatable
         'PASSWORD_PENITIP',
         'NAMA_PENITIP',
         'NIK',
+        'ALAMAT_PENITIP',
+        'NO_TELP_PENITIP',
         'RATING_RATA_RATA_P',
-        'saldo'
+        'SALDO_PENITIP',
     ];
+
+    protected $hidden = ['PASSWORD_PENITIP'];
+
+    public function getAuthPassword()
+    {
+        return $this->PASSWORD_PENITIP;
+    }
 }

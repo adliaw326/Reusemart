@@ -32,6 +32,6 @@ class Komisi extends Model
 
     public function pembelian()
     {
-        return $this->belongsTo(Pembelian::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
+        return $this->belongsTo(TransaksiPembelian::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
     }
 }
