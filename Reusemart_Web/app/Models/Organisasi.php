@@ -19,9 +19,11 @@ class Organisasi extends Authenticatable
         'EMAIL_ORGANISASI',
         'PASSWORD_ORGANISASI',
     ];
-}
 
-public function users()
-{
-    return $this->belongsTo(User::class, 'user_organisasi', 'ID_ORGANISASI', 'ID_USER');
+    protected $hidden = ['PASSWORD_ORGANISASI'];
+
+    public function getAuthPassword()
+    {
+        return $this->PASSWORD_ORGANISASI;
+    }
 }

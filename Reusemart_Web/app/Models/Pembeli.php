@@ -21,5 +21,10 @@ class Pembeli extends Authenticatable
         'NAMA_PEMBELI',
         'POIN_PEMBELI'
     ];
-    protected $hidden = ['PASSWORD_PEMBELI']; // Sembunyikan password saat JSON response
+    protected $hidden = ['PASSWORD_PEMBELI'];
+
+    public function getAuthPassword()
+    {
+        return $this->PASSWORD_PEMBELI;
+    }
 }

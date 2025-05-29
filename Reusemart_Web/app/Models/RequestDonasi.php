@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RequestModel extends Model
+class RequestDonasi extends Model
 {
     protected $table = 'request';
     protected $primaryKey = 'ID_REQUEST';

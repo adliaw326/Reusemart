@@ -43,7 +43,7 @@ return [
         'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',
-        ]
+        ],
         'pegawai' => [
             'driver' => 'session',
             'provider' => 'pegawai',
@@ -59,7 +59,7 @@ return [
         'penitip' => [
             'driver' => 'session',
             'provider' => 'penitip',
-        ],   
+        ],
     ],
 
     /*
@@ -96,7 +96,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Penitip::class,
         ],
-        
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
