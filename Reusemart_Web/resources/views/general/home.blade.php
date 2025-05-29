@@ -112,7 +112,7 @@
                 @foreach($produk as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-3 product-item" data-category-id="{{ $item->ID_KATEGORI }}">
                     <a href="/produk/{{ $item->KODE_PRODUK }}" class="product-card h-100">
-                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="category-image" alt="{{ $item->NAMA_PRODUK }} Foto Thumbnail">
+                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="category-image" alt="{{ $item->KODE_PRODUK }} Foto Thumbnail">
 
                         <div class="product-card-body">
                             <p class="product-card-title">{{ $item->NAMA_PRODUK }}</p>

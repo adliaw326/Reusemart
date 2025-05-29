@@ -16,3 +16,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip/search', [PenitipPegawaiController::class, 'show']);
 });
 
+// ORGANISASI
+Route::post('/organisasi/register', [OrganisasiController::class, 'register']);

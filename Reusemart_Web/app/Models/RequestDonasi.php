@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -20,13 +19,15 @@ class RequestDonasi extends Model
         'STATUS_REQUEST',
     ];
 
+    // Define the relationship with Produk
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'KODE_PRODUK');
+        return $this->belongsTo(Produk::class, 'KODE_PRODUK', 'KODE_PRODUK');
     }
 
+    // Define the relationship with Organisasi
     public function organisasi()
     {
-        return $this->belongsTo(Organisasi::class, 'ID_ORGANISASI');
+        return $this->belongsTo(Organisasi::class, 'ID_ORGANISASI', 'ID_ORGANISASI');
     }
 }
