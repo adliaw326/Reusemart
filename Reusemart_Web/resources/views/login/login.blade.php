@@ -3,17 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('icon/logo1.webp') }}">
-    <!-- Bootstrap 5 CSS -->
+    <title>Reusemart Login</title>
+    <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        html, body {
-            height: 100%;
-        }
+        html, body { height: 100%; }
         body {
             min-height: 100vh;
             background: #fff;
@@ -97,21 +92,6 @@
                 <button type="submit" class="btn w-100" style="background:#013c58; color:#fff;">Login</button>
                 <div id="loginError" class="alert alert-danger mt-3 d-none"></div>
             </form>
-            <script>
-            function togglePassword() {
-                const passwordInput = document.getElementById('password');
-                const icon = document.getElementById('togglePasswordIcon');
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            }
-            </script>
             <div class="mt-3 text-center" style="color:#013c58;">
                 Belum punya akun? <a href="#" style="color:#00537a;text-decoration:none;">Daftar di sini</a>
             </div>
@@ -121,67 +101,73 @@
         </div>
     </div>
     @include('outer.footer')
-    <!-- Bootstrap 5 JS Bundle -->
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const icon = document.getElementById('togglePasswordIcon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const errorDiv = document.getElementById('loginError');
-        errorDiv.classList.add('d-none');
-        errorDiv.innerText = '';
+        const loginError = document.getElementById('loginError');
 
         try {
-            const response = await fetch('http://localhost:8000/api/login', {
+            const response = await fetch('/api/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Jika pakai Laravel Sanctum atau CSRF, tambahkan header di sini
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            const result = await response.json();
 
-            if (data.success) {
-                if (data.type === 'penitip') {
-                    sessionStorage.setItem('user_type', data.type);
-                    // Simpan seluruh data pembeli sebagai objek
-                    sessionStorage.setItem('penitip', JSON.stringify(data.data));
-                    window.location.href = '/home';
-                } else if (data.type === 'pegawai') {
-                    sessionStorage.setItem('user_type', data.type);
-                    // Simpan seluruh data pembeli sebagai objek
-                    sessionStorage.setItem('pegawai', JSON.stringify(data.data));
-                    window.location.href = '/admin/dashboard';
-                } else if (data.type === 'admin') {
-                    sessionStorage.setItem('user_type', data.type);
-                    // Simpan seluruh data pembeli sebagai objek
-                    sessionStorage.setItem('pegawai', JSON.stringify(data.data));
-                    window.location.href = '/admin/dashboard';
-                } else if (data.type === 'pembeli') {
-                    sessionStorage.setItem('user_type', data.type);
-                    // Simpan seluruh data pembeli sebagai objek
-                    sessionStorage.setItem('pembeli', JSON.stringify(data.data));
-                    // Jika ingin akses: JSON.parse(sessionStorage.getItem('pembeli')).EMAIL_PEMBELI
-                    window.location.href = '/home';
-                } else if (data.type === 'organisasi') {
-                    sessionStorage.setItem('user_type', data.type);
-                    // Simpan seluruh data pembeli sebagai objek
-                    sessionStorage.setItem('organisasi', JSON.stringify(data.data));
-                    window.location.href = '/kelola_request_donasi';
-                } else {
-                    errorDiv.innerText = 'Tipe user tidak dikenali';
-                    errorDiv.classList.remove('d-none');
-                }
-            } else {
-                errorDiv.innerText = data.message || 'Login gagal';
-                errorDiv.classList.remove('d-none');
+            if (!response.ok) {
+                loginError.classList.remove('d-none');
+                loginError.textContent = result.message || 'Login gagal!';
+                return;
             }
+
+            // Simpan token di localStorage
+            localStorage.setItem('token', result.token);
+            localStorage.setItem('role', result.role);
+
+            // Arahkan ke dashboard sesuai role
+            switch (result.role) {
+                case 'admin':
+                    window.location.href = '/dashboard/admin';
+                    break;
+                case 'pegawai':
+                    window.location.href = '/kelola_penitip';
+                    break;
+                case 'organisasi':
+                    window.location.href = '/dashboard/organisasi';
+                    break;
+                case 'penitip':
+                    window.location.href = '/home';
+                    break;
+                case 'pembeli':
+                    window.location.href = '/home';
+                    break;
+                default:
+                    window.location.href = '/home';
+            }
+
         } catch (err) {
-            errorDiv.innerText = 'Terjadi kesalahan pada server';
-            errorDiv.classList.remove('d-none');
+            loginError.classList.remove('d-none');
+            loginError.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
         }
     });
     </script>

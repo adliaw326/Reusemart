@@ -21,9 +21,10 @@ class Organisasi extends Authenticatable
         'password',
     ];
 
-    // Define the relationship method inside the class
-    public function users()
+    protected $hidden = ['PASSWORD_ORGANISASI'];
+
+    public function getAuthPassword()
     {
-        return $this->belongsTo(User::class, 'user_organisasi', 'ID_ORGANISASI', 'ID_USER');
+        return $this->PASSWORD_ORGANISASI;
     }
 }

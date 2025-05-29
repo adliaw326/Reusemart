@@ -97,7 +97,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Penitip::class,
         ],
-        
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

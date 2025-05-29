@@ -28,4 +28,11 @@ class Pegawai extends Authenticatable
     {
         return $this->belongsTo(RolePegawai::class, 'ID_ROLE');
     }
+
+    protected $hidden = ['PASSWORD_PEGAWAI'];
+
+    public function getAuthPassword()
+    {
+        return $this->PASSWORD_PEGAWAI;
+    }
 }
