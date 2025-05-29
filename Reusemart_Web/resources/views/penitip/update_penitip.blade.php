@@ -6,6 +6,15 @@
     <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'cs') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
     <style>
         body { background: #0b1e33; color: #fff; }
         .card { background: #013c58; color: #ffba42; }

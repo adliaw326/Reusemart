@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp" />
-
     <script>
         // Cek role dari localStorage
         const role = localStorage.getItem('role');
@@ -18,7 +17,6 @@
             window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
         }
     </script>
-
     <style>
         body {
             background-color: #0b1e33;
