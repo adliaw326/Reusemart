@@ -17,8 +17,8 @@ class Organisasi extends Authenticatable
     protected $fillable = [
         'ID_ORGANISASI',
         'NAMA_ORGANISASI',
-        'EMAIL_ORGANISASI',
-        'PASSWORD_ORGANISASI',
+        'email',
+        'password',
     ];
 
     // Define the relationship method inside the class

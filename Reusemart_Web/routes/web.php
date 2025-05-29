@@ -25,3 +25,14 @@ Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawa
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
 
 Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
+
+//Kevin
+Route::get('/registrasi', function () {
+    return view('general/registrasi');
+})->name('registrasi');
+Route::get('/registrasi/pembeli', function () {
+    return view('general/registrasi_pembeli');
+});
+Route::get('/registrasi/organisasi', function () {
+    return view('general/registrasi_organisasi');
+});
