@@ -13,7 +13,6 @@ class Penitip extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
-        'ID_PENITIP',
         'EMAIL_PENITIP',
         'PASSWORD_PENITIP',
         'NAMA_PENITIP',
