@@ -7,13 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const user = JSON.parse(sessionStorage.getItem('pegawai'));
-            if (!user || user.ID_ROLE !== 'RL001') {
-                alert('Anda tidak memiliki akses ke halaman ini.');
-                window.location.href = '/admin/dashboard';
-            }
-        });
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'cs') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
     </script>
     <style>
         body { background: #0b1e33; color: #fff; }
@@ -36,10 +36,6 @@
                 </div>
                 <div class="card-body">
                     <form id="formPenitip">
-                        <div class="mb-3">
-                            <label for="id_penitip" class="form-label">ID Penitip</label>
-                            <input type="text" class="form-control" id="id_penitip" name="id_penitip" required>
-                        </div>
                         <div class="mb-3">
                             <label for="email_penitip" class="form-label">Email Penitip</label>
                             <input type="email" class="form-control" id="email_penitip" name="email_penitip" required>
@@ -66,6 +62,10 @@
                             <label for="nik" class="form-label">NIK</label>
                             <input type="text" class="form-control" id="nik" name="nik" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="alamat" class="form-label">Alamat</label>
+                            <input type="text" class="form-control" id="alamat" name="alamat" required>
+                        </div>
                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button>
                     </form>
                     <div id="alertBox" class="mt-3"></div>
@@ -89,50 +89,6 @@
             eyeIcon.classList.add('fa-eye');
         }
     }
-
-    document.getElementById('formPenitip').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = e.target;
-        let password = form.password_penitip.value;
-        let rePassword = form.repassword_penitip.value;
-
-        if (password !== rePassword) {
-            document.getElementById('alertBox').innerHTML = '<div class="alert alert-danger">Password tidak cocok!</div>';
-            return;
-        }
-
-        let formData = {
-            id_penitip: form.id_penitip.value,
-            email_penitip: form.email_penitip.value,
-            password_penitip: password,
-            nama_penitip: form.nama_penitip.value,
-            nik: form.nik.value
-        };
-
-        fetch('http://localhost:8000/api/penitip', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(res => res.json())
-        .then(res => {
-            let alertBox = document.getElementById('alertBox');
-            if (res.success) {
-                alertBox.innerHTML = '<div class="alert alert-success">Penitip berhasil ditambahkan!</div>';
-                form.reset();
-                window.location.href = '/kelola_penitip';
-            } else {
-                alertBox.innerHTML = '<div class="alert alert-danger">'+(res.message || 'ID atau Email sudah terdaftar!')+'</div>';
-            }
-        })
-        .catch(() => {
-            document.getElementById('alertBox').innerHTML = '<div class="alert alert-danger">Terjadi kesalahan server</div>';
-        });
-    });
 </script>
 </body>
 </html>

@@ -149,20 +149,20 @@
                 case 'admin':
                     window.location.href = '/dashboard/admin';
                     break;
-                case 'pegawai':
+                case 'cs':
                     window.location.href = '/kelola_penitip';
                     break;
                 case 'organisasi':
                     window.location.href = '/dashboard/organisasi';
                     break;
                 case 'penitip':
-                    window.location.href = '/home';
+                    window.location.href = '/show';
                     break;
                 case 'pembeli':
-                    window.location.href = '/home';
+                    window.location.href = '/show';
                     break;
                 default:
-                    window.location.href = '/home';
+                    window.location.href = '/show';
             }
 
         } catch (err) {

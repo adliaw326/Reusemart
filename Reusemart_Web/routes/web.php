@@ -9,14 +9,21 @@ Route::get('/', function () {
     return view('login.login');
 })->name('login');
 
+Route::get('/login', function () {
+    return view('login.login');
+})->name('login');
+
 Route::get('/show', function () {
     return view('produk.show');
 })->name('show');
 
 Route::get('/kelola_penitip', function () {
     return view('penitip.kelola_penitip');
-})->name('keloaPenitip');
+})->name('kelolaPenitip');
 
+Route::get('/create_penitip', function () {
+    return view('penitip.create_penitip');
+})->name('createPenitip');
 
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 

@@ -13,5 +13,6 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip', [PenitipPegawaiController::class, 'index']);
+    Route::get('/penitip/search', [PenitipPegawaiController::class, 'show']);
 });
 

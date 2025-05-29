@@ -30,4 +30,8 @@ class Alamat extends Model
         return $this->belongsTo(Organisasi::class, 'ID_ORGANISASI', 'ID_ORGANISASI');
     }
 
+    public function penitip()
+    {
+        return $this->belongsTo(Penitip::class, 'ID_PENITIP', 'ID_PENITIP');
+    }
 }
