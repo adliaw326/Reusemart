@@ -47,7 +47,7 @@ return [
         'pegawai' => [
             'driver' => 'session',
             'provider' => 'pegawai',
-            ],
+        ],
         'organisasi' => [
             'driver' => 'session',
             'provider' => 'organisasi',
@@ -61,6 +61,7 @@ return [
             'provider' => 'penitip',
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
