@@ -45,7 +45,8 @@ class LoginController extends Controller
             return response()->json([
                 'token' => $token,
                 'role' => $role,
-                'user' => $pegawai
+                'user' => $pegawai,
+                'userId' => $pegawai->ID_PEGAWAI
             ], 200);
         }
 
@@ -56,7 +57,8 @@ class LoginController extends Controller
             return response()->json([
                 'token' => $token,
                 'role' => 'penitip',
-                'user' => $penitip
+                'user' => $penitip,
+                'userId' => $penitip->ID_PENITIP
             ], 200);
         }
 
@@ -67,7 +69,8 @@ class LoginController extends Controller
             return response()->json([
                 'token' => $token,
                 'role' => 'organisasi',
-                'user' => $organisasi
+                'user' => $organisasi,
+                'userId' => $organisasi->ID_ORGANISASI
             ], 200);
         }
 
@@ -78,7 +81,8 @@ class LoginController extends Controller
             return response()->json([
                 'token' => $token,
                 'role' => 'pembeli',
-                'user' => $pembeli
+                'user' => $pembeli,
+                'userId' => $pembeli->ID_PEMBELI
             ], 200);
         }
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\KategoriProduk;
+use App\Models\DiskusiProduk;
+
 
 class ProdukController extends Controller
 {
@@ -27,6 +29,12 @@ class ProdukController extends Controller
             return redirect('/produk')->with('error', 'Produk tidak ditemukan.');
         }
 
+        $diskusi = DiskusiProduk::with('children')
+        ->where('KODE_PRODUK', $kode_produk)
+        ->whereNull('ID_PARENT') // hanya komentar utama (root)
+        ->orderBy('TANGGAL_POST', 'desc')
+        ->get();
+
         // Ambil produk lainnya yang sedang dalam status penitipan 'sedang berlangsung'
         $produk_lainnya = Produk::whereHas('transaksiPenitipan', function ($query) {
             $query->where('STATUS_PENITIPAN', 'sedang berlangsung');
@@ -35,7 +43,7 @@ class ProdukController extends Controller
         // Ambil penitip terkait produk
         $penitip = $produk->penitip;  // Mengambil penitip yang terkait dengan produk
 
-        return view('produk.show', compact('produk', 'produk_lainnya', 'penitip'));
+        return view('produk.show', compact('produk', 'produk_lainnya', 'penitip', 'diskusi'));
     }
 
 

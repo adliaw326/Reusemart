@@ -9,6 +9,8 @@ use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\TransaksiPenitipanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TransaksiPembelianController;
+use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\DiskusiProdukController;
 
 use App\Models\Penitip;
 
@@ -56,7 +58,7 @@ Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawa
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
 
 Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
-//Kevin
+//KEVIN===============================================================================================================
 
    //registrasi
 Route::get('/registrasi', function () {
@@ -93,7 +95,15 @@ Route::get('/profile/penitip', function () {
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
 
-//KEVIN
+
+//diskusi
+Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('diskusi.store');
+
+//keranjang
+    Route::post('/keranjang/store/{KODE_PRODUK}', [KeranjangController::class, 'store'])->name('keranjang.store');
+    Route::delete('/keranjang/delete/{KODE_PRODUK}', [KeranjangController::class, 'delete'])->name('keranjang.delete');
+    Route::get('/keranjang/check/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
+//KEVIN===============================================================================================================
 Route::get('/show', [TransaksiPenitipanController::class, 'index']);
 Route::get('/produk/{kode_produk}', [ProdukController::class, 'show']);
 Route::post('/produk', [ProdukController::class, 'store']);
