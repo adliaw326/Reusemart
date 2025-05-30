@@ -27,4 +27,10 @@ class Pembeli extends Authenticatable
     {
         return $this->PASSWORD_PEMBELI;
     }
+
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class, 'ID_PEMBELI', 'ID_PEMBELI');
+    }
+
 }

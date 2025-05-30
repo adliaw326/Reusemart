@@ -8,6 +8,7 @@ use App\Http\Controllers\PenitipPegawaiController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PenitipController;
+use App\Http\Controllers\KeranjangController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -31,6 +32,10 @@ Route::post('/organisasi/register', [OrganisasiController::class, 'register']);
 
 //PEMBELI
 Route::post('/pembeli/register', [PembeliController::class, 'register']);
+
+    Route::post('/keranjang/store/{ID_PEMBELI}/{KODE_PRODUK}', [KeranjangController::class, 'store'])->name('keranjang.store');
+    Route::delete('/keranjang/delete/{ID_PEMBELI}/{KODE_PRODUK}', [KeranjangController::class, 'destroy'])->name('keranjang.delete');
+Route::get('/keranjang/check/{ID_PEMBELI}/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
 
 // Route khusus PENITIP
 // Route::middleware(['auth:penitip'])->group(function () {

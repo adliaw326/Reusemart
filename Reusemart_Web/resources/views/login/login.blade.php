@@ -166,6 +166,7 @@
             // Simpan token di localStorage
             localStorage.setItem('token', result.token);
             localStorage.setItem('role', result.role);
+            localStorage.setItem('userId', result.userId);
 
             // Arahkan ke dashboard sesuai role
             switch (result.role) {
