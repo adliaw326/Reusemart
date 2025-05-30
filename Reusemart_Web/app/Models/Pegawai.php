@@ -16,7 +16,6 @@ class Pegawai extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
-        'ID_PEGAWAI',
         'ID_ROLE',
         'NAMA_PEGAWAI',
         'EMAIL_PEGAWAI',

@@ -7,7 +7,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Organisasi extends Authenticatable
 {
     use HasApiTokens;
-    
+
     protected $table = 'organisasi';
     public $timestamps = false;
     protected $primaryKey = 'ID_ORGANISASI';
@@ -15,7 +15,6 @@ class Organisasi extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'ID_ORGANISASI',
         'NAMA_ORGANISASI',
         'EMAIL_ORGANISASI',
         'PASSWORD_ORGANISASI',

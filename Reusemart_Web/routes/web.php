@@ -14,14 +14,9 @@ use App\Http\Controllers\DiskusiProdukController;
 
 use App\Models\Penitip;
 
-Route::get('/', function () {
-    return view('login.login');
-})->name('login');
-
 Route::get('/login', function () {
     return view('login.login');
 })->name('login');
-
 
 Route::get('/kelola_penitip', function () {
     return view('penitip.kelola_penitip');
@@ -34,6 +29,14 @@ Route::get('/create_penitip', function () {
 Route::get('/update_penitip/{id}', function ($id) {
     return view('penitip.update_penitip', ['id_penitip' => $id]);
 })->name('updatePenitip');
+
+Route::get('/profile/pembeli', function () {
+    return view('pembeli.profile_pembeli');
+})->name('profilePembeli');
+
+Route::get('/history/pembelian', function () {
+    return view('pembeli.history_pembelian');
+})->name('historyPembelian');
 
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 
@@ -86,7 +89,7 @@ Route::post('/reset-password-customer', [LoginController::class, 'updatePassword
 
     //profile penitip
 Route::get('/profile/penitip', function () {
-    $penitip = auth()->user();    
+    $penitip = auth()->user();
     if(!$penitip) {
         $penitip = Penitip::find(1); // Default to first penitip if no user is authenticated
     }
@@ -104,6 +107,7 @@ Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('
     Route::delete('/keranjang/delete/{KODE_PRODUK}', [KeranjangController::class, 'delete'])->name('keranjang.delete');
     Route::get('/keranjang/check/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
 //KEVIN===============================================================================================================
+Route::get('/', [TransaksiPenitipanController::class, 'index']);
 Route::get('/show', [TransaksiPenitipanController::class, 'index']);
 Route::get('/produk/{kode_produk}', [ProdukController::class, 'show']);
 Route::post('/produk', [ProdukController::class, 'store']);
