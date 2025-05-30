@@ -5,9 +5,16 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\DashboardOwnerController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\TransaksiPenitipanController;
 
+use App\Models\Penitip;
+
 Route::get('/', function () {
+    return view('login.login');
+})->name('login');
+
+Route::get('/login', function () {
     return view('login.login');
 })->name('login');
 
@@ -34,7 +41,7 @@ Route::put('/produk/{id}', [ProdukController::class, 'update']);
 // Route to delete a product
 Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index']);
+// Route::get('/admin/dashboard', [DashboardController::class, 'index']);
 
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
 Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
@@ -47,12 +54,25 @@ Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegaw
 Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
 
 //Kevin
+
+   //registrasi
 Route::get('/registrasi', function () {
-    return view('general/registrasi');
+    return view('registrasi.registrasi');
 })->name('registrasi');
 Route::get('/registrasi/pembeli', function () {
-    return view('general/registrasi_pembeli');
+    return view('registrasi.registrasi_pembeli');
 });
 Route::get('/registrasi/organisasi', function () {
-    return view('general/registrasi_organisasi');
+    return view('registrasi.registrasi_organisasi');
 });
+
+    //profile penitip
+Route::get('/profile/penitip', function () {
+    $penitip = auth()->user();    
+    if(!$penitip) {
+        $penitip = Penitip::find(1); // Default to first penitip if no user is authenticated
+    }
+    return view('penitip.profile_penitip', ['penitip' => $penitip]);
+});
+// histori punya penitip
+Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');

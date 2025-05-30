@@ -13,37 +13,27 @@ class OrganisasiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
-            'email' => 'required|email|unique:organisasi,email',
+            'email' => 'required|email|unique:organisasi,EMAIL_ORGANISASI',
             'password' => 'required|min:6',
         ]);
 
         if ($validator->fails())
             return response()->json($validator->errors(), 422);
 
-        $lastOrganisasi = Organisasi::orderBy('ID_ORGANISASI', 'desc')->first();
-        if ($lastOrganisasi) {
-            // Ambil angka terakhir dari ID_ORGANISASI, misal dari ORG03 ambil 03
-            $lastIdNumber = intval(substr($lastOrganisasi->ID_ORGANISASI, 3));
-            $newIdNumber = $lastIdNumber + 1;
-        } else {
-            $newIdNumber = 1; // Jika belum ada data, mulai dari 1
+        $newId = Organisasi::max('ID_ORGANISASI') + 1;
+        if (!$newId) {
+            $newId = 1; // If no records exist, start with ID 1
         }
-
-        $newId = 'ORG' . str_pad($newIdNumber, 2, '0', STR_PAD_LEFT);
         $organisasi = Organisasi::create([  
             'ID_ORGANISASI' => $newId,
             'NAMA_ORGANISASI' => $request->nama,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'EMAIL_ORGANISASI' => $request->email,
+            'PASSWORD_ORGANISASI' => Hash::make($request->password),
         ]);
 
-        // $token = $organisasi->createToken('api-token')->plainTextToken;
-
-        // return response()->json(['organisasi' => $organisasi, 'token' => $token]);
         return response()->json([
             'message' => 'Organisasi berhasil ditambahkan',
             'data' => $organisasi
-            // 'token' => $token
         ]);
     }
 

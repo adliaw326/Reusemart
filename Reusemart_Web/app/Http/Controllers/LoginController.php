@@ -25,7 +25,16 @@ class LoginController extends Controller
         // 🔍 1. Cek Pegawai
         $pegawai = Pegawai::where('EMAIL_PEGAWAI', $email)->first();
         if ($pegawai && $this->passwordMatches($password, $pegawai->PASSWORD_PEGAWAI)) {
-            $role = $pegawai->ID_ROLE === 'RL005' ? 'admin' : 'pegawai';
+            $roleMap = [
+                'RL001' => 'cs',
+                'RL002' => 'owner',
+                'RL003' => 'hunter',
+                'RL004' => 'kurir',
+                'RL005' => 'admin',
+                'RL006' => 'pegawai_gudang',
+            ];
+            $role = $roleMap[$pegawai->ID_ROLE] ?? 'unknown';
+
             $token = $pegawai->createToken('pegawai-token')->plainTextToken;
 
             return response()->json([
@@ -74,7 +83,7 @@ class LoginController extends Controller
         ], 401);
     }
 
-    // 🛡️ Fungsi ini bisa pakai hash atau plaintext tergantung kebutuhan
+    // 🛡 Fungsi ini bisa pakai hash atau plaintext tergantung kebutuhan
     private function passwordMatches($inputPassword, $storedPassword)
     {
         // Untuk dummy: pakai perbandingan biasa
