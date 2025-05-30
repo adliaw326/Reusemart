@@ -101,43 +101,44 @@ class TransaksiPembelianController extends Controller
         return redirect()->route('transaksi_pembelian.index')->with('success', 'Transaksi Pembelian berhasil dihapus!');
     }
 
-    public function rating(Request $request, $id)
-    {
-        // Validasi rating yang diterima
-        $request->validate([
-            'rating' => 'required|integer|between:1,5',
-        ]);
+public function rating(Request $request, $id)
+{
+    // Validasi rating yang diterima
+    $request->validate([
+        'rating' => 'required|integer|between:1,5',
+    ]);
 
-        // Temukan transaksi pembelian berdasarkan ID
-        $transaksi = TransaksiPembelian::findOrFail($id);
+    // Temukan transaksi pembelian berdasarkan ID
+    $transaksi = TransaksiPembelian::findOrFail($id);
 
-        // Update status rating menjadi 'SUDAH'
-        $transaksi->STATUS_RATING = 'SUDAH'; // Mengganti nama kolom menjadi STATUS_RATING
+    // Temukan produk terkait berdasarkan ID_PEMBELIAN
+    $produk = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)->first(); // Menggunakan ID_PEMBELIAN untuk mencari produk
+
+    // Jika produk ditemukan
+    if ($produk) {
+        // Mendapatkan rating produk yang sudah ada
+        $currentRating = $produk->RATING;
+
+        // Menghitung rata-rata rating baru
+        $newRating = $request->input('rating');
+        $averageRating = ($currentRating + $newRating) / 2;
+
+        // Update rating produk dengan rata-rata baru
+        $produk->RATING = $averageRating;
+        $produk->save();
+
+        // Update status rating transaksi menjadi 'SUDAH'
+        $transaksi->STATUS_RATING = 'SUDAH';
         $transaksi->save();
-
-        // Temukan produk terkait berdasarkan ID_PEMBELIAN
-        $produk = Produk::find($transaksi->ID_PEMBELIAN); // Gunakan ID_PEMBELIAN untuk mencari produk
-
-        // Jika produk ditemukan, hitung rata-rata rating produk
-        if ($produk) {
-            // Mengambil semua rating yang sudah diberikan pada produk tersebut
-            $ratings = TransaksiPembelian::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)
-                                        ->where('STATUS_RATING', 'SUDAH') // Hanya ambil transaksi yang sudah diberi rating
-                                        ->pluck('rating'); // Ambil semua rating yang sudah diberikan
-
-            // Jika ada rating, hitung rata-rata rating
-            if ($ratings->count() > 0) {
-                $averageRating = $ratings->avg(); // Menghitung rata-rata rating
-            } else {
-                $averageRating = 0; // Jika tidak ada rating, set 0
-            }
-
-            // Update rating produk dengan rata-rata baru
-            $produk->RATING = $averageRating; // Update rating produk
-            $produk->save(); // Simpan perubahan rating produk
-        }
 
         // Redirect kembali ke halaman history transaksi dengan pesan sukses
         return redirect()->route('transaksi_pembelian.history')->with('success', 'Rating berhasil diberikan dan status rating diubah menjadi SUDAH!');
     }
+
+    // Jika produk tidak ditemukan
+    return redirect()->route('transaksi_pembelian.history')->with('error', 'Produk tidak ditemukan!');
+}
+
+
+
 }

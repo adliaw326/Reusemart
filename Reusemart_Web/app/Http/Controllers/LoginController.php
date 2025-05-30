@@ -73,7 +73,8 @@ class LoginController extends Controller
             return response()->json([
                 'token' => $token,
                 'role' => 'pembeli',
-                'user' => $pembeli
+                'user' => $pembeli,
+                'ID_PEMBELI' => $pembeli->ID_PEMBELI
             ], 200);
         }
 

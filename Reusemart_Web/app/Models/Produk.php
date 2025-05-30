@@ -57,9 +57,4 @@ class Produk extends Model
     {
         return $this->hasMany(TransaksiPenitipan::class, 'KODE_PRODUK', 'KODE_PRODUK');
     }
-
-    public function transaksiPembelian()
-    {
-        return $this->hasMany(TransaksiPembelian::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
-    }
 }
