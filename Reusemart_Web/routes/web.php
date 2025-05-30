@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardOwnerController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\TransaksiPenitipanController;
+use App\Http\Controllers\LoginController;
 
 use App\Models\Penitip;
 
@@ -66,6 +67,19 @@ Route::get('/registrasi/organisasi', function () {
     return view('registrasi.registrasi_organisasi');
 });
 
+    //forgot password
+Route::get('/forgot-password', function () {
+    return view('login.forgot_password');
+})->name('forgot-password');
+
+Route::post('/reset-password-request', [LoginController::class, 'resetPassword'])->name('reset.password.request');
+
+Route::get('/reset-password-customer', [LoginController::class, 'showResetForm'])->name('reset.password.form');
+Route::post('/reset-password-customer', [LoginController::class, 'updatePassword'])->name('reset.password.update');
+
+
+
+
     //profile penitip
 Route::get('/profile/penitip', function () {
     $penitip = auth()->user();    
@@ -76,3 +90,26 @@ Route::get('/profile/penitip', function () {
 });
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
+
+//KEVIN
+
+Route::get('/show', [TransaksiPenitipanController::class, 'index']);
+Route::get('/produk/{kode_produk}', [ProdukController::class, 'show']);
+Route::post('/produk', [ProdukController::class, 'store']);
+Route::put('/produk/{id}', [ProdukController::class, 'update']);
+Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
+
+Route::get('/admin/dashboard', [DashboardAdminController::class, 'index']);
+Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
+Route::put('pegawai/update/{id}', [PegawaiController::class, 'update']);
+Route::delete('pegawai/delete/{id}', [PegawaiController::class, 'destroy']);
+Route::match(['get', 'put'], 'pegawai/update/{id}', [PegawaiController::class, 'update']);
+Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
+Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+
+Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
+
+Route::get('history-transaksi-pembelian', [TransaksiPembelianController::class, 'history'])->name('transaksi_pembelian.history');
+Route::get('transaksi-pembelian/{id}', [TransaksiPembelianController::class, 'show'])->name('transaksi_pembelian.show');
+Route::post('transaksi-pembelian/{id}/rating', [TransaksiPembelianController::class, 'rating'])->name('transaksi_pembelian.rating');

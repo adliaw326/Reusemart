@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Lupa Password</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -75,10 +75,34 @@
     <div class="header">
         Reusemart
     </div>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 1rem; margin-right: 1rem;">
+        @if(session('status'))
+        <div id="statusToast" class="toast align-items-center text-bg-info border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('status') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div id="errorToast" class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('error') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        @endif
+    </div>
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="login-container">
             <h2 class="mb-4 text-center" style="color:#0b1e33;">Lupa Password</h2>
-            <form>
+            <form method="POST" action="{{ route('reset.password.request') }}">     
+                @csrf           
                 <div class="mb-3 text-start">
                     <label for="email" class="form-label" style="color:#013c58;">Email</label>
                     <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email Anda" required>
@@ -86,7 +110,7 @@
                 <button type="submit" class="btn w-100" style="background:#013c58; color:#fff;">Login</button>
             </form> 
         </div>
-    </div>
+    </div>    
     <div class="footer">
         <div class="sosmed mb-2">
             <a href="https://www.instagram.com/accounts/login/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
@@ -100,75 +124,6 @@
     </div>
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-    </script>
-    <script>
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const EMAIL = document.getElementById('email').value;
-
-            fetch('http://127.0.0.1:8000/api/check-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ EMAIL })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'pegawai') {
-                    if (confirm('Akun ditemukan sebagai Pegawai. Apakah Anda yakin ingin mereset password?')) {
-                        fetch('http://127.0.0.1:8000/api/reset-password', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                            },
-                            body: JSON.stringify({EMAIL})
-                        })
-                        .then(res => res.json())
-                        .then(result => {
-                            if (result.status === 'berhasil') {
-                                alert('Password telah direset ke Default: ');
-                            } else {
-                                alert('Gagal reset password.');
-                            }
-                        });
-                    }
-                } else if (data.status === 'customer') {
-                    alert('Silakan cek email Anda untuk instruksi reset password.');
-                        fetch('http://127.0.0.1:8000/send-email', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            // Kalau pakai Laravel dengan CSRF, harus kirim token CSRF juga, 
-                            // tapi ini contoh tanpa CSRF (API route)
-                        },
-                        body: JSON.stringify({ EMAIL })
-                    })
-                    .then(res => res.json())
-                    .then(resp => {
-                        if(resp.status === 'success') {
-                            // Kalau pengiriman email berhasil, bisa redirect ke halaman lain, misal halaman login
-                            alert('Silakan cek email Anda untuk instruksi reset password.');
-                        } else {
-                            alert('Gagal mengirim email reset password.');
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('Terjadi kesalahan saat mengirim email.');
-                    });
-                } else {
-                    alert('Email tidak ditemukan.');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Terjadi kesalahan.');
-            });
-        });
     </script>
 </body>
 </html>

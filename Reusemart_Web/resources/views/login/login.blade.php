@@ -69,6 +69,29 @@
     </style>
 </head>
 <body>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 1rem; margin-right: 1rem;">
+        @if(session('status'))
+        <div id="statusToast" class="toast align-items-center text-bg-info border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('status') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div id="errorToast" class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('error') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        @endif
+    </div>
     <div class="header d-flex align-items-center" style="gap:12px; padding:0; height:60px;">
         <a class="navbar-brand ms-3 d-flex align-items-center" href="{{ url('/home') }}" style="height:200px;">
             <img src="{{ asset('icon/logo.webp') }}" alt="Barang Bekas Murah Logo" style="max-height:200px; height:200px;">
@@ -93,10 +116,10 @@
                 <div id="loginError" class="alert alert-danger mt-3 d-none"></div>
             </form>
             <div class="mt-3 text-center" style="color:#013c58;">
-                Belum punya akun? <a href="#" style="color:#00537a;text-decoration:none;">Daftar di sini</a>
+                Belum punya akun? <a href="/registrasi" style="color:#00537a;text-decoration:none;">Daftar di sini</a>
             </div>
             <div class="mt-3 text-center" style="color:#013c58;">
-                <a href="#" style="color:#00537a;text-decoration:none;">Lupa Password?</a>
+                <a href="/forgot-password" style="color:#00537a;text-decoration:none;">Lupa Password?</a>
             </div>
         </div>
     </div>
