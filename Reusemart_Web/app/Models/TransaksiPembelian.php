@@ -19,7 +19,8 @@ class TransaksiPembelian extends Model
         'TANGGAL_PESAN',
         'TANGGAL_LUNAS',
         'TANGGAL_KIRIM',
-        'TANGGAL_SAMPAI'
+        'TANGGAL_SAMPAI',
+        'STATUS_RATING'
     ];
 
     protected $dates = [
@@ -32,5 +33,10 @@ class TransaksiPembelian extends Model
     public function pembeli()
     {
         return $this->belongsTo(Pembeli::class, 'ID_PEMBELI', 'ID_PEMBELI');
+    }
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
     }
 }

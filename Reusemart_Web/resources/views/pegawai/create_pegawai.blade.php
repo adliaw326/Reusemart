@@ -38,6 +38,16 @@
             height: 400px; /* Adjusts the height proportionally */
         }
     </style>
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'admin') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Include Header -->

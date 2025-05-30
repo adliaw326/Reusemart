@@ -8,14 +8,12 @@ class Alamat extends Model
 {
     protected $table = 'alamat'; // Nama tabel di database
     protected $primaryKey = 'ID_ALAMAT'; // Primary key
-    public $incrementing = false; // Karena ID_ALAMAT bukan auto-increment
     public $timestamps = false; // Tidak ada kolom created_at / updated_at
 
     protected $fillable = [
         'ID_PEMBELI',
         'ID_ORGANISASI',
         'ID_PENITIP',
-        'ID_ALAMAT',
         'LOKASI',
         'STATUS_DEFAULT',
     ];
@@ -30,4 +28,8 @@ class Alamat extends Model
         return $this->belongsTo(Organisasi::class, 'ID_ORGANISASI', 'ID_ORGANISASI');
     }
 
+    public function penitip()
+    {
+        return $this->belongsTo(Penitip::class, 'ID_PENITIP', 'ID_PENITIP');
+    }
 }

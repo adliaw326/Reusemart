@@ -13,15 +13,14 @@ class Penitip extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
-        'ID_PENITIP',
         'EMAIL_PENITIP',
         'PASSWORD_PENITIP',
         'NAMA_PENITIP',
         'NIK',
-        'ALAMAT_PENITIP',
         'NO_TELP_PENITIP',
         'RATING_RATA_RATA_P',
         'SALDO_PENITIP',
+        'POIN_PENITIP',
     ];
 
     protected $hidden = ['PASSWORD_PENITIP'];
@@ -29,5 +28,11 @@ class Penitip extends Authenticatable
     public function getAuthPassword()
     {
         return $this->PASSWORD_PENITIP;
+    }
+
+    public function alamatDefault()
+    {
+        return $this->hasOne(Alamat::class, 'ID_PENITIP', 'ID_PENITIP')
+                    ->where('STATUS_DEFAULT', 1);
     }
 }

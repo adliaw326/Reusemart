@@ -170,7 +170,7 @@
             // Arahkan ke dashboard sesuai role
             switch (result.role) {
                 case 'admin':
-                    window.location.href = '/dashboard/admin';
+                    window.location.href = '/admin/dashboard';
                     break;
                 case 'cs':
                     window.location.href = '/kelola_penitip';

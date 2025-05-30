@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pegawai;
-use App\Models\Produk;
-use App\Models\Penitip;
 
 class DashboardAdminController extends Controller
 {
@@ -12,11 +10,7 @@ class DashboardAdminController extends Controller
     {
         $data = [
             'totalPegawai' => Pegawai::count(),
-            'totalProduk'  => Produk::count(),
-            'totalPenitip' => Penitip::count(),
             'pegawai'      => Pegawai::all(),
-            'produk'       => Produk::all(),
-            'penitip'      => Penitip::all(),
         ];
 
         return view('admin.dashboard', $data);
