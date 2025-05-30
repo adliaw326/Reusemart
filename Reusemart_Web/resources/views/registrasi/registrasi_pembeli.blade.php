@@ -106,7 +106,7 @@
             </form>
 
             <div class="register-link mt-3 text-center" style="color:#013c58;">
-                Sudah punya akun? <a href="#" style="color:#00537a; text-decoration:none;">Login</a>
+                Sudah punya akun? <a href="/login" style="color:#00537a; text-decoration:none;">Login</a>
             </div>
         </div>
     </div>
@@ -155,7 +155,7 @@
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/pembeli/register', {
+            const response = await fetch('/api/pembeli/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,8 +174,7 @@
             showNotification('Pendaftaran sukses', 'success');
 
             setTimeout(() => {
-                console.log('Redirecting now...');
-                window.location.href = window.location.origin + '/login';
+                window.location.href = '/login';
             }, 1000);
         } catch (error) {
             console.error(error);

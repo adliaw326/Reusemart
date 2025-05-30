@@ -96,7 +96,7 @@
                 <button type="submit" class="btn w-100" style="background:#013c58; color:#fff;">Register</button>
             </form>
             <div class="register-link mt-3 text-center" style="color:#013c58;">
-                Sudah punya akun? <a href="#" style="color:#00537a;text-decoration:none;">Login</a>
+                Sudah punya akun? <a href="/login" style="color:#00537a;text-decoration:none;">Login</a>
             </div>
         </div>
     </div>
@@ -161,9 +161,10 @@
             showNotification('Pendaftaran sukses', 'success');
             form.reset();
 
-            // setTimeout(() => {
-            //     window.location.href = '/login';
-            // }, 1000);
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1000);
+
         } catch (error) {
             console.error(error);
             showNotification('Pendaftaran gagal', 'error');

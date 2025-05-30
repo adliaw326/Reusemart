@@ -11,7 +11,7 @@
     <style>
         body {
             min-height: 100vh;
-            background: #fff; /* Background putih */
+            background: #fff;
         }
         .header {
             width: 100%;
@@ -35,7 +35,7 @@
             width: 100%;
         }
         .form-control {
-            background-color: #fffaec; /* Warna input menyesuaikan tema kuning muda */
+            background-color: #fffaec;
             border: 1px solid #f5a201;
             color: #0b1e33;
         }
@@ -72,26 +72,52 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        Reusemart
-    </div>
+    <div class="header">Reusemart</div>
+
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="login-container">
             <h2 class="mb-4 text-center" style="color:#0b1e33;">Ubah Password</h2>
-            <form method="POST" action="{{ route('password.update') }}">
+
+            {{-- Alert status atau error dari session --}}
+            @if(session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+
+            {{-- Validasi error --}}
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('reset.password.update') }}">
                 @csrf
+
+                {{-- hidden input untuk email --}}
+                <input type="hidden" name="email" value="{{ request()->query('email') }}">
+
                 <div class="mb-3 text-start">
-                    <label for="new_password" class="form-label" style="color:#013c58;">Password Baru</label>
-                    <input type="password" class="form-control" name="new_password" id="new_password" placeholder="Masukkan password baru" required>
+                    <label for="password" class="form-label" style="color:#013c58;">Password Baru</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan password baru" required>
                 </div>
+
                 <div class="mb-3 text-start">
-                    <label for="confirm_password" class="form-label" style="color:#013c58;">Konfirmasi Password</label>
-                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Konfirmasi password baru" required>
+                    <label for="password_confirmation" class="form-label" style="color:#013c58;">Konfirmasi Password</label>
+                    <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Konfirmasi password baru" required>
                 </div>
+
                 <button type="submit" class="btn w-100" style="background:#013c58; color:#fff;">Ubah Password</button>
-            </form> 
+            </form>
         </div>
     </div>
+
     <div class="footer">
         <div class="sosmed mb-2">
             <a href="https://www.instagram.com/accounts/login/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
@@ -103,52 +129,7 @@
             &copy; 2025 Barang Bekas Murah, semua hak dilindungi
         </div>
     </div>
-    <!-- Bootstrap 5 JS Bundle -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    const form = document.getElementById('resetPasswordForm');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const new_password = document.getElementById('new_password').value;
-        const confirm_password = document.getElementById('confirm_password').value;
-
-        if (new_password !== confirm_password) {
-        alert('Password dan konfirmasi harus sama!');
-        return;
-        }
-
-        if (!email) {
-            alert('Email tidak ditemukan di URL');
-            return;
-        }
-
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const email = urlParams.get('email');
-
-        // Kirim ke backend API
-        try {
-        const response = await fetch('http://127.0.0.1:8000/api/ubah-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json','Accept' : 'application/json' },
-            body: JSON.stringify({ new_password, email /* dan token/email jika perlu */ }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert('Password berhasil diubah!');
-            // Bisa redirect ke halaman login misal:
-            window.location.href = 'http://localhost:8001/login';
-        } else {
-            alert(data.message || 'Gagal mengubah password');
-        }
-        } catch (err) {
-        alert('Terjadi kesalahan jaringan');
-        console.error(err);
-        }
-    });
-    </script>
 </body>
 </html>

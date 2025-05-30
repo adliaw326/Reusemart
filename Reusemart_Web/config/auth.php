@@ -36,31 +36,24 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-        'api' => [
+        'penitip' => [
             'driver' => 'sanctum',
-            'provider' => 'users',
-        ],
-        'pegawai' => [
-            'driver' => 'session',
-            'provider' => 'pegawai',
-        ],
-        'organisasi' => [
-            'driver' => 'session',
-            'provider' => 'organisasi',
+            'provider' => 'penitips',
         ],
         'pembeli' => [
-            'driver' => 'session',
-            'provider' => 'pembeli',
+            'driver' => 'sanctum',
+            'provider' => 'pembelis',
         ],
-        'penitip' => [
-            'driver' => 'session',
-            'provider' => 'penitip',
+        'organisasi' => [
+            'driver' => 'sanctum',
+            'provider' => 'organisasis',
+        ],
+        'pegawai' => [
+            'driver' => 'sanctum',
+            'provider' => 'pegawais',
         ],
     ],
+
 
 
     /*
@@ -81,28 +74,24 @@ return [
     */
 
     'providers' => [
-        'pegawai' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Pegawai::class,
-        ],
-        'organisasi' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Organisasi::class,
-        ],
-        'pembeli' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Pembeli::class,
-        ],
-        'penitip' => [
+        'penitips' => [
             'driver' => 'eloquent',
             'model' => App\Models\Penitip::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'pembelis' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Pembeli::class,
+        ],
+        'organisasis' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Organisasi::class,
+        ],
+        'pegawais' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Pegawai::class,
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
