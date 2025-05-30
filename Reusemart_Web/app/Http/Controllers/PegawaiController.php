@@ -14,25 +14,26 @@ class PegawaiController extends Controller
         return response()->json(Pegawai::all());
     }
 
-    public function create()
-    {
-        // Ambil pegawai terakhir berdasarkan ID_PEGAWAI
-        $lastPegawai = Pegawai::orderBy('ID_PEGAWAI', 'desc')->first();
+public function create()
+{
+    // Ambil pegawai terakhir berdasarkan ID_PEGAWAI
+    $lastPegawai = Pegawai::orderBy('ID_PEGAWAI', 'desc')->first();
 
-        if ($lastPegawai) {
-            $lastId = $lastPegawai->ID_PEGAWAI;
-            $num = (int)substr($lastId, 1); // Ambil angka setelah "P"
-            $num++;
-            $newId = 'P' . str_pad($num, 2, '0', STR_PAD_LEFT); // Format ke P01, P02, dst
-        } else {
-            $newId = 'P01';
-        }
-
-        // Ambil semua role untuk dropdown
-        $roles = RolePegawai::all();
-
-        return view('pegawai.create_pegawai', compact('newId', 'roles'));
+    if ($lastPegawai) {
+        $lastId = $lastPegawai->ID_PEGAWAI;
+        $num = (int)$lastId; // Ambil angka langsung tanpa "P"
+        $num++; // Increment angka ID
+        $newId = $num; // Gunakan angka saja, tanpa format "P"
+    } else {
+        $newId = 1; // Mulai dari 1 jika belum ada pegawai
     }
+
+    // Ambil semua role untuk dropdown
+    $roles = RolePegawai::all();
+
+    return view('pegawai.create_pegawai', compact('newId', 'roles'));
+}
+
 
     // Simpan pegawai baru
     public function store(Request $request)

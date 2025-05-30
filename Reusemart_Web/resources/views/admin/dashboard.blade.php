@@ -116,6 +116,16 @@
         }
 
     </style>
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'admin') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Sidebar -->
@@ -131,12 +141,6 @@
             <!-- Updated link to direct to the 'create_pegawai' page -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('pegawai/create') }}">Tambah Pegawai</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Tambah Produk</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Tambah Penitip</a>
             </li>
         </ul>
     </div>
@@ -157,22 +161,6 @@
                         <div class="card-body">
                             <h5 class="card-title">Total Pegawai</h5>
                             <p class="card-text">{{ $pegawai->count() }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Produk</h5>
-                            <p class="card-text">{{ $produk->count() }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Penitip</h5>
-                            <p class="card-text">{{ $penitip->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -212,70 +200,6 @@
                     @endforeach
                 </tbody>
             </table>
-
-            <!-- Tabel Produk -->
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nama Produk</th>
-                        <th>Kategori</th>
-                        <th>Berat</th>
-                        <th>Harga</th>
-                        <th>Garansi</th>
-                        <th>Rating</th>
-                        <th>Option</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($produk as $produk)
-                    <tr>
-                        <td>{{ $produk->NAMA_PRODUK }}</td>
-                        <td>{{ $produk->KATEGORI }}</td>
-                        <td>{{ $produk->BERAT }}</td>
-                        <td>{{ $produk->HARGA }}</td>
-                        <td>{{ $produk->GARANSI }}</td>
-                        <td>{{ $produk->RATING }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm">Edit</button>
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-        <!-- Tabel Penitip -->
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Email Penitip</th>
-                    {{-- <th>Password Penitip</th>  --}} {{-- Jangan tampilkan password --}}
-                    <th>Nama Penitip</th>
-                    <th>NIK</th>
-                    <th>Rating Rata-Rata Penitip</th>
-                    <th>Option</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($penitip as $pt)
-                <tr>
-                    <td>{{ $pt->EMAIL_PENITIP }}</td>
-                    <td>{{ $pt->NAMA_PENITIP }}</td>
-                    <td>{{ $pt->NIK }}</td>
-                    <td>{{ $pt->RATING_RATA_RATA_P }}</td>
-                    <td>
-                        <a href="{{ url('penitip/update/'.$pt->ID_PENITIP) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ url('penitip/delete/'.$pt->ID_PENITIP) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus?')">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
     </div>
 
     <!-- Include Footer -->

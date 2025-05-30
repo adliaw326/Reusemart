@@ -57,4 +57,19 @@ class Produk extends Model
     {
         return $this->hasMany(TransaksiPenitipan::class, 'KODE_PRODUK', 'KODE_PRODUK');
     }
+
+    public function transaksiPembelian()
+    {
+        return $this->hasMany(TransaksiPembelian::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
+    }
+
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class, 'KODE_PRODUK', 'KODE_PRODUK');
+    }
+
+    public function isInKeranjangBy($pembeliId)
+    {
+        return $this->keranjang->contains('ID_PEMBELI', $pembeliId);
+    }
 }

@@ -30,17 +30,10 @@ class PembeliController extends Controller
         ], 422);
     }
 
-    $lastPembeli = Pembeli::orderBy('ID_PEMBELI', 'desc')->first();
-
-    if ($lastPembeli) {
-        $lastIdNumber = intval(substr($lastPembeli->ID_PEMBELI, 2));
-        $newIdNumber = $lastIdNumber + 1;
-    } else {
-        $newIdNumber = 1; // Jika belum ada data, mulai dari 1
+    $newId = Pembeli::max('ID_PEMBELI') + 1;
+    if (!$newId) {
+        $newId = 1; // If no records exist, start with ID 1
     }
-
-    $newId = 'PB' . str_pad($newIdNumber, 3, '0', STR_PAD_LEFT);
-
     $pembeli = Pembeli::create([  
         'ID_PEMBELI' => $newId,
         'EMAIL_PEMBELI' => $request->email,
@@ -48,13 +41,11 @@ class PembeliController extends Controller
         'PASSWORD_PEMBELI' => Hash::make($request->password),
         'POIN_PEMBELI' => 0,
     ]);
-
-    $token = $pembeli->createToken('api-token')->plainTextToken;
+     
 
     return response()->json([
         'message' => 'Pembeli berhasil ditambahkan',
-        'data' => $pembeli,
-        'token' => $token
+        'data' => $pembeli
     ]);
 }
 
