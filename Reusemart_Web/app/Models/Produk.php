@@ -72,5 +72,4 @@ class Produk extends Model
     {
         return $this->keranjang->contains('ID_PEMBELI', $pembeliId);
     }
-
 }
