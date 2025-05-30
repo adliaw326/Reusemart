@@ -27,6 +27,10 @@ Route::get('/create_penitip', function () {
     return view('penitip.create_penitip');
 })->name('createPenitip');
 
+Route::get('/update_penitip/{id}', function ($id) {
+    return view('penitip.update_penitip', ['id_penitip' => $id]);
+})->name('updatePenitip');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 
 
@@ -41,7 +45,7 @@ Route::put('/produk/{id}', [ProdukController::class, 'update']);
 // Route to delete a product
 Route::delete('/produk/{id}', [ProdukController::class, 'destroy']);
 
-Route::get('/admin/dashboard', [DashboardController::class, 'index']);
+Route::get('/admin/dashboard', [DashboardAdminController::class, 'index']);
 
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
 Route::post('/pegawai/store', [PegawaiController::class, 'store'])->name('pegawai.store');
