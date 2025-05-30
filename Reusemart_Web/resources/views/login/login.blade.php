@@ -93,7 +93,7 @@
         @endif
     </div>
     <div class="header d-flex align-items-center" style="gap:12px; padding:0; height:60px;">
-        <a class="navbar-brand ms-3 d-flex align-items-center" href="{{ url('/home') }}" style="height:200px;">
+        <a class="navbar-brand ms-3 d-flex align-items-center" href="{{ url('/show') }}" style="height:200px;">
             <img src="{{ asset('icon/logo.webp') }}" alt="Barang Bekas Murah Logo" style="max-height:200px; height:200px;">
         </a>
     </div>

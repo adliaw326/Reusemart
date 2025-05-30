@@ -9,6 +9,7 @@ use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\UserDataController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -19,7 +20,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip', [PenitipPegawaiController::class, 'index']);
-
+    Route::post('/get-user-data', [UserDataController::class, 'getUserData']);
     Route::get('/penitip/search', [PenitipPegawaiController::class, 'search']);
     Route::post('/penitip/create', [PenitipPegawaiController::class, 'store']);
     Route::get('/penitip/{id}', [PenitipPegawaiController::class, 'show']);
