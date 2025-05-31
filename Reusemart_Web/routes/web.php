@@ -108,6 +108,8 @@ Route::post('/pegawai_gudang/store_transaksi_penitipan', [TransaksiPenitipanCont
 Route::get('/pegawai_gudang/show_transaksi_penitipan', [TransaksiPenitipanController::class, 'index2'])->name('pegawai_gudang.show_transaksi_penitipan');
 Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'update_transaksi_penitipan'])->name('pegawai_gudang.update_transaksi_penitipan');
 Route::delete('/pegawai_gudang/delete/{id}', [TransaksiPenitipanController::class, 'delete'])->name('pegawai_gudang.delete_transaksi_penitipan');
+Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'edit'])->name('pegawai_gudang.edit_transaksi_penitipan');
+Route::put('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'update'])->name('pegawai_gudang.update_transaksi_penitipan');
 
 //admin
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');

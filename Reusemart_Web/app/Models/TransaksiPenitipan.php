@@ -8,7 +8,7 @@ class TransaksiPenitipan extends Model
 {
     protected $table = 'transaksi_penitipan';
     protected $primaryKey = 'ID_PENITIPAN';
-    public $incrementing = false; // Karena ID_PENITIPAN string kustom (misal TPN001)
+    public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [
