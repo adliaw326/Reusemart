@@ -63,7 +63,7 @@
         <div class="mb-3 text-center">
             <a href="{{ route('produk.create_produk') }}" class="btn btn-primary">Tambah Produk</a>
         </div>
-        
+
         <!-- Tabel Produk -->
         <table class="table table-striped">
             <thead>

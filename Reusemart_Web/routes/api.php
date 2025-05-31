@@ -10,6 +10,8 @@ use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\UserDataController;
+use App\Http\Controllers\TransaksiPenitipanController;
+use App\Http\Controllers\ProdukPenitipanController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -26,6 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip/{id}', [PenitipPegawaiController::class, 'show']);
     Route::put('/penitip/{id}', [PenitipPegawaiController::class, 'update']);
     Route::delete('/penitip/{id}', [PenitipPegawaiController::class, 'destroy']);
+    Route::post('/transaksi-penitipan-berlangsung', [TransaksiPenitipanController::class, 'getTransaksiBerlangsung']);
+    Route::post('/perpanjang-penitipan', [TransaksiPenitipanController::class, 'perpanjangWaktu']);
+    Route::post('/ambil-penitipan', [TransaksiPenitipanController::class, 'ambilPenitipan']);
+    Route::post('/produk-by-penitipan', [ProdukPenitipanController::class, 'detailByPenitipan']);
 });
 
 // ORGANISASI

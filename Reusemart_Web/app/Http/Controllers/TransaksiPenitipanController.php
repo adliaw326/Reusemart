@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\TransaksiPenitipan;
 use App\Models\Produk;
 use App\Models\KategoriProduk;
 use App\Models\Penitip;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class TransaksiPenitipanController extends Controller
 {
@@ -146,5 +149,81 @@ class TransaksiPenitipanController extends Controller
 
         // Redirect to show all transactions or any page you want
         return redirect()->route('pegawai_gudang.show_transaksi_penitipan')->with('success', 'Transaksi Penitipan berhasil ditambahkan!');
+    }
+
+    public function getTransaksiBerlangsung(Request $request)
+    {
+        $userId = $request->input('userId');
+
+        if (!$userId) {
+            return response()->json(['error' => 'User ID dibutuhkan'], 400);
+        }
+
+        $transaksi = TransaksiPenitipan::with('produk')
+            ->where('ID_PENITIP', $userId)
+            ->whereIn('STATUS_PENITIPAN', ['Berlangsung', 'Akan Diambil'])
+            ->orderBy('TANGGAL_PENITIPAN', 'asc')
+            ->get();
+
+        return response()->json($transaksi);
+    }
+
+    // TransaksiController.php
+    public function perpanjangWaktu(Request $request)
+    {
+        $id = $request->input('id_penitipan');
+        $transaksi = TransaksiPenitipan::find($id);
+
+        if (!$transaksi) {
+            return response()->json(['error' => 'Transaksi tidak ditemukan.'], 404);
+        }
+
+        if ($transaksi->STATUS_PENITIPAN !== 'Berlangsung') {
+            return response()->json(['error' => 'Hanya transaksi dengan status "Berlangsung" yang bisa diperpanjang'], 400);
+        }
+
+        if ($transaksi->STATUS_PERPANJANGAN !== null) {
+            return response()->json(['error' => 'Transaksi sudah diperpanjang.'], 400);
+        }
+
+        $transaksi->TANGGAL_EXPIRED = \Carbon\Carbon::parse($transaksi->TANGGAL_EXPIRED)->addDays(30);
+        $transaksi->STATUS_PERPANJANGAN = 'Sudah';
+        $transaksi->save();
+
+        return response()->json(['message' => 'Berhasil diperpanjang.']);
+    }
+
+    public function ambilPenitipan(Request $request)
+    {
+        $id = $request->input('id_penitipan');
+
+        $penitipan = TransaksiPenitipan::find($id);
+        if (!$penitipan) {
+            return response()->json(['error' => 'Data tidak ditemukan'], 404);
+        }
+
+        if ($penitipan->STATUS_PENITIPAN !== 'Berlangsung') {
+            return response()->json(['error' => 'Hanya transaksi dengan status "Berlangsung" yang bisa diambil'], 400);
+        }
+
+        $penitipan->STATUS_PENITIPAN = 'Akan Diambil';
+        $penitipan->save();
+
+        return response()->json(['message' => 'Status berhasil diubah menjadi Akan Diambil']);
+    }
+
+    public function markAsTaken($id)
+    {
+        $transaksi = TransaksiPenitipan::findOrFail($id);
+
+        if ($transaksi->STATUS_PENITIPAN !== 'Akan Diambil') {
+            return redirect()->back()->with('error', 'Status bukan "Akan Diambil".');
+        }
+
+        $transaksi->STATUS_PENITIPAN = 'Sudah Diambil';
+        $transaksi->TANGGAL_DIAMBIL = Carbon::now(); // gunakan Carbon untuk sysdate
+        $transaksi->save();
+
+        return redirect()->back()->with('success', 'Transaksi berhasil ditandai sebagai sudah diambil.');
     }
 }

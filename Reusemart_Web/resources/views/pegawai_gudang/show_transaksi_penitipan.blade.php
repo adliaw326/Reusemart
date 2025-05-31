@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semua Transaksi Penitipan</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp">
 
     <style>
         table {
@@ -45,10 +46,15 @@
 <body>
     <!-- Include Header -->
     @include('outer.header')
-    
+
     <div class="container">
         <h1 class="text-center">Daftar Semua Transaksi Penitipan</h1>
-
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
         <!-- Green Button to Products Page -->
         <div class="mb-3 text-center">
             <a href="{{ route('pegawai_gudang.show_produk') }}" class="btn btn-success">Produk</a>
@@ -74,6 +80,7 @@
                     <th>Penitip</th>
                     <th>Tanggal Penitipan</th>
                     <th>Status</th>
+                    <th>Tanggal Diretur</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -86,15 +93,24 @@
                     <td>{{ $transaction->penitip->NAMA_PENITIP ?? 'Tidak Ditemukan' }}</td>
                     <td>{{ $transaction->TANGGAL_PENITIPAN }}</td>
                     <td>{{ $transaction->STATUS_PENITIPAN }}</td>
+                    <td>{{ $transaction->TANGGAL_DIAMBIL ?? 'Belum Ada'}}</td>
                     <td>
-                        <!-- Edit and Delete Actions -->
                         <div class="btn-group" style="width: 100%;">
                             <a href="{{ route('pegawai_gudang.update_transaksi_penitipan', $transaction->ID_PENITIPAN) }}" class="btn btn-warning">Update</a>
+
                             <form action="{{ route('pegawai_gudang.delete_transaksi_penitipan', $transaction->ID_PENITIPAN) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+
+                            @if ($transaction->STATUS_PENITIPAN == 'Akan Diambil')
+                                <form action="{{ route('pegawai_gudang.mark_as_taken', $transaction->ID_PENITIPAN) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah produk ini sudah diambil?');">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-success">Diambil</button>
+                                </form>
+                            @endif
                         </div>
                     </td>
                 </tr>

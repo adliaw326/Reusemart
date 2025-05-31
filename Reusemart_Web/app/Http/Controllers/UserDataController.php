@@ -16,8 +16,13 @@ class UserDataController extends Controller
         $userId = $request->input('userId');
 
         switch($role) {
-            case 'pegawai':
-                $data = Pegawai::select('ID_ROLE', 'NAMA_PEGAWAI', 'EMAIL_PEGAWAI', 'TANGGAL_LAHIR')
+            case 'cs':
+            case 'owner':
+            case 'hunter':
+            case 'kurir':
+            case 'admin':
+            case 'pegawai_gudang':
+                $data = Pegawai::select('ID_ROLE', 'NAMA_PEGAWAI', 'EMAIL_PEGAWAI', 'TANGGAL_LAHIR_PEGAWAI')
                     ->where('ID_PEGAWAI', $userId) // sesuaikan nama kolom PK
                     ->first();
                 break;

@@ -38,6 +38,10 @@ Route::get('/history/pembelian', function () {
     return view('pembeli.history_pembelian');
 })->name('historyPembelian');
 
+Route::get('/penitip/penitipan', function () {
+    return view('transaksi_penitipan_penitip.show_penitipan');
+})->name('showPenitipan');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 //KEVIN===============================================================================================================
 
@@ -64,12 +68,9 @@ Route::post('/reset-password-customer', [LoginController::class, 'updatePassword
 
     //profile penitip
 Route::get('/profile/penitip', function () {
-    $penitip = auth()->user();
-    if(!$penitip) {
-        $penitip = Penitip::find(1); // Default to first penitip if no user is authenticated
-    }
-    return view('penitip.profile_penitip', ['penitip' => $penitip]);
-});
+    return view('penitip.profile_penitip');
+})->name('profilePenitip');
+
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
 
@@ -86,7 +87,7 @@ Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('
 
 //RAFI===============================================================================================================
 
-//produk 
+//produk
 Route::get('/', [TransaksiPenitipanController::class, 'index']);
 Route::get('/show', [TransaksiPenitipanController::class, 'index']);
 Route::get('/produk/{kode_produk}', [ProdukController::class, 'show']);
@@ -108,6 +109,7 @@ Route::post('/pegawai_gudang/store_transaksi_penitipan', [TransaksiPenitipanCont
 Route::get('/pegawai_gudang/show_transaksi_penitipan', [TransaksiPenitipanController::class, 'index2'])->name('pegawai_gudang.show_transaksi_penitipan');
 Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'update_transaksi_penitipan'])->name('pegawai_gudang.update_transaksi_penitipan');
 Route::delete('/pegawai_gudang/delete/{id}', [TransaksiPenitipanController::class, 'delete'])->name('pegawai_gudang.delete_transaksi_penitipan');
+Route::put('/transaksi-penitipan/{id}/diambil', [TransaksiPenitipanController::class, 'markAsTaken'])->name('pegawai_gudang.mark_as_taken');
 
 //admin
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
