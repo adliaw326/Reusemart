@@ -19,6 +19,6 @@ class KategoriProduk extends Model
     // Relasi ke produk jika ada (opsional)
     public function produk()
     {
-        return $this->hasMany(Produk::class, 'ID_KATEGORI', 'ID_KATEGORI');
+        return $this->hasMany(Produk::class, 'ID_KATEGORI');
     }
 }
