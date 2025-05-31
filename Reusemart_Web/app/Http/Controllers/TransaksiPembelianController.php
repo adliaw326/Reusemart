@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\TransaksiPembelian;
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use App\Models\TransaksiPenitipan;
+use App\Models\Penitip;
 
 class TransaksiPembelianController extends Controller
 {
@@ -118,8 +120,14 @@ public function rating(Request $request, $id)
     if ($produk) {
         // Mendapatkan rating produk yang sudah ada
         $currentRating = $produk->RATING;
+        
+        // Mendapatkan rating rata-rata produk
+        $currentAverageRating = $produk->RATING_RATA_RATA_P;
+        
+        // Mendapatkan total barang terjual produk
+        $currentTotalBarangTerjual = $produk->TOTAL_BARANG_TERJUAL;
 
-        // Menghitung rata-rata rating baru
+        // Menghitung rating baru dan rata-rata rating baru untuk produk
         $newRating = $request->input('rating');
         $averageRating = ($currentRating + $newRating) / 2;
 
@@ -127,18 +135,49 @@ public function rating(Request $request, $id)
         $produk->RATING = $averageRating;
         $produk->save();
 
-        // Update status rating transaksi menjadi 'SUDAH'
-        $transaksi->STATUS_RATING = 'SUDAH';
-        $transaksi->save();
+        // Temukan transaksi penitipan berdasarkan KODE_PRODUK yang menghubungkan produk dengan penitip
+        $transaksiPenitipan = TransaksiPenitipan::where('KODE_PRODUK', $produk->KODE_PRODUK)->first();
 
-        // Redirect kembali ke halaman history transaksi dengan pesan sukses
-        return redirect()->route('transaksi_pembelian.history')->with('success', 'Rating berhasil diberikan dan status rating diubah menjadi SUDAH!');
+        // Temukan penitip yang terkait dengan transaksi penitipan
+        if ($transaksiPenitipan) {
+            $penitip = Penitip::find($transaksiPenitipan->ID_PENITIP);
+
+            if ($penitip) {
+                // Jika TOTAL_BARANG_TERJUAL adalah NULL, langsung tambahkan rating rata-rata penitip
+                if (is_null($penitip->TOTAL_BARANG_TERJUAL)) {
+                    $penitip->RATING_RATA_RATA_P = $newRating;
+                    $penitip->TOTAL_BARANG_TERJUAL = 1;
+                } else {
+                    // Mendapatkan rating rata-rata penitip dan total barang terjual penitip
+                    $currentPenitipRating = $penitip->RATING_RATA_RATA_P;
+                    $currentPenitipTotalBarang = $penitip->TOTAL_BARANG_TERJUAL;
+
+                    // Menghitung rating rata-rata penitip yang baru
+                    $newPenitipTotalBarang = $currentPenitipTotalBarang + 1;
+                    $newPenitipRating = (($currentPenitipRating * $currentPenitipTotalBarang) + $newRating) / $newPenitipTotalBarang;
+
+                    // Update RATING_RATA_RATA_P dan TOTAL_BARANG_TERJUAL untuk penitip
+                    $penitip->RATING_RATA_RATA_P = $newPenitipRating;
+                    $penitip->TOTAL_BARANG_TERJUAL = $newPenitipTotalBarang;
+                }
+
+                // Simpan perubahan penitip
+                $penitip->save();
+
+                // Update status rating transaksi menjadi 'SUDAH'
+                $transaksi->STATUS_RATING = 'SUDAH';
+                $transaksi->save();
+
+                // Redirect kembali ke halaman history transaksi dengan pesan sukses
+                return redirect()->route('transaksi_pembelian.history')->with('success', 'Rating berhasil diberikan dan status rating diubah menjadi SUDAH!');
+            }
+        }
+
+        // Jika penitip tidak ditemukan
+        return redirect()->route('transaksi_pembelian.history')->with('error', 'Penitip tidak ditemukan!');
     }
 
     // Jika produk tidak ditemukan
     return redirect()->route('transaksi_pembelian.history')->with('error', 'Produk tidak ditemukan!');
 }
-
-
-
 }
