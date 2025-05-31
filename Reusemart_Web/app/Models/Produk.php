@@ -72,4 +72,9 @@ class Produk extends Model
     {
         return $this->keranjang->contains('ID_PEMBELI', $pembeliId);
     }
+
+    public function foto()
+    {
+        return $this->hasMany(FotoProduk::class, 'KODE_PRODUK', 'KODE_PRODUK');
+    }
 }
