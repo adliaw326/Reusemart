@@ -15,7 +15,6 @@ class Pembeli extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'ID_PEMBELI',
         'EMAIL_PEMBELI',
         'PASSWORD_PEMBELI',
         'NAMA_PEMBELI',

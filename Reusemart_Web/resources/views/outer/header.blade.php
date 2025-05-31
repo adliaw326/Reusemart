@@ -41,79 +41,123 @@
                     <a class="nav-link text-warning" href="{{ url('/') }}">Beranda</a>
                 </li>
                 <li class="nav-item mx-2">
-                    <!-- Updated link for Tentang Kami -->
                     <a class="nav-link text-warning" href="{{ url('/tentang-kami') }}">Tentang Kami</a>
                 </li>
                 <li class="nav-item mx-1" id="loginBtnNav">
                     <a href="{{ url('/login') }}" class="btn btn-outline-warning text-warning" style="transition: none;">Masuk</a>
                 </li>
                 <li class="nav-item mx-1" id="registerBtnNav">
-                    <a href="{{ url('/register') }}" class="btn btn-warning text-dark" style="transition: none;">Daftar</a>
+                    <a href="{{ url('/registrasi') }}" class="btn btn-warning text-dark" style="transition: none;">Daftar</a>
                 </li>
-                <li class="nav-item mx-1" id="userNameNav" style="display:none;">
+
+                <!-- User info and Logout (hidden by default) -->
+                <li class="nav-item mx-1" id="userNameNav" style="display:none; display: flex; align-items: center; gap: 8px;">
                     <a href="#" class="nav-link text-warning fw-bold" id="userNameText"></a>
+                    <button id="logoutBtn" class="btn btn-outline-warning btn-sm" style="height: 30px; line-height: 1; padding: 0 10px;">Logout</button>
                 </li>
-                <script>
-                    // Ambil nama dan tipe user dari sessionStorage
-                    const userName = sessionStorage.getItem('user_name');
-                    const userType = sessionStorage.getItem('user_type'); // Pastikan saat login, user_type juga disimpan
-
-                    if(userName) {
-                        const userNameText = document.getElementById('userNameText');
-                        let profileUrl = '#';
-                        if (userType === 'pembeli') profileUrl = '/profil_pembeli';
-                        else if (userType === 'penitip') profileUrl = '/profil_penitip';
-                        else if (userType === 'pegawai') profileUrl = '/profil_pegawai';
-                        else profileUrl = '#';
-
-                        userNameText.innerText = userName;
-                        userNameText.href = profileUrl;
-                        document.getElementById('userNameNav').style.display = 'block';
-                        document.getElementById('loginBtnNav').style.display = 'none';
-                        document.getElementById('registerBtnNav').style.display = 'none';
-                    }
-                </script>
             </ul>
             <script>
-                // Ambil tipe user dari sessionStorage
-                const userType = sessionStorage.getItem('user_type');
-                let userName = null;
-                let profileUrl = '#';
+                document.addEventListener('DOMContentLoaded', function () {
+                    fetchUserData();
+                });
 
-                if (userType === 'pembeli') {
-                    const pembeli = JSON.parse(sessionStorage.getItem('pembeli') || '{}');
-                    userName = pembeli.NAMA_PEMBELI;
-                    profileUrl = '/profile_pembeli';
-                } else if (userType === 'penitip') {
-                    const penitip = JSON.parse(sessionStorage.getItem('penitip') || '{}');
-                    userName = penitip.NAMA_PENITIP;
-                    profileUrl = '/profile_penitip';
-                } else if (userType === 'pegawai') {
-                    const pegawai = JSON.parse(sessionStorage.getItem('pegawai') || '{}');
-                    userName = pegawai.NAMA_PEGAWAI;
-                    profileUrl = '/profile_pegawai';
-                } else if (userType === 'organisasi') {
-                    const organisasi = JSON.parse(sessionStorage.getItem('organisasi') || '{}');
-                    userName = organisasi.NAMA_ORGANISASI;
-                    profileUrl = '/profile_organisasi';
-                } else if (userType === 'admin') {
-                    const pegawai = JSON.parse(sessionStorage.getItem('pegawai') || '{}');
-                    userName = pegawai.NAMA_PEGAWAI || 'Admin';
-                    profileUrl = '/profile_pegawai'; // atau buat /profile_admin jika ada
+                const logoutBtn = document.getElementById('logoutBtn');
+
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', function () {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('role');
+                        localStorage.removeItem('userId');
+
+                        document.getElementById('userNameNav').style.display = 'none';
+                        document.getElementById('loginBtnNav').style.display = 'inline-block';
+                        document.getElementById('registerBtnNav').style.display = 'inline-block';
+
+                        window.location.href = '/login';
+                    });
                 }
 
-                if (userName) {
-                    const userNameText = document.getElementById('userNameText');
-                    userNameText.innerText = userName;
-                    userNameText.href = profileUrl;
-                    document.getElementById('userNameNav').style.display = 'block';
-                    document.getElementById('loginBtnNav').style.display = 'none';
-                    document.getElementById('registerBtnNav').style.display = 'none';
+                async function fetchUserData() {
+                    const token = localStorage.getItem('token');
+                    const role = localStorage.getItem('role');
+                    const userId = localStorage.getItem('userId');
+
+                    // Jika belum login, tampilkan login & register, sembunyikan logout
+                    if (!token || !role || !userId) {
+                        document.getElementById('userNameNav').style.display = 'none';
+                        document.getElementById('loginBtnNav').style.display = 'inline-block';
+                        document.getElementById('registerBtnNav').style.display = 'inline-block';
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/api/get-user-data', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ role, userId })
+                        });
+
+                        if (!response.ok) {
+                            const error = await response.json();
+                            console.error('Gagal mengambil data user:', error);
+                            document.getElementById('userNameNav').style.display = 'none';
+                            document.getElementById('loginBtnNav').style.display = 'inline-block';
+                            document.getElementById('registerBtnNav').style.display = 'inline-block';
+                            return;
+                        }
+
+                        const data = await response.json();
+
+                        let userName = '';
+                        let profileLink = '';
+
+                        switch (role) {
+                            case 'pegawai':
+                                userName = data.NAMA_PEGAWAI;
+                                profileLink = '/profile/pegawai';
+                                break;
+                            case 'penitip':
+                                userName = data.NAMA_PENITIP;
+                                profileLink = '/profile/penitip';
+                                break;
+                            case 'pembeli':
+                                userName = data.NAMA_PEMBELI;
+                                profileLink = '/profile/pembeli';
+                                break;
+                            case 'organisasi':
+                                userName = data.NAMA_ORGANISASI;
+                                profileLink = '/profile/organisasi';
+                                break;
+                            default:
+                                console.error('Role tidak dikenali:', role);
+                                return;
+                        }
+
+                        // Update UI kalau user valid
+                        document.getElementById('userNameNav').style.display = 'flex';
+                        document.getElementById('loginBtnNav').style.display = 'none';
+                        document.getElementById('registerBtnNav').style.display = 'none';
+
+                        const userLink = document.getElementById('userNameText');
+                        userLink.textContent = userName;
+                        userLink.href = profileLink;
+
+                    } catch (err) {
+                        console.error('Error saat fetch user:', err);
+                        document.getElementById('userNameNav').style.display = 'none';
+                        document.getElementById('loginBtnNav').style.display = 'inline-block';
+                        document.getElementById('registerBtnNav').style.display = 'inline-block';
+                    }
                 }
             </script>
         </div>
     </div>
 </nav>
+
 <style>
 /* Responsive logo size */
 @media (max-width: 991.98px) {
