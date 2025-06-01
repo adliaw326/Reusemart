@@ -132,7 +132,7 @@ class ProdukController extends Controller
             'FOTO' => $fotoPath1,  // Menyimpan foto path pertama
         ]);
 
-        return response()->json(['message' => 'Produk berhasil ditambahkan', 'data' => $produk]);
+        return redirect()->route('pegawai_gudang.show_produk')->with('success', 'Produk berhasil dibuat!');
     }
 
     // public function update(Request $request, $id)
