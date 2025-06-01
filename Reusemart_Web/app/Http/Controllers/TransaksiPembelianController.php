@@ -336,6 +336,26 @@ class TransaksiPembelianController extends Controller
             $transaksi->TANGGAL_LUNAS = now(); // Set tanggal lunas ke waktu sekarang
             $transaksi->save();
 
+            ////////////////NOTIFFFFF
+            $idPembelian = $transaksi->ID_PEMBELIAN; // misal kolom id
+            $produkIds = Produk::where('ID_PEMBELIAN', $idPembelian)->pluck('id');
+
+            $idPenitips = TransaksiPenitipan::whereIn('KODE_PRODUK', $produkIds)
+                        ->pluck('ID_PENITIP')->unique();
+            
+            $tokens = Penitip::whereIn('id', $idPenitips)
+                      ->whereNotNull('fcm_token')
+                      ->pluck('fcm_token')->toArray();
+
+            if (!empty($tokens)) {
+                sendFcmNotification(
+                    $tokens,
+                    'Status Transaksi Update',
+                    'Barang Anda Sudah Terjual dan Sedang Disiapkan untuk Pengiriman',
+                    ['transaksi_id' => $transaksi->id]
+                );
+            }
+
             $totalHarga = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)
                 ->select(DB::raw('SUM(HARGA) as total'))
                 ->value('total');
