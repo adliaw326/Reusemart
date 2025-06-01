@@ -96,8 +96,7 @@
                 @foreach($kategori as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-4 category-item">
                     <div class="text-center">
-                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="category-image" data-category-id="{{ $item->ID_KATEGORI }}" alt="{{ $item->NAMA_KATEGORI }} Foto Thumbnail">
-
+                        <img src="{{ asset('foto_kategori/' . $item->ID_KATEGORI . '.jpg') }}" class="category-image" data-category-id="{{ $item->ID_KATEGORI }}" alt="{{ $item->NAMA_KATEGORI }} Foto Thumbnail">
                         <p class="category-title">{{ $item->NAMA_KATEGORI }}</p>
                     </div>
                 </div>
@@ -112,7 +111,10 @@
                 @foreach($produk as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-3 product-item" data-category-id="{{ $item->ID_KATEGORI }}">
                     <a href="/produk/{{ $item->KODE_PRODUK }}" class="product-card h-100">
-                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" class="category-image" alt="{{ $item->KODE_PRODUK }} Foto Thumbnail">
+                        <div class="product-images">
+                            <!-- Display the first product image -->
+                            <img src="{{ asset('foto_produk/' . $item->KODE_PRODUK . '_1.jpg') }}" alt="Foto Produk 1" class="product-image">
+                        </div>
 
                         <div class="product-card-body">
                             <p class="product-card-title">{{ $item->NAMA_PRODUK }}</p>

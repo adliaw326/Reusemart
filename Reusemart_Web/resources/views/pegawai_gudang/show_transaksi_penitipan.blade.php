@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp">
 
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pegawai_gudang') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
+
     <style>
         table {
             border: 2px solid black;
@@ -80,6 +90,7 @@
                 <tr>
                     <th>ID Penitipan</th>
                     <th>Kode Produk</th>
+                    <th>Foto</th>
                     <th>Nama Produk</th>
                     <th>Penitip</th>
                     <th>Tanggal Penitipan</th>
@@ -93,6 +104,12 @@
                 <tr>
                     <td>{{ $transaction->ID_PENITIPAN }}</td>
                     <td>{{ $transaction->produk->KODE_PRODUK }}</td>
+                    <td>
+                        <div class="product-images">
+                            <img src="{{ asset('foto_produk/' . $transaction->produk->KODE_PRODUK . '_1.jpg') }}" alt="Foto Produk 1" class="product-image">
+                            <img src="{{ asset('foto_produk/' . $transaction->produk->KODE_PRODUK . '_2.jpg') }}" alt="Foto Produk 2" class="product-image">
+                        </div>
+                    </td>
                     <td>{{ $transaction->produk->NAMA_PRODUK }}</td>
                     <td>{{ $transaction->penitip->NAMA_PENITIP ?? 'Tidak Ditemukan' }}</td>
                     <td>{{ $transaction->TANGGAL_PENITIPAN }}</td>

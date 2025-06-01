@@ -18,6 +18,16 @@
             text-align: center;
         }
     </style>
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pegawai_gudang') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Include Header -->
@@ -27,7 +37,7 @@
         <h2 class="text-center">Create Produk</h2>
 
         <!-- Form untuk membuat produk baru -->
-        <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" id="produkForm">
             @csrf
             <div class="form-group">
                 <label for="KODE_PRODUK">Kode Produk:</label>
@@ -90,5 +100,17 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript untuk konfirmasi sebelum submit -->
+    <script>
+        document.getElementById('produkForm').addEventListener('submit', function(event) {
+            // Menampilkan alert konfirmasi
+            var confirmSubmit = confirm('Yakin ingin menambahkan produk?');
+            if (!confirmSubmit) {
+                // Membatalkan form submit jika user menekan Cancel
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

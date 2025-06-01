@@ -199,23 +199,34 @@
         @endif
 
         <div class="row product-detail-container">
-            <!-- Product Images -->
-            <div class="col-md-6 product-image-container">
-                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="https://placehold.co/400x400?text=Foto+Thumbnail" class="d-block w-100 rounded" alt="{{ $produk->NAMA_PRODUK }} Foto Thumbnail" />
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://placehold.co/400x400?text=Foto+2" class="d-block w-100 rounded" alt="{{ $produk->NAMA_PRODUK }} Foto 2" />
-                        </div>
-                    </div>
-                    <div class="carousel-indicators mt-3">
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active rounded-circle bg-dark" style="width:12px; height:12px;" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1" class="rounded-circle bg-dark" style="width:12px; height:12px;" aria-label="Slide 2"></button>
-                    </div>
+        <!-- Product Images -->
+        <div class="col-md-6 product-image-container">
+            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach(range(1, 2) as $index)
+                        @php
+                            $imagePath = asset('foto_produk/' . $produk->KODE_PRODUK . '_' . $index . '.jpg');
+                        @endphp
+                        @if (file_exists(public_path('foto_produk/' . $produk->KODE_PRODUK . '_' . $index . '.jpg')))
+                            <div class="carousel-item {{ $index === 1 ? 'active' : '' }}">
+                                <img src="{{ $imagePath }}" class="d-block w-100 rounded" alt="{{ $produk->NAMA_PRODUK }} Foto {{ $index }}" />
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+                <div class="carousel-indicators mt-3">
+                    @foreach(range(1, 2) as $index)
+                        @php
+                            $imagePath = asset('foto_produk/' . $produk->KODE_PRODUK . '_' . $index . '.jpg');
+                        @endphp
+                        @if (file_exists(public_path('foto_produk/' . $produk->KODE_PRODUK . '_' . $index . '.jpg')))
+                            <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="{{ $index - 1 }}" class="{{ $index === 1 ? 'active' : '' }} rounded-circle bg-dark" style="width:12px; height:12px;" aria-label="Slide {{ $index }}"></button>
+                        @endif
+                    @endforeach
                 </div>
             </div>
+        </div>
+
 
             <!-- Product Info -->
             <div class="col-md-6 product-info-container">
@@ -355,7 +366,7 @@
             @foreach($produk_lainnya as $item)
                 <div class="col-6 col-sm-4 col-md-2 col-lg-2 mb-3">
                     <a href="/produk/{{ $item->KODE_PRODUK }}" class="card product-card-custom text-decoration-none">
-                        <img src="https://placehold.co/200x200?text=Foto+Thumbnail" alt="{{ $item->NAMA_PRODUK }} Foto Thumbnail" />
+                        <img src="{{ asset('foto_produk/' . $item->KODE_PRODUK . '_1.jpg') }}" alt="Foto Produk 1" class="product-image">
                         <div class="card-body p-2">
                             <h5 class="product-card-title mb-1">{{ $item->NAMA_PRODUK }}</h5>
                             <p class="product-card-price mb-1">Rp {{ number_format($item->HARGA, 0, ',', '.') }}</p>
