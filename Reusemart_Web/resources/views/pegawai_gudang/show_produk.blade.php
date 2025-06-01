@@ -68,8 +68,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Foto</th>
                     <th>Kode Produk</th>
+                    <th>Foto</th>
                     <th>Nama Produk</th>
                     <th>Kategori</th>
                     <th>Harga</th>
@@ -82,6 +82,8 @@
             <tbody>
                 @foreach ($produk as $item)
                     <tr>
+                        <!-- Kolom Kode Produk dan Detail -->
+                        <td>{{ $item->KODE_PRODUK }}</td>
                         <!-- Kolom Foto -->
                         <td>
                             <div class="product-images">
@@ -89,9 +91,6 @@
                                 <img src="{{ asset('foto_produk/' . $item->KODE_PRODUK . '_2.jpg') }}" alt="Foto Produk 2" class="product-image">
                             </div>
                         </td>
-
-                        <!-- Kolom Kode Produk dan Detail -->
-                        <td>{{ $item->KODE_PRODUK }}</td>
                         <td>{{ $item->NAMA_PRODUK }}</td>
                         <td>{{ $item->KATEGORI }}</td>
                         <td>Rp {{ number_format($item->HARGA, 0, ',', '.') }} </td>
