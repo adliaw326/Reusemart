@@ -6,6 +6,16 @@
     <title>Update Produk</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pegawai_gudang') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
+
     <style>
         table {
             border: 2px solid black; /* Tabel dengan border hitam */
@@ -39,7 +49,7 @@
         <h2 class="text-center">Update Produk</h2>
 
         <!-- Form untuk mengupdate produk -->
-        <form action="{{ route('pegawai_gudang.update_produk', $produk->KODE_PRODUK) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('pegawai_gudang.update_produk', $produk->KODE_PRODUK) }}" method="POST" enctype="multipart/form-data" id="updateForm">
             @csrf
             @method('PUT')
             
@@ -55,7 +65,6 @@
 
             <div class="form-group">
                 <label for="KATEGORI">Kategori Produk:</label>
-
                 <select class="form-control" id="KATEGORI" name="ID_KATEGORI" required>
                     <option value="" disabled>Pilih Kategori</option>
                     @foreach($kategori as $kat)
@@ -110,5 +119,17 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript untuk konfirmasi sebelum submit -->
+    <script>
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            // Menampilkan alert konfirmasi
+            var confirmUpdate = confirm('Yakin ingin update barang ini?');
+            if (!confirmUpdate) {
+                // Membatalkan form submit jika user menekan Cancel
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

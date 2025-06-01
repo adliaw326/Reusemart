@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp">
 
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pegawai_gudang') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
+
     <style>
         table {
             border: 2px solid black;

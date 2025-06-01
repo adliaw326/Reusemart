@@ -18,6 +18,16 @@
             text-align: center;
         }
     </style>
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pegawai_gudang') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Include Header -->
@@ -26,7 +36,7 @@
     <div class="container mt-5">
         <h1 class="text-center">Tambah Transaksi Penitipan</h1>
 
-        <form action="{{ route('pegawai_gudang.store_transaksi_penitipan') }}" method="POST">
+        <form action="{{ route('pegawai_gudang.store_transaksi_penitipan') }}" method="POST" id="transaksiForm">
             @csrf
             <div class="form-group">
                 <label for="ID_PEGAWAI">ID Pegawai</label>
@@ -138,6 +148,16 @@
 
             document.getElementById("TANGGAL_EXPIRED").value = formattedDate;
         }
+
+        // JavaScript untuk konfirmasi sebelum submit
+        document.getElementById('transaksiForm').addEventListener('submit', function(event) {
+            // Menampilkan alert konfirmasi
+            var confirmSubmit = confirm('Yakin ingin tambahkan transaksi penitipan ini?');
+            if (!confirmSubmit) {
+                // Membatalkan form submit jika user menekan Cancel
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
