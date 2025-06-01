@@ -10,6 +10,10 @@ use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\PenitipController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\UserDataController;
+use App\Http\Controllers\AlamatController;
+use App\Http\Controllers\TransaksiPembelianController;
+use App\Http\Controllers\TransaksiPenitipanController;
+use App\Http\Controllers\ProdukPenitipanController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -26,6 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip/{id}', [PenitipPegawaiController::class, 'show']);
     Route::put('/penitip/{id}', [PenitipPegawaiController::class, 'update']);
     Route::delete('/penitip/{id}', [PenitipPegawaiController::class, 'destroy']);
+    Route::post('/transaksi-penitipan-berlangsung', [TransaksiPenitipanController::class, 'getTransaksiBerlangsung']);
+    Route::post('/perpanjang-penitipan', [TransaksiPenitipanController::class, 'perpanjangWaktu']);
+    Route::post('/ambil-penitipan', [TransaksiPenitipanController::class, 'ambilPenitipan']);
+    Route::post('/produk-by-penitipan', [ProdukPenitipanController::class, 'detailByPenitipan']);
 });
 
 // ORGANISASI
@@ -33,11 +41,19 @@ Route::post('/organisasi/register', [OrganisasiController::class, 'register']);
 
 //PEMBELI
 Route::post('/pembeli/register', [PembeliController::class, 'register']);
+Route::post('/pembeli/show/{id}', [PembeliController::class, 'show'])->name('pembeli.show');
 
     Route::post('/keranjang/store/{ID_PEMBELI}/{KODE_PRODUK}', [KeranjangController::class, 'store'])->name('keranjang.store');
     Route::delete('/keranjang/delete/{ID_PEMBELI}/{KODE_PRODUK}', [KeranjangController::class, 'destroy'])->name('keranjang.delete');
-Route::get('/keranjang/check/{ID_PEMBELI}/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
+    Route::get('/keranjang/check/{ID_PEMBELI}/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
+    Route::get('/keranjang/{idPembeli}', [KeranjangController::class, 'findByIdPembeli'])->name('keranjang.findByIdPembeli');
 
+//ALAMAT
+
+    Route::get('/alamat/{ID_PEMBELI}', [AlamatController::class, 'find'])->name('alamat.find');
+
+//TRANSAKSI PEMBELIAN
+Route::post('/transaksi-pembelian', [TransaksiPembelianController::class, 'store'])->name('transaksi-pembelian.store');
 // Route khusus PENITIP
 // Route::middleware(['auth:penitip'])->group(function () {
 //     Route::get('/penitip/profile', [PenitipController::class, 'profile']);

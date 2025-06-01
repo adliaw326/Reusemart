@@ -10,19 +10,21 @@ class TransaksiPembelian extends Model
 {
     protected $table = 'transaksi_pembelian'; // Nama tabel di database
     protected $primaryKey = 'ID_PEMBELIAN';
-    public $incrementing = false;
+    // public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
-        'ID_PEMBELIAN',
         'ID_PEMBELI',
         'STATUS_TRANSAKSI',
         'TANGGAL_PESAN',
         'TANGGAL_LUNAS',
         'TANGGAL_KIRIM',
         'TANGGAL_SAMPAI',
-        'STATUS_RATING'
+        'STATUS_RATING',
+        'STATUS_PENGIRIMAN',
+        'BUKTI_BAYAR',
+        'TOTAL_BAYAR'
     ];
 
     protected $dates = [

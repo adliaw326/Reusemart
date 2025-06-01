@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Keranjang;
+use App\Models\Produk;
 
 class KeranjangController extends Controller
 {
@@ -61,6 +62,18 @@ class KeranjangController extends Controller
                         ->exists();
 
         return response()->json(['exists' => $exists]);
+    }
+
+    public function findByIdPembeli($userId)
+    {
+        $keranjang = Keranjang::where('ID_PEMBELI', $userId)->with(['pembeli', 'produk'])->get();
+        if ($keranjang->isEmpty()) {
+            return response()->json(['message' => 'Keranjang tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'data' => $keranjang
+        ]);
     }
 
 }

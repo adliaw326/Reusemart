@@ -38,6 +38,10 @@ Route::get('/history/pembelian', function () {
     return view('pembeli.history_pembelian');
 })->name('historyPembelian');
 
+Route::get('/penitip/penitipan', function () {
+    return view('transaksi_penitipan_penitip.show_penitipan');
+})->name('showPenitipan');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 //KEVIN===============================================================================================================
 
@@ -64,12 +68,9 @@ Route::post('/reset-password-customer', [LoginController::class, 'updatePassword
 
     //profile penitip
 Route::get('/profile/penitip', function () {
-    $penitip = auth()->user();
-    if(!$penitip) {
-        $penitip = Penitip::find(1); // Default to first penitip if no user is authenticated
-    }
-    return view('penitip.profile_penitip', ['penitip' => $penitip]);
-});
+    return view('penitip.profile_penitip');
+})->name('profilePenitip');
+
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
 
@@ -81,12 +82,25 @@ Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('
     Route::post('/keranjang/store/{KODE_PRODUK}', [KeranjangController::class, 'store'])->name('keranjang.store');
     Route::delete('/keranjang/delete/{KODE_PRODUK}', [KeranjangController::class, 'delete'])->name('keranjang.delete');
     Route::get('/keranjang/check/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
+    // Route::get('/keranjang/{idPembeli}', [KeranjangController::class, 'findByIdPembeli'])->name('keranjang.findByIdPembeli');
+
+Route::get('/keranjang', function () {
+    return view('produk.keranjang');
+})->name('produk.keranjang');
+
+//PEMBELI
+
+Route::get('/pembeli/dashboard', function () {
+    return view('pembeli.dashboard');
+})->name('pembeli.dashboard');
+
+Route::get('/bukti-bayar/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('bukti.bayar');
 //KEVIN===============================================================================================================
 
 
 //RAFI===============================================================================================================
 
-//produk 
+//produk
 Route::get('/', [TransaksiPenitipanController::class, 'index']);
 Route::get('/show', [TransaksiPenitipanController::class, 'index']);
 Route::get('/produk/{kode_produk}', [ProdukController::class, 'show']);
@@ -110,6 +124,7 @@ Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipa
 Route::delete('/pegawai_gudang/delete/{id}', [TransaksiPenitipanController::class, 'delete'])->name('pegawai_gudang.delete_transaksi_penitipan');
 Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'edit'])->name('pegawai_gudang.edit_transaksi_penitipan');
 Route::put('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'update'])->name('pegawai_gudang.update_transaksi_penitipan');
+Route::put('/transaksi-penitipan/{id}/diambil', [TransaksiPenitipanController::class, 'markAsTaken'])->name('pegawai_gudang.mark_as_taken');
 
 //admin
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');

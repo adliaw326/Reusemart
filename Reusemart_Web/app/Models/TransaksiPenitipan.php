@@ -18,7 +18,9 @@ class TransaksiPenitipan extends Model
         'ID_PENITIP',
         'TANGGAL_PENITIPAN',
         'STATUS_PENITIPAN',
-        'TANGGAL_EXPIRED'
+        'TANGGAL_EXPIRED',
+        'STATUS_PERPANJANGAN',
+        'TANGGAL_DIAMBIL',
     ];
 
     protected $dates = [

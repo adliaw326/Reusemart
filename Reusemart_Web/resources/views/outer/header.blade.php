@@ -120,6 +120,10 @@
                                 userName = data.NAMA_PEGAWAI;
                                 profileLink = '/profile/pegawai';
                                 break;
+                            case 'pegawai_gudang':
+                                userName = data.NAMA_PEGAWAI;
+                                profileLink = '/profile/pegawai';
+                                break;
                             case 'penitip':
                                 userName = data.NAMA_PENITIP;
                                 profileLink = '/profile/penitip';
