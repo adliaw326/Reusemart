@@ -42,6 +42,14 @@ Route::get('/penitip/penitipan', function () {
     return view('transaksi_penitipan_penitip.show_penitipan');
 })->name('showPenitipan');
 
+Route::get('/pegawai_gudang/pilih_transaksi', function () {
+    return view('pegawai_gudang.show_pilih_transaksi');
+})->name('showPilihTransaksi');
+
+Route::get('/pegawai_gudang/show_transaksi_pembelian', function () {
+    return view('pegawai_gudang.show_transaksi_pembelian');
+})->name('showTransaksiPembelian');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 //KEVIN===============================================================================================================
 

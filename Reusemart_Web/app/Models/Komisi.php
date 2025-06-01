@@ -8,27 +8,23 @@ class Komisi extends Model
 {
     protected $table = 'komisi';
     protected $primaryKey = 'ID_KOMISI';
-    public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [
-        'ID_KOMISI',
         'ID_PEMBELIAN',
-        'ID_PENITIP',
-        'ID_PEGAWAI',
+        'KODE_PRODUK',
+        'KOMISI_REUSEMART',
+        'KOMISI_PENITIP',
+        'BONUS_PENITIP',
         'JUMLAH_KOMISI',
     ];
 
     // Opsional: relasi jika diperlukan
-    public function pegawai()
+    public function produk()
     {
-        return $this->belongsTo(Pegawai::class, 'ID_PEGAWAI', 'ID_PEGAWAI');
+        return $this->belongsTo(Produk::class, 'KODE_PRODUK', 'KODE_PRODUK');
     }
 
-    public function penitip()
-    {
-        return $this->belongsTo(Penitip::class, 'ID_PENITIP', 'ID_PENITIP');
-    }
 
     public function pembelian()
     {

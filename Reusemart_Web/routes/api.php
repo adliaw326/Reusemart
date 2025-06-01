@@ -14,6 +14,7 @@ use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenitipanController;
 use App\Http\Controllers\ProdukPenitipanController;
+use App\Http\Controllers\PegawaiController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -34,6 +35,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/perpanjang-penitipan', [TransaksiPenitipanController::class, 'perpanjangWaktu']);
     Route::post('/ambil-penitipan', [TransaksiPenitipanController::class, 'ambilPenitipan']);
     Route::post('/produk-by-penitipan', [ProdukPenitipanController::class, 'detailByPenitipan']);
+    Route::post('/transaksi-pembelian/disiapkan', [TransaksiPembelianController::class, 'showDisiapkan']);
+    Route::post('/transaksi-pembelian/dikirim', [TransaksiPembelianController::class, 'showDikirim']);
+    Route::post('/transaksi-pembelian/selesai', [TransaksiPembelianController::class, 'showSelesai']);
+    Route::post('/kirim-transaksi/{id}', [TransaksiPembelianController::class, 'prosesKirim']);
+    Route::get('/pegawai-by-role/{id_role}', [PegawaiController::class, 'getByRole']);
+    Route::post('/produk-by-pembelian', [TransaksiPembelianController::class, 'produkByPembelian']);
+    Route::post('/transaksi-pembelian/update-status', [TransaksiPembelianController::class, 'updateStatus']);
+
 });
 
 // ORGANISASI
