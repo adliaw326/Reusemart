@@ -54,6 +54,10 @@
             <a href="{{ route('pegawai_gudang.show_transaksi_penitipan') }}" class="btn btn-success">Transaksi Penitipan</a>
         </div>
 
+        <div class="mb-3 text-center">
+            <a href="{{ route('konfirmasi_pembelian') }}" class="btn btn-info">Konfirmasi Transaksi Pembelian</a>
+        </div>
+
         <!-- Search Bar -->
         <div class="mb-3">
             <input type="text" id="searchProduk" class="form-control" placeholder="Cari Produk...">

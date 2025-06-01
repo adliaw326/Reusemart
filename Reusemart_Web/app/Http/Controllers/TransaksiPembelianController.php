@@ -8,6 +8,8 @@ use App\Models\Produk;
 use App\Models\Pembeli;
 use App\Models\TransaksiPenitipan;
 use App\Models\Penitip;
+use App\Models\Alamat;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiPembelianController extends Controller
 {
@@ -30,6 +32,14 @@ class TransaksiPembelianController extends Controller
     public function store(Request $request)
     {
         // Validasi input
+        $alamat = Alamat::where('LOKASI', $request->ID_ALAMAT)->first();
+
+        if (!$alamat) {
+            return response()->json(['error' => 'Alamat tidak ditemukan'], 404);
+        }
+        $request->merge([
+            'ID_ALAMAT' => $alamat->ID_ALAMAT
+        ]);
         // dd($request->all());
         $validated = $request->validate([
             'ID_PEMBELI' => 'required|string',
@@ -41,33 +51,62 @@ class TransaksiPembelianController extends Controller
             'STATUS_RATING' => 'nullable|string',
             'STATUS_PENGIRIMAN' => 'nullable|string',
             'BUKTI_BAYAR' => 'nullable', // Validasi file bukti bayar
-            'TOTAL_BAYAR' => 'required|numeric'
+            'TOTAL_BAYAR' => 'required|numeric',
+            'POIN_DISKON' => 'required|integer',
+            'ID_ALAMAT' => 'nullable|integer',
         ]);
 
+
         $transaksi = TransaksiPembelian::create($validated);
+        if (!$transaksi) {
+            return redirect()->back()->with('error', 'TRANSASKIK GAGAL!');
+        }
 
         $pembeli = Pembeli::find($validated['ID_PEMBELI']);
-        if (!$pembeli) {
-            return redirect()->back()->with('error', 'Pembeli tidak ditemukan!');
-        }
-        $pembeli->POIN_PEMBELI = $request->SISA_POIN + $request->POIN_DIDAPAT; // Set POIN_PEMBELI jika ada, default 0
-        $pembeli->save();
+        // if (!$pembeli) {
+        //     return redirect()->back()->with('error', 'Pembeli tidak ditemukan!');
+        // }
+        // $pembeli->POIN_PEMBELI = $request->SISA_POIN + $request->POIN_DIDAPAT; // Set POIN_PEMBELI jika ada, default 0
+        // $pembeli->save();
 
-        //updet produk
-        // $produkList = $request->input('PRODUK');
+        // updet produk
+        $produkList = $request->input('PRODUK');
 
-        // // foreach ($produkList as $produk) {
-        // //     $produk->ID_PEMBELIAN = $transaksi->ID_PEMBELIAN; // Set ID_PEMBELIAN pada produk
-        // //     $produk->ID_PEMBELI = $pembeli->ID_PEMBELI; // Set ID_PEMBELI pada produk
-        // //     $produk->save(); // Simpan perubahan pada produk
-        // // }
+        // foreach ($produkList as $produk) {
+        //     $produk->ID_PEMBELIAN = $transaksi->ID_PEMBELIAN; // Set ID_PEMBELIAN pada produk
+        //     $produk->ID_PEMBELI = $pembeli->ID_PEMBELI; // Set ID_PEMBELI pada produk
+        //     $produk->save(); // Simpan perubahan pada produk
+        // }
 
 
         // Redirect ke halaman index dengan pesan sukses
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Transaksi Pembelian berhasil ditambahkan!',
+        //     'ID_PEMBELIAN' => $transaksi->ID_PEMBELIAN
+        // ]);
+        $ID_PEMBELI = $transaksi->ID_PEMBELI;
+        $NAMA_PEMBELI = $pembeli->NAMA_PEMBELI;
+        $ID_PEMBELIAN = $transaksi->ID_PEMBELIAN;
+        $TOTAL_BAYAR = $transaksi->TOTAL_BAYAR;
+        $SISA_POIN = $request->SISA_POIN;
+        $POIN_DIDAPAT = $request->POIN_DIDAPAT;
+        $PRODUK = $produkList;
+        $TRANSAKSI_PEMBELIAN = $transaksi;
+        $ID_ALAMAT = $request->ID_ALAMAT;
+        // dd($TRANSAKSI_PEMBELIAN);
+        $ID_TRANSAKSI_PEMBELIAN = $this->generateId($ID_PEMBELIAN);
+
         return response()->json([
-            'success' => true,
-            'message' => 'Transaksi Pembelian berhasil ditambahkan!',
-            'ID_PEMBELIAN' => $transaksi->ID_PEMBELIAN
+            'ID_PEMBELI' => $ID_PEMBELI,
+            'NAMA_PEMBELI' => $NAMA_PEMBELI,
+            'ID_PEMBELIAN' => $ID_PEMBELIAN,
+            'TRANSAKSI_PEMBELIAN' => $TRANSAKSI_PEMBELIAN,
+            'SISA_POIN' => $SISA_POIN,
+            'POIN_DIDAPAT' => $POIN_DIDAPAT,
+            'PRODUK' => $PRODUK,
+            'ID_ALAMAT' => $ID_ALAMAT,
+            'ID_TRANSAKSI_PEMBELIAN' => $ID_TRANSAKSI_PEMBELIAN,
         ]);
     }
 
@@ -108,6 +147,7 @@ class TransaksiPembelianController extends Controller
             'TANGGAL_LUNAS' => 'nullable|date',
             'TANGGAL_KIRIM' => 'nullable|date',
             'TANGGAL_SAMPAI' => 'nullable|date',
+            'ID_ALAMAT' => 'nullable|integer',
             'STATUS_RATING' => 'nullable|string',
         ]);
 
@@ -205,13 +245,154 @@ class TransaksiPembelianController extends Controller
     return redirect()->route('transaksi_pembelian.history')->with('error', 'Produk tidak ditemukan!');
 }
 
-    public function buktiBayar($id)
+    public function buktiBayar(Request $request, $id)
     {
+        // dd($request->all());
+        // Validasi file gambar bukti bayar
+        $request->validate([
+            'BUKTI_BAYAR' => 'required|image|max:2048', // maksimal 2MB
+        ]);
+
+        
+        
         $transaksi = TransaksiPembelian::findOrFail($id);
+        
+        if ($request->hasFile('BUKTI_BAYAR')) {
+            $file = $request->file('BUKTI_BAYAR');
+            
+            // Simpan file ke storage/app/public/bukti_bayar
+            $path = $file->store('bukti_bayar', 'public');
+            
+            // Simpan path ke database
+            $transaksi->BUKTI_BAYAR = $path;
+            $transaksi->STATUS_TRANSAKSI = 'MENUNGGU KONFIRMASI'; // Update status transaksi
+            $transaksi->TANGGAL_LUNAS = now(); // Set tanggal lunas ke waktu sekarang
+            $transaksi->save();
+        }
 
-        // Jika ingin juga ambil data relasi (misal produk), bisa gunakan with()
-        // $transaksi = TransaksiPembelian::with('produk')->findOrFail($id);
+        $produkList = json_decode($request->input('PRODUK'), true);
+        // dd($request);
+        if (is_array($produkList)) {
+            foreach ($produkList as $produk) {
+                // Contoh: menyimpan ke tabel detail_pembelian
+                $produkModel = Produk::find($produk['KODE_PRODUK']);
+                if ($produkModel) {
+                    // Contoh: update kolom TERJUAL
+                    $produkModel->ID_PEMBELIAN = $transaksi->ID_PEMBELIAN; // Set ID_PEMBELIAN pada produk
 
-        return view('produk.bukti_bayar', compact('transaksi'));
+                    // Contoh: update kolom STATUS jika null
+
+                    $produkModel->save();
+                }
+            }
+        }
+
+        // Kembalikan response JSON yang jelas
+        return response()->json([
+            'message' => 'Bukti bayar berhasil diupload',
+            'path' => $transaksi->BUKTI_BAYAR,
+        ]);
     }
+
+    public function generateId($idPembelian)
+    {
+        // Ambil tanggal sekarang atau tanggal lunas sesuai kebutuhan
+        $tanggalLunas = now(); // pakai Carbon bawaan Laravel
+
+        // Format tahun dan bulan
+        $tahun = $tanggalLunas->format('Y');   // contoh: 2025
+        $bulan = $tanggalLunas->format('m');   // contoh: 06
+
+        // Gabungkan jadi nomor nota: tahun.bulan.ID_PEMBELIAN
+        $nomorNota = $tahun . '.' . $bulan . '.' . $idPembelian;
+
+        return $nomorNota;
+    }
+
+    public function findKonfirmasi()
+    {
+        $data = TransaksiPembelian::where('STATUS_TRANSAKSI', 'MENUNGGU KONFIRMASI')->get([
+            'ID_PEMBELIAN', 'TOTAL_BAYAR', 'BUKTI_BAYAR','POIN_DISKON', 'ID_PEMBELI'
+        ]);
+
+        return response()->json($data);
+    }
+
+    public function konfirmasi($id)
+    {  
+        DB::beginTransaction();
+        try{
+            $transaksi = TransaksiPembelian::find($id);
+            if (!$transaksi) {
+                return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+            }
+
+            $transaksi->STATUS_TRANSAKSI = "DISIAPKAN";
+            $transaksi->TANGGAL_LUNAS = now(); // Set tanggal lunas ke waktu sekarang
+            $transaksi->save();
+
+            $totalHarga = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)
+                ->select(DB::raw('SUM(HARGA) as total'))
+                ->value('total');
+            // dd($totalHarga);
+
+            if($transaksi->POIN_DISKON > 0){
+                $pembeli = Pembeli::find($transaksi->ID_PEMBELI);
+                if ($pembeli) {
+                    // Update poin pembeli
+                    $poinDigunakan = $transaksi->POIN_DISKON;
+                    $sisaPoin = $pembeli->POIN_PEMBELI - $poinDigunakan;
+                    $hargaBayar = $transaksi->TOTAL_BAYAR - ($poinDigunakan * 100);         
+                    if($transaksi->STATUS_PENGIRIMAN == 'delivery' && $totalHarga < 1500000){
+                        $hargaBayar = $hargaBayar - 100000;
+                    }
+                    $hargaBayar = max($hargaBayar, 0); // HARGA UNTUK POIN                
+                    
+                    $bonusPoin = $hargaBayar > 500000 
+                        ? floor(($hargaBayar / 10000) * 1.2)
+                        : floor($hargaBayar / 10000);
+                    // dd($bonusPoin, $hargaBayar, $sisaPoin, $poinDigunakan, $pembeli->POIN_PEMBELI);
+                    $pembeli->POIN_PEMBELI = $sisaPoin + $bonusPoin;
+                    $pembeli->save();
+                    }
+            }else{
+                $pembeli = Pembeli::find($transaksi->ID_PEMBELI);
+                if ($pembeli) {
+                    $sisaPoin = $pembeli->POIN_PEMBELI;
+                    $hargaBayar = $transaksi->TOTAL_BAYAR;         
+                    if($transaksi->STATUS_PENGIRIMAN == 'delivery' && $totalHarga < 1500000){
+                        $hargaBayar = $hargaBayar - 100000;
+                    }
+                    $hargaBayar = max($hargaBayar, 0); // HARGA UNTUK POIN                
+                    
+                    $bonusPoin = $hargaBayar > 500000 
+                        ? floor(($hargaBayar / 10000) * 1.2)
+                        : floor($hargaBayar / 10000);
+                    // dd($bonusPoin, $hargaBayar, $sisaPoin, $pembeli->POIN_PEMBELI);
+                    $pembeli->POIN_PEMBELI = $sisaPoin + $bonusPoin;
+                    $pembeli->save();
+                }
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Transaksi berhasil di KONFIRMASI']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Terjadi kesalahan saat mengkonfirmasi transaksi: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function gagalKonfirmasi($id)
+    {
+        $transaksi = TransaksiPembelian::find($id);
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        $transaksi->STATUS_TRANSAKSI = "BUKTI TIDAK VALID";
+        $transaksi->save();
+
+        return response()->json(['message' => 'Transaksi telah DIBATALKAN']);
+    }
+
 }

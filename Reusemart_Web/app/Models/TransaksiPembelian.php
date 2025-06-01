@@ -11,7 +11,7 @@ class TransaksiPembelian extends Model
     protected $table = 'transaksi_pembelian'; // Nama tabel di database
     protected $primaryKey = 'ID_PEMBELIAN';
     // public $incrementing = false;
-    protected $keyType = 'string';
+    // protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
@@ -24,7 +24,10 @@ class TransaksiPembelian extends Model
         'STATUS_RATING',
         'STATUS_PENGIRIMAN',
         'BUKTI_BAYAR',
-        'TOTAL_BAYAR'
+        'TOTAL_BAYAR',
+        'ID_ALAMAT',
+        'ID_PEGAWAI',
+        'POIN_DISKON'
     ];
 
     protected $dates = [
@@ -42,5 +45,13 @@ class TransaksiPembelian extends Model
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
+    }
+    public function alamat()
+    {
+        return $this->belongsTo(Alamat::class, 'ID_ALAMAT', 'ID_ALAMAT');        
+    }
+    public function pegawai()
+    {
+        return $this->belongsTo(Pegawai::class, 'ID_PEGAWAI', 'ID_PEGAWAI');
     }
 }

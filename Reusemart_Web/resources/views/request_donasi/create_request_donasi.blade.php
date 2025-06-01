@@ -44,8 +44,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="ID_PRODUK" class="form-label">Pilih Produk</label>
-                        <select class="form-select" id="ID_PRODUK" required>
+                        <label for="KODE_PRODUK" class="form-label">Pilih Produk</label>
+                        <select class="form-select" id="KODE_PRODUK" required>
                             <option value="">-- Pilih Produk --</option>
                         </select>
                     </div>
@@ -90,10 +90,10 @@
                 return;
             }
 
-            const dropdown = document.getElementById('ID_PRODUK');
+            const dropdown = document.getElementById('KODE_PRODUK');
             produkList.forEach(p => {
                 const opt = document.createElement('option');
-                opt.value = p.ID_PRODUK;
+                opt.value = p.KODE_PRODUK;
                 opt.textContent = `${p.NAMA_PRODUK} (${p.KATEGORI})`;
                 dropdown.appendChild(opt);
             });
@@ -105,7 +105,7 @@
                 const body = {
                     ID_REQUEST: document.getElementById('ID_REQUEST').value,
                     ID_ORGANISASI: user.ID_ORGANISASI,
-                    ID_PRODUK: document.getElementById('ID_PRODUK').value,
+                    KODE_PRODUK: document.getElementById('KODE_PRODUK').value,
                     DETAIL_REQUEST: document.getElementById('DETAIL_REQUEST').value,
                 };
 
