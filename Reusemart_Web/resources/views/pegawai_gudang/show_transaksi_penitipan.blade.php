@@ -51,6 +51,13 @@
         .btn-group button {
             flex: 1; /* Membuat tombol berukuran sama */
         }
+        .btn-green {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -93,6 +100,8 @@
                     <th>Status</th>
                     <th>Tanggal Diretur</th>
                     <th>Action</th>
+                    <!-- New Column for Cetak Nota -->
+                    <th>Cetak Nota</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,6 +138,10 @@
                                 </form>
                             @endif
                         </div>
+                    </td>
+                    <!-- Cetak Nota Column -->
+                    <td>
+                        <a href="{{ route('pegawai_gudang.print_nota', $transaction->ID_PENITIPAN) }}" class="btn btn-green">Cetak Nota</a>
                     </td>
                 </tr>
                 @endforeach

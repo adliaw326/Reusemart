@@ -125,6 +125,7 @@ Route::delete('/pegawai_gudang/delete/{id}', [TransaksiPenitipanController::clas
 Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'edit'])->name('pegawai_gudang.edit_transaksi_penitipan');
 Route::put('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'update'])->name('pegawai_gudang.update_transaksi_penitipan');
 Route::put('/transaksi-penitipan/{id}/diambil', [TransaksiPenitipanController::class, 'markAsTaken'])->name('pegawai_gudang.mark_as_taken');
+Route::get('/cetak-nota/{id}', [TransaksiPenitipanController::class, 'printNota'])->name('pegawai_gudang.print_nota');
 
 //admin
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
