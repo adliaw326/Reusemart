@@ -220,66 +220,61 @@ class ProdukController extends Controller
         return view('pegawai_gudang.update_produk', compact('produk', 'kategori'));
     }
 
+    public function update(Request $request, $kode_produk)
+    {
+        // Validate the incoming data
+        $request->validate([
+            'NAMA_PRODUK' => 'required|string|max:255',
+            'BERAT' => 'required|numeric|min:0',
+            'HARGA' => 'required|numeric|min:0',
+            'GARANSI' => 'nullable|date',
+            'FOTO_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'FOTO_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'ID_KATEGORI' => 'required|exists:kategori_produk,ID_KATEGORI', // Validate that the category exists
+        ]);
 
-public function update(Request $request, $kode_produk)
-{
-    // Validate the incoming data
-    $request->validate([
-        'NAMA_PRODUK' => 'required|string|max:255',
-        'BERAT' => 'required|numeric|min:0',
-        'HARGA' => 'required|numeric|min:0',
-        'GARANSI' => 'nullable|date',
-        'FOTO_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'FOTO_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'ID_KATEGORI' => 'required|exists:kategori_produk,ID_KATEGORI', // Validate that the category exists
-    ]);
+        // Find the product by KODE_PRODUK
+        $produk = Produk::findOrFail($kode_produk);
 
-    // Find the product by KODE_PRODUK
-    $produk = Produk::findOrFail($kode_produk);
+        // Update the product details
+        $produk->NAMA_PRODUK = $request->NAMA_PRODUK;
+        $produk->BERAT = $request->BERAT / 1000; // Convert weight to kg
+        $produk->HARGA = $request->HARGA;
+        $produk->GARANSI = $request->GARANSI;
+        $produk->ID_KATEGORI = $request->ID_KATEGORI; // Update the category ID
 
-    // Retrieve the category based on ID_KATEGORI
-    $kategori = KategoriProduk::find($request->ID_KATEGORI);
-    $kategoriNama = $kategori ? $kategori->NAMA_KATEGORI : null;
+        // Handle FOTO_1 update if a new image is uploaded
+        if ($request->hasFile('FOTO_1')) {
+            // Delete the old FOTO_1 if exists
+            $oldFoto1Path = public_path('foto_produk/' . $produk->KODE_PRODUK . '_1.jpg');
+            if (file_exists($oldFoto1Path)) {
+                unlink($oldFoto1Path); // Delete old photo
+            }
 
-    // Update product details (including category)
-    $produk->NAMA_PRODUK = $request->NAMA_PRODUK;
-    $produk->BERAT = $request->BERAT;
-    $produk->HARGA = $request->HARGA;
-    $produk->GARANSI = $request->GARANSI;
-    $produk->ID_KATEGORI = $request->ID_KATEGORI; // Update the category ID
-
-    // Handle FOTO_1 update if a new image is uploaded
-    if ($request->hasFile('FOTO_1')) {
-        // Delete the old FOTO_1 if exists
-        $oldFoto1Path = public_path('foto_produk/' . $produk->KODE_PRODUK . '_1.jpg');
-        if (file_exists($oldFoto1Path)) {
-            unlink($oldFoto1Path); // Delete old photo
+            // Save the new FOTO_1
+            $fileExtension1 = $request->file('FOTO_1')->getClientOriginalExtension();
+            $fileName1 = $produk->KODE_PRODUK . '_1.' . $fileExtension1;
+            $request->file('FOTO_1')->move(public_path('foto_produk'), $fileName1); // Save the file in public/foto_produk/
         }
 
-        // Save the new FOTO_1
-        $fileExtension1 = $request->file('FOTO_1')->getClientOriginalExtension();
-        $fileName1 = $produk->KODE_PRODUK . '_1.' . $fileExtension1;
-        $request->file('FOTO_1')->move(public_path('foto_produk'), $fileName1); // Save the file in public/foto_produk/
-    }
+        // Handle FOTO_2 update if a new image is uploaded
+        if ($request->hasFile('FOTO_2')) {
+            // Delete the old FOTO_2 if exists
+            $oldFoto2Path = public_path('foto_produk/' . $produk->KODE_PRODUK . '_2.jpg');
+            if (file_exists($oldFoto2Path)) {
+                unlink($oldFoto2Path); // Delete old photo
+            }
 
-    // Handle FOTO_2 update if a new image is uploaded
-    if ($request->hasFile('FOTO_2')) {
-        // Delete the old FOTO_2 if exists
-        $oldFoto2Path = public_path('foto_produk/' . $produk->KODE_PRODUK . '_2.jpg');
-        if (file_exists($oldFoto2Path)) {
-            unlink($oldFoto2Path); // Delete old photo
+            // Save the new FOTO_2
+            $fileExtension2 = $request->file('FOTO_2')->getClientOriginalExtension();
+            $fileName2 = $produk->KODE_PRODUK . '_2.' . $fileExtension2;
+            $request->file('FOTO_2')->move(public_path('foto_produk'), $fileName2); // Save the file in public/foto_produk/
         }
 
-        // Save the new FOTO_2
-        $fileExtension2 = $request->file('FOTO_2')->getClientOriginalExtension();
-        $fileName2 = $produk->KODE_PRODUK . '_2.' . $fileExtension2;
-        $request->file('FOTO_2')->move(public_path('foto_produk'), $fileName2); // Save the file in public/foto_produk/
+        // Save the updated product
+        $produk->save();
+
+        // Redirect to the product listing page with a success message
+        return redirect()->route('pegawai_gudang.show_produk')->with('success', 'Produk berhasil diperbarui!');
     }
-
-    // Save the updated product
-    $produk->save();
-
-    // Redirect to the product listing page with a success message
-    return redirect()->route('pegawai_gudang.show_produk')->with('success', 'Produk berhasil diperbarui!');
-}
 }

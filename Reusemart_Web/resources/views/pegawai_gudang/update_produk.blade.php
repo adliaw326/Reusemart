@@ -55,6 +55,7 @@
 
             <div class="form-group">
                 <label for="KATEGORI">Kategori Produk:</label>
+
                 <select class="form-control" id="KATEGORI" name="ID_KATEGORI" required>
                     <option value="" disabled>Pilih Kategori</option>
                     @foreach($kategori as $kat)
