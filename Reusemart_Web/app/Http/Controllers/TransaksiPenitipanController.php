@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\TransaksiPenitipan;
 use App\Models\Produk;
 use App\Models\KategoriProduk;
 use App\Models\Penitip;
+use App\Models\Alamat;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
@@ -277,4 +279,61 @@ public function update(Request $request, $id)
 
         return redirect()->back()->with('success', 'Transaksi berhasil ditandai sebagai sudah diambil.');
     }
+
+    public function printNota($id)
+    {
+        // Ambil data transaksi penitipan berdasarkan ID
+        $transaction = TransaksiPenitipan::findOrFail($id);
+
+        // Mendapatkan informasi produk terkait
+        $produk = $transaction->produk;
+
+        // Mendapatkan informasi penitip terkait
+        $penitip = $transaction->penitip;
+
+        // Ambil alamat dari tabel Alamat berdasarkan ID_PENITIP
+        $alamat = Alamat::where('ID_PENITIP', $penitip->ID_PENITIP)->first();
+
+        // Ambil informasi pegawai terkait transaksi penitipan
+        $pegawai = $transaction->pegawai;
+
+        // Menyiapkan data untuk nota
+        $nota = [
+            'no_nota' => '25.' . date('m') . '.' . $transaction->ID_PENITIPAN,
+            'tanggal_penitipan' => $this->formatDate($transaction->TANGGAL_PENITIPAN),
+            'masa_penitipan_sampai' => $this->formatDate($transaction->TANGGAL_EXPIRED),
+            'penitip' => 'T' . $penitip->ID_PENITIP . ' / ' . $penitip->NAMA_PENITIP,
+            'alamat_penitip' => $alamat ? $alamat->LOKASI : 'Alamat tidak ditemukan',
+            'delivery' => 'Kurir ReUseMart (' . ($pegawai ? $pegawai->NAMA_PEGAWAI : 'Tidak Ditemukan') . ')',
+            'produk' => $produk->NAMA_PRODUK,
+            'harga' => number_format($produk->HARGA, 0, ',', '.'),
+            'garansi' => $produk->GARANSI,
+            'berat_barang' => 20,
+            'qc_by' => 'P' . ($pegawai ? $pegawai->ID_PEGAWAI : 'Tidak Ditemukan') . ' - ' . ($pegawai ? $pegawai->NAMA_PEGAWAI : 'Tidak Ditemukan'),
+        ];
+
+        // Generate the PDF using the view
+        $pdf = \PDF::loadView('pegawai_gudang.cetak_nota', compact('nota'));
+
+        // Return the PDF for download
+        return $pdf->download('Nota_Transaksi_Penitipan_' . $transaction->ID_PENITIPAN . '.pdf');
+    }
+
+
+    // Helper method untuk memformat tanggal jika sudah berupa objek Carbon
+    private function formatDate($date)
+    {
+        // Cek apakah $date sudah berupa objek Carbon, jika ya, format
+        if (is_a($date, \Carbon\Carbon::class)) {
+            return $date->format('d/m/Y');
+        }
+
+        // Jika bukan objek Carbon, coba parse sebagai tanggal string dan format
+        try {
+            return \Carbon\Carbon::parse($date)->format('d/m/Y');
+        } catch (\Exception $e) {
+            return 'Tanggal tidak valid';
+        }
+    }
+
 }
