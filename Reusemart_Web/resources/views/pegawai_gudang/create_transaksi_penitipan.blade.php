@@ -75,7 +75,7 @@
 
             <div class="form-group">
                 <label for="STATUS_PENITIPAN">Status Penitipan</label>
-                <input type="text" class="form-control" id="STATUS_PENITIPAN" name="STATUS_PENITIPAN" value="sedang berlangsung" readonly>
+                <input type="text" class="form-control" id="STATUS_PENITIPAN" name="STATUS_PENITIPAN" value="Berlangsung" readonly>
             </div>
 
             <div class="form-group">
