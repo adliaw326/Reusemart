@@ -7,11 +7,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-<<<<<<< HEAD
-        "google/auth": "^1.47",
-=======
+        "google/auth": "^1.47",        
         "barryvdh/laravel-dompdf": "^3.1",
->>>>>>> 0abe1bbbbd7896e656dbe38f6e4a1bcdc33cd456
         "laravel/breeze": "^2.3",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.1",
