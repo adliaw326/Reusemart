@@ -76,6 +76,7 @@
                 <tr>
                     <th>ID Penitipan</th>
                     <th>Kode Produk</th>
+                    <th>Foto</th>
                     <th>Nama Produk</th>
                     <th>Penitip</th>
                     <th>Tanggal Penitipan</th>
@@ -89,6 +90,12 @@
                 <tr>
                     <td>{{ $transaction->ID_PENITIPAN }}</td>
                     <td>{{ $transaction->produk->KODE_PRODUK }}</td>
+                    <td>
+                        <div class="product-images">
+                            <img src="{{ asset('foto_produk/' . $transaction->produk->KODE_PRODUK . '_1.jpg') }}" alt="Foto Produk 1" class="product-image">
+                            <img src="{{ asset('foto_produk/' . $transaction->produk->KODE_PRODUK . '_2.jpg') }}" alt="Foto Produk 2" class="product-image">
+                        </div>
+                    </td>
                     <td>{{ $transaction->produk->NAMA_PRODUK }}</td>
                     <td>{{ $transaction->penitip->NAMA_PENITIP ?? 'Tidak Ditemukan' }}</td>
                     <td>{{ $transaction->TANGGAL_PENITIPAN }}</td>

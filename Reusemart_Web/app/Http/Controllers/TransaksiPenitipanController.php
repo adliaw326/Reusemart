@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 
 class TransaksiPenitipanController extends Controller
 {
+    // View all ongoing transactions
     public function index()
     {
         // Get all ongoing transactions
@@ -29,6 +30,7 @@ class TransaksiPenitipanController extends Controller
         return view('general.home', compact('produk', 'kategori'));
     }
 
+    // View all transactions (without filtering by STATUS_PENITIPAN)
     public function index2()
     {
         // Get all transactions (without filtering by STATUS_PENITIPAN)
@@ -47,6 +49,7 @@ class TransaksiPenitipanController extends Controller
         return view('pegawai_gudang.show_transaksi_penitipan', compact('ongoingTransactions', 'produk', 'kategori'));
     }
 
+    // Display the edit form for the transaction
     public function update_transaksi_penitipan($id)
     {
         // Retrieve the specific penitipan (transaction) by ID
@@ -59,53 +62,75 @@ class TransaksiPenitipanController extends Controller
         return view('pegawai_gudang.update_transaksi_penitipan', compact('penitipan', 'kategori'));
     }
 
-    public function update(Request $request, $id)
-    {
-        // Validate the incoming data
-        $request->validate([
-            'KODE_PRODUK' => 'required|string|max:255',
-            'ID_PEMBELI' => 'required|exists:pembeli,ID_PEMBELI',
-            'TANGGAL_PENITIPAN' => 'required|date',
-            'STATUS_PENITIPAN' => 'required|string',
-            'ID_KATEGORI' => 'required|exists:kategori_produk,ID_KATEGORI',
-        ]);
+public function update(Request $request, $id)
+{
+    // Validate the incoming data
+    $validatedData = $request->validate([
+        'ID_PEGAWAI' => 'required|exists:pegawai,ID_PEGAWAI', // Ensure ID_PEGAWAI exists in the pegawai table
+        'KODE_PRODUK' => 'required|exists:produk,KODE_PRODUK', // Ensure KODE_PRODUK exists in the produk table
+        'ID_PENITIP' => 'required|exists:penitip,ID_PENITIP', // Ensure ID_PENITIP exists in the penitip table
+        'TANGGAL_PENITIPAN' => 'required|date', // Validate the date of deposit
+        'STATUS_PENITIPAN' => 'required|string', // Validate the status of deposit
+        'TANGGAL_EXPIRED' => 'required|date', // Validate the expiration date
+        'FOTO_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate FOTO_1 upload
+        'FOTO_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate FOTO_2 upload
+    ]);
 
-        // Find the transaction by ID
-        $penitipan = TransaksiPenitipan::findOrFail($id);
+    // Find the transaksi penitipan by ID
+    $penitipan = TransaksiPenitipan::findOrFail($id);
 
-        // Update the transaction data
-        $penitipan->KODE_PRODUK = $request->KODE_PRODUK;
-        $penitipan->ID_PEMBELI = $request->ID_PEMBELI;
-        $penitipan->TANGGAL_PENITIPAN = $request->TANGGAL_PENITIPAN;
-        $penitipan->STATUS_PENITIPAN = $request->STATUS_PENITIPAN;
-        $penitipan->ID_KATEGORI = $request->ID_KATEGORI;
+    // Get the associated product from the produk table
+    $produk = Produk::findOrFail($validatedData['KODE_PRODUK']); // Get product using KODE_PRODUK
 
-        // Save the updated transaction
-        $penitipan->save();
+    // Update the transaksi penitipan data
+    $penitipan->ID_PEGAWAI = $validatedData['ID_PEGAWAI']; // Update ID_PEGAWAI
+    $penitipan->KODE_PRODUK = $validatedData['KODE_PRODUK']; // Update KODE_PRODUK
+    $penitipan->ID_PENITIP = $validatedData['ID_PENITIP']; // Update ID_PENITIP
+    $penitipan->TANGGAL_PENITIPAN = $validatedData['TANGGAL_PENITIPAN']; // Update TANGGAL_PENITIPAN
+    $penitipan->STATUS_PENITIPAN = $validatedData['STATUS_PENITIPAN']; // Update STATUS_PENITIPAN
+    $penitipan->TANGGAL_EXPIRED = $validatedData['TANGGAL_EXPIRED']; // Update TANGGAL_EXPIRED
 
-        // Redirect back with success message
-        return redirect()->route('pegawai_gudang.show_transaksi_penitipan')->with('success', 'Transaksi Penitipan berhasil diperbarui!');
+    // Handle FOTO_1 update if a new image is uploaded
+    if ($request->hasFile('FOTO_1')) {
+        // Delete the old FOTO_1 if exists in foto_produk
+        $oldFoto1Path = public_path('foto_produk/' . $produk->KODE_PRODUK . '_1.jpg');
+        if (file_exists($oldFoto1Path)) {
+            unlink($oldFoto1Path); // Delete old photo
+        }
+
+        // Save the new FOTO_1 in foto_produk
+        $fileExtension1 = $request->file('FOTO_1')->getClientOriginalExtension();
+        $fileName1 = $produk->KODE_PRODUK . '_1.' . $fileExtension1;
+        $request->file('FOTO_1')->move(public_path('foto_produk'), $fileName1); // Save the file in public/foto_produk/
     }
 
+    // Handle FOTO_2 update if a new image is uploaded
+    if ($request->hasFile('FOTO_2')) {
+        // Delete the old FOTO_2 if exists in foto_produk
+        $oldFoto2Path = public_path('foto_produk/' . $produk->KODE_PRODUK . '_2.jpg');
+        if (file_exists($oldFoto2Path)) {
+            unlink($oldFoto2Path); // Delete old photo
+        }
+
+        // Save the new FOTO_2 in foto_produk
+        $fileExtension2 = $request->file('FOTO_2')->getClientOriginalExtension();
+        $fileName2 = $produk->KODE_PRODUK . '_2.' . $fileExtension2;
+        $request->file('FOTO_2')->move(public_path('foto_produk'), $fileName2); // Save the file in public/foto_produk/
+    }
+
+    // Save the updated transaksi penitipan record
+    $penitipan->save();
+
+    // Redirect back with success message
+    return redirect()->route('pegawai_gudang.show_transaksi_penitipan')->with('success', 'Transaksi Penitipan berhasil diperbarui!');
+}
+
+
+    // Delete a transaction from the database
     public function delete($id)
     {
         // Find the penitipan (transaction) by ID
         $penitipan = TransaksiPenitipan::findOrFail($id);
-
-        // Optionally, delete related photos or files (if necessary)
-        // Example for deleting related product photos:
-        $foto1 = public_path('foto_produk/' . $penitipan->KODE_PRODUK . '_1.jpg');
-        $foto2 = public_path('foto_produk/' . $penitipan->KODE_PRODUK . '_2.jpg');
-
-        // Check if the first photo exists and delete it
-        if (file_exists($foto1)) {
-            unlink($foto1); // Delete photo 1
-        }
-
-        // Check if the second photo exists and delete it
-        if (file_exists($foto2)) {
-            unlink($foto2); // Delete photo 2
-        }
 
         // Delete the penitipan (transaction) from the database
         $penitipan->delete();
@@ -116,39 +141,65 @@ class TransaksiPenitipanController extends Controller
 
     public function create()
     {
-        // Get the list of available products and penitip (optional)
         $produk = Produk::all(); // Get all products
         $penitip = Penitip::all(); // Get all penitip (depositors)
 
-        // Return the view with data
-        return view('pegawai_gudang.create_transaksi_penitipan', compact('produk', 'penitip'));
+        // Get the last ID_PENITIPAN from the database
+        $lastPenitipan = TransaksiPenitipan::latest('ID_PENITIPAN')->first();
+
+        // Generate new ID_PENITIPAN by incrementing the last one
+        $newIDPenitipan = $lastPenitipan ? $lastPenitipan->ID_PENITIPAN + 1 : 1; // If no records, start at 1
+
+        return view('pegawai_gudang.create_transaksi_penitipan', compact('produk', 'penitip', 'newIDPenitipan'));
     }
 
     public function store(Request $request)
     {
-        // Validate incoming request
-        $request->validate([
-            'KODE_PRODUK' => 'required|exists:produk,KODE_PRODUK',
-            'ID_PENITIP' => 'required|exists:penitip,ID_PENITIP',
-            'TANGGAL_PENITIPAN' => 'required|date',
-            'STATUS_PENITIPAN' => 'required|string',
-            'TANGGAL_EXPIRED' => 'required|date',
+        // Validate the form inputs
+        $validatedData = $request->validate([
+            'ID_PEGAWAI' => 'required|exists:pegawai,ID_PEGAWAI', // Ensure ID_PEGAWAI exists in the pegawai table
+            'KODE_PRODUK' => 'required|exists:produk,KODE_PRODUK', // Ensure KODE_PRODUK exists in the produk table
+            'ID_PENITIP' => 'required|exists:penitip,ID_PENITIP', // Ensure ID_PENITIP exists in the penitip table
+            'TANGGAL_PENITIPAN' => 'required|date', // Validate the date of deposit
+            'STATUS_PENITIPAN' => 'required|string', // Validate the status of deposit
+            'TANGGAL_EXPIRED' => 'required|date', // Validate the expiration date
         ]);
 
-        // Create new Transaksi Penitipan
-        $penitipan = new TransaksiPenitipan([
-            'KODE_PRODUK' => $request->KODE_PRODUK,
-            'ID_PENITIP' => $request->ID_PENITIP,
-            'TANGGAL_PENITIPAN' => $request->TANGGAL_PENITIPAN,
-            'STATUS_PENITIPAN' => $request->STATUS_PENITIPAN,
-            'TANGGAL_EXPIRED' => $request->TANGGAL_EXPIRED,
-        ]);
+        // Get the last ID_PENITIPAN from the database
+        $lastPenitipan = TransaksiPenitipan::latest('ID_PENITIPAN')->first();
 
-        // Save to the database
-        $penitipan->save();
+        // Generate new ID_PENITIPAN by incrementing the last one
+        $newIDPenitipan = $lastPenitipan ? $lastPenitipan->ID_PENITIPAN + 1 : 1; // If no records, start at 1
 
-        // Redirect to show all transactions or any page you want
-        return redirect()->route('pegawai_gudang.show_transaksi_penitipan')->with('success', 'Transaksi Penitipan berhasil ditambahkan!');
+        // Create a new Transaksi Penitipan record
+        $transaksiPenitipan = new TransaksiPenitipan();
+        $transaksiPenitipan->ID_PENITIPAN = $newIDPenitipan; // Assign new ID_PENITIPAN
+        $transaksiPenitipan->ID_PEGAWAI = $validatedData['ID_PEGAWAI']; // Store ID_PEGAWAI
+        $transaksiPenitipan->KODE_PRODUK = $validatedData['KODE_PRODUK']; // Store KODE_PRODUK
+        $transaksiPenitipan->ID_PENITIP = $validatedData['ID_PENITIP']; // Store ID_PENITIP
+        $transaksiPenitipan->TANGGAL_PENITIPAN = $validatedData['TANGGAL_PENITIPAN']; // Store TANGGAL_PENITIPAN
+        $transaksiPenitipan->STATUS_PENITIPAN = $validatedData['STATUS_PENITIPAN']; // Store STATUS_PENITIPAN
+        $transaksiPenitipan->TANGGAL_EXPIRED = $validatedData['TANGGAL_EXPIRED']; // Store TANGGAL_EXPIRED
+
+        // Save the record to the database
+        $transaksiPenitipan->save();
+
+        // Redirect to the 'show_transaksi_penitipan' route with success message
+        return redirect()->route('pegawai_gudang.show_transaksi_penitipan')
+                        ->with('success', 'Transaksi Penitipan berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        // Fetch the Transaksi Penitipan by ID
+        $transaksiPenitipan = TransaksiPenitipan::findOrFail($id);
+
+        // Fetch Produk and Penitip data for the dropdowns
+        $produk = Produk::all();
+        $penitip = Penitip::all();
+
+        // Pass the data to the view
+        return view('pegawai_gudang.update_transaksi_penitipan', compact('transaksiPenitipan', 'produk', 'penitip'));
     }
 
     public function getTransaksiBerlangsung(Request $request)

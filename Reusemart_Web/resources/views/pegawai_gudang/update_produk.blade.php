@@ -55,6 +55,7 @@
 
             <div class="form-group">
                 <label for="KATEGORI">Kategori Produk:</label>
+
                 <select class="form-control" id="KATEGORI" name="ID_KATEGORI" required>
                     <option value="" disabled>Pilih Kategori</option>
                     @foreach($kategori as $kat)
@@ -87,30 +88,14 @@
 
             <!-- Display existing FOTO_1 if it exists -->
             <div class="form-group">
-                <label for="FOTO_1">Foto Produk 1 (Current):</label>
-                <div class="product-images">
-                    @if (Storage::disk('public')->exists('foto_produk/' . $produk->KODE_PRODUK . '_1.jpg'))
-                        <img src="{{ asset('storage/foto_produk/' . $produk->KODE_PRODUK . '_1.jpg') }}" class="product-image" alt="Foto Produk 1">
-                    @else
-                        <p>No photo uploaded yet.</p>
-                    @endif
-                </div>
-                <label for="FOTO_1">Upload Foto Produk 1 (optional to update):</label>
+                <label for="FOTO_1">Upload Foto Produk 1</label>
                 <input type="file" class="form-control" id="FOTO_1" name="FOTO_1" accept="image/*">
                 <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti foto.</small>
             </div>
 
             <!-- Display existing FOTO_2 if it exists -->
             <div class="form-group">
-                <label for="FOTO_2">Foto Produk 2 (Current):</label>
-                <div class="product-images">
-                    @if (Storage::disk('public')->exists('foto_produk/' . $produk->KODE_PRODUK . '_2.jpg'))
-                        <img src="{{ asset('storage/foto_produk/' . $produk->KODE_PRODUK . '_2.jpg') }}" class="product-image" alt="Foto Produk 2">
-                    @else
-                        <p>No photo uploaded yet.</p>
-                    @endif
-                </div>
-                <label for="FOTO_2">Upload Foto Produk 2 (optional to update):</label>
+                <label for="FOTO_2">Upload Foto Produk 2</label>
                 <input type="file" class="form-control" id="FOTO_2" name="FOTO_2" accept="image/*">
                 <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti foto.</small>
             </div>
