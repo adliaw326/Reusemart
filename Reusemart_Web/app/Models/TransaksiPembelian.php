@@ -10,7 +10,7 @@ class TransaksiPembelian extends Model
 {
     protected $table = 'transaksi_pembelian'; // Nama tabel di database
     protected $primaryKey = 'ID_PEMBELIAN';
-    public $incrementing = false;
+    // public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
 
@@ -22,7 +22,10 @@ class TransaksiPembelian extends Model
         'TANGGAL_LUNAS',
         'TANGGAL_KIRIM',
         'TANGGAL_SAMPAI',
-        'STATUS_RATING'
+        'STATUS_RATING',
+        'STATUS_PENGIRIMAN',
+        'BUKTI_BAYAR',
+        'TOTAL_BAYAR'
     ];
 
     protected $dates = [

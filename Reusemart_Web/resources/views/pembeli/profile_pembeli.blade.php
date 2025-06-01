@@ -64,8 +64,11 @@
                         />
                     </div>
                 </form>
-                <div class="d-flex justify-content-end mt-3">
-                    <a href="/history/pembelian" class="btn btn-warning text-light fw-bold">
+                <div class="mt-3">
+                    <a href="/pembeli/poin" class="btn btn-warning text-light fw-bold justify-content-start">
+                        Tukar Poin
+                    </a>
+                    <a href="/history/pembelian" class="btn btn-primary text-light fw-bold justify-content-end">
                         Lihat Riwayat Pembelian
                     </a>
                 </div>

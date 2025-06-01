@@ -106,6 +106,19 @@ Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('
     Route::post('/keranjang/store/{KODE_PRODUK}', [KeranjangController::class, 'store'])->name('keranjang.store');
     Route::delete('/keranjang/delete/{KODE_PRODUK}', [KeranjangController::class, 'delete'])->name('keranjang.delete');
     Route::get('/keranjang/check/{kodeProduk}', [KeranjangController::class, 'checkInKeranjang']);
+    // Route::get('/keranjang/{idPembeli}', [KeranjangController::class, 'findByIdPembeli'])->name('keranjang.findByIdPembeli');
+
+Route::get('/keranjang', function () {
+    return view('produk.keranjang');
+})->name('produk.keranjang');
+
+//PEMBELI
+
+Route::get('/pembeli/dashboard', function () {
+    return view('pembeli.dashboard');
+})->name('pembeli.dashboard');
+
+Route::get('/bukti-bayar/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('bukti.bayar');
 //KEVIN===============================================================================================================
 Route::get('/', [TransaksiPenitipanController::class, 'index']);
 Route::get('/show', [TransaksiPenitipanController::class, 'index']);
