@@ -15,7 +15,6 @@ class TransaksiPembelian extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'ID_PEMBELIAN',
         'ID_PEMBELI',
         'STATUS_TRANSAKSI',
         'TANGGAL_PESAN',

@@ -21,54 +21,65 @@
             margin: 0 5px;
         }
     </style>
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pembeli') {
+            alert('Akses ditolak. Halaman ini hanya untuk pembeli.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Include Header -->
     @include('outer.header')
 
-    <div class="container">
-        <h2 class="my-4">History Transaksi Pembelian</h2>
+<div class="container">
+    <h2 class="my-4">History Transaksi Pembelian</h2>
 
-        @if ($transaksiPembelian->isEmpty())
-            <div class="alert alert-warning">
-                Tidak ada transaksi dengan status rating "BELUM".
-            </div>
-        @else
-            <table class="table">
-                <thead>
+    @if ($transaksiPembelian->isEmpty())
+        <div class="alert alert-warning">
+            Tidak ada transaksi dengan status rating "BELUM".
+        </div>
+    @else
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama Produk</th> <!-- Kolom Nama Produk -->
+                    <th>ID Pembelian</th>
+                    <th>Status Transaksi</th>
+                    <th>Tanggal Pesan</th>
+                    <th>Berikan Rating</th> <!-- Kolom untuk memberikan rating -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($transaksiPembelian as $transaksi)
                     <tr>
-                        <th>Nama Produk</th> <!-- Kolom Nama Produk -->
-                        <th>ID Pembelian</th>
-                        <th>Status Transaksi</th>
-                        <th>Tanggal Pesan</th>
-                        <th>Berikan Rating</th> <!-- Kolom untuk memberikan rating -->
+                        <td>{{ $transaksi->produk->NAMA_PRODUK ?? 'Produk Tidak Ditemukan' }}</td> <!-- Menampilkan Nama Produk -->
+                        <td>{{ $transaksi->ID_PEMBELIAN }}</td>
+                        <td>{{ $transaksi->STATUS_TRANSAKSI }}</td>
+                        <td>{{ $transaksi->TANGGAL_PESAN }}</td>
+                        <td>
+                            <!-- Form untuk rating, ID_PEMBELIAN disertakan -->
+                            <form action="{{ route('transaksi_pembelian.rating', $transaksi->ID_PEMBELIAN) }}" method="POST" id="rating-form-{{ $transaksi->ID_PEMBELIAN }}">
+                                @csrf
+                                <!-- Tombol Rating 1-5 -->
+                                <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(1, {{ $transaksi->ID_PEMBELIAN }})">1</button>
+                                <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(2, {{ $transaksi->ID_PEMBELIAN }})">2</button>
+                                <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(3, {{ $transaksi->ID_PEMBELIAN }})">3</button>
+                                <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(4, {{ $transaksi->ID_PEMBELIAN }})">4</button>
+                                <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(5, {{ $transaksi->ID_PEMBELIAN }})">5</button>
+                            </form>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($transaksiPembelian as $transaksi)
-                        <tr>
-                            <td>{{ $transaksi->produk->NAMA_PRODUK ?? 'Produk Tidak Ditemukan' }}</td> <!-- Menampilkan Nama Produk -->
-                            <td>{{ $transaksi->ID_PEMBELIAN }}</td>
-                            <td>{{ $transaksi->STATUS_TRANSAKSI }}</td>
-                            <td>{{ $transaksi->TANGGAL_PESAN }}</td>
-                            <td>
-                                <!-- Form untuk rating, ID_PEMBELIAN disertakan -->
-                                <form action="{{ route('transaksi_pembelian.rating', $transaksi->ID_PEMBELIAN) }}" method="POST" id="rating-form-{{ $transaksi->ID_PEMBELIAN }}">
-                                    @csrf
-                                    <!-- Tombol Rating 1-5 -->
-                                    <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(1, {{ $transaksi->ID_PEMBELIAN }})">1</button>
-                                    <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(2, {{ $transaksi->ID_PEMBELIAN }})">2</button>
-                                    <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(3, {{ $transaksi->ID_PEMBELIAN }})">3</button>
-                                    <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(4, {{ $transaksi->ID_PEMBELIAN }})">4</button>
-                                    <button type="button" class="btn btn-warning rating-btn" onclick="confirmRating(5, {{ $transaksi->ID_PEMBELIAN }})">5</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
-    </div>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
+
 
     <!-- Include Footer -->
     @include('outer.footer')

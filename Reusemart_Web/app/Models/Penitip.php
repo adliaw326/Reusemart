@@ -21,6 +21,7 @@ class Penitip extends Authenticatable
         'RATING_RATA_RATA_P',
         'SALDO_PENITIP',
         'POIN_PENITIP',
+        'TOTAL_BARANG_TERJUAL'
     ];
 
     protected $hidden = ['PASSWORD_PENITIP'];

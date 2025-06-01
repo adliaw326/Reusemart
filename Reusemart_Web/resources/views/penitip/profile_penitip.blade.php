@@ -100,7 +100,7 @@
 
                 </form>
                 <div class="d-flex justify-content-end mt-3 gap-2">
-                    <a href="/penitip/daftar-titipan" class="btn btn-primary fw-bold">
+                    <a href="/penitip/penitipan" class="btn btn-primary fw-bold">
                         Lihat Daftar Titipan
                     </a>
                     <a href="/penitip/histori" class="btn btn-warning text-light fw-bold">

@@ -100,6 +100,16 @@
             opacity: 0.5;
         }
     </style>
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'owner') {
+            alert('Akses ditolak. Halaman ini hanya untuk owner.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Sidebar -->

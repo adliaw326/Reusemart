@@ -176,6 +176,9 @@
                 case 'cs':
                     window.location.href = '/kelola_penitip';
                     break;
+                case 'pegawai_gudang':
+                    window.location.href = '/pegawai_gudang/show_transaksi_penitipan';
+                    break;
                 case 'organisasi':
                     window.location.href = '/dashboard/organisasi';
                     break;
