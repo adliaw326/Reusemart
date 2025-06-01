@@ -16,7 +16,7 @@ class TransaksiPenitipanController extends Controller
     public function index()
     {
         // Get all ongoing transactions
-        $ongoingTransactions = TransaksiPenitipan::where('STATUS_PENITIPAN', 'sedang berlangsung')->get();
+        $ongoingTransactions = TransaksiPenitipan::where('STATUS_PENITIPAN', 'Berlangsung')->get();
 
         // Get the product codes associated with ongoing transactions
         $ongoingProductCodes = $ongoingTransactions->pluck('KODE_PRODUK');
