@@ -11,7 +11,6 @@ class TransaksiPembelian extends Model
     protected $table = 'transaksi_pembelian'; // Nama tabel di database
     protected $primaryKey = 'ID_PEMBELIAN';
     public $timestamps = false;
-
     protected $fillable = [
         'ID_PEMBELI',
         'ID_PEGAWAI',
@@ -55,5 +54,6 @@ class TransaksiPembelian extends Model
     public function alamat()
     {
         return $this->belongsTo(Alamat::class, 'ID_ALAMAT', 'ID_ALAMAT');
+
     }
 }

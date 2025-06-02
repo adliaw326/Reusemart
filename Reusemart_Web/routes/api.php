@@ -42,7 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pegawai-by-role/{id_role}', [PegawaiController::class, 'getByRole']);
     Route::post('/produk-by-pembelian', [TransaksiPembelianController::class, 'produkByPembelian']);
     Route::post('/transaksi-pembelian/update-status', [TransaksiPembelianController::class, 'updateStatus']);
-
 });
 
 // ORGANISASI
@@ -63,6 +62,14 @@ Route::post('/pembeli/show/{id}', [PembeliController::class, 'show'])->name('pem
 
 //TRANSAKSI PEMBELIAN
 Route::post('/transaksi-pembelian', [TransaksiPembelianController::class, 'store'])->name('transaksi-pembelian.store');
+Route::match(['put', 'post'], '/upload-bukti/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('uploadBuktiBayar');
+
+
+Route::get('/transaksi-pembelian/konfirmasi', [TransaksiPembelianController::class, 'findKonfirmasi']);
+Route::post('/transaksi-pembelian/konfirmasi/{id}', [TransaksiPembelianController::class, 'konfirmasi']);
+Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::class, 'gagalKonfirmasi']);
+
+                            Route::post('/update-fcm-token', [UserDataController::class, 'updateFcmToken']);
 // Route khusus PENITIP
 // Route::middleware(['auth:penitip'])->group(function () {
 //     Route::get('/penitip/profile', [PenitipController::class, 'profile']);

@@ -19,6 +19,7 @@ class Pegawai extends Authenticatable
         'EMAIL_PEGAWAI',
         'PASSWORD_PEGAWAI',
         'TANGGAL_LAHIR',
+        'fcm_token',
     ];
 
     public function role()

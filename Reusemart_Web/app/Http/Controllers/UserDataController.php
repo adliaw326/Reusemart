@@ -62,4 +62,34 @@ class UserDataController extends Controller
 
         return response()->json($data);
     }
+
+    public function updateFcmToken(Request $request) {
+        $user = auth()->user();
+        $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+
+        return response()->json(['message' => 'FCM token updated']);
+    }
+
+    function sendFcmNotification($tokens, $title, $body, $data = []) {
+        $fcmServerKey = env('FIREBASE_SERVER_KEY');
+
+        $response = Http::withHeaders([
+            'Authorization' => 'key=' . $fcmServerKey,
+            'Content-Type' => 'application/json',
+        ])->post('https://fcm.googleapis.com/fcm/send', [
+            'registration_ids' => $tokens, // array of tokens
+            'notification' => [
+                'title' => $title,
+                'body' => $body,
+            ],
+            'data' => $data,
+        ]);
+
+        return $response->successful();
+    }
 }

@@ -18,7 +18,8 @@ class Pembeli extends Authenticatable
         'EMAIL_PEMBELI',
         'PASSWORD_PEMBELI',
         'NAMA_PEMBELI',
-        'POIN_PEMBELI'
+        'POIN_PEMBELI',
+        'fcm_token',
     ];
     protected $hidden = ['PASSWORD_PEMBELI'];
 

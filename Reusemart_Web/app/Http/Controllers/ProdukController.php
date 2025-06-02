@@ -36,9 +36,9 @@ class ProdukController extends Controller
         ->orderBy('TANGGAL_POST', 'desc')
         ->get();
 
-        // Ambil produk lainnya yang sedang dalam status penitipan 'sedang berlangsung'
+        // Ambil produk lainnya yang sedang dalam status penitipan 'Berlangsung'
         $produk_lainnya = Produk::whereHas('transaksiPenitipan', function ($query) {
-            $query->where('STATUS_PENITIPAN', 'sedang berlangsung');
+            $query->where('STATUS_PENITIPAN', 'Berlangsung');
         })->where('KODE_PRODUK', '!=', $kode_produk)->limit(6)->get();
 
         // Ambil penitip terkait produk
@@ -132,7 +132,7 @@ class ProdukController extends Controller
             'FOTO' => $fotoPath1,  // Menyimpan foto path pertama
         ]);
 
-        return response()->json(['message' => 'Produk berhasil ditambahkan', 'data' => $produk]);
+        return redirect()->route('pegawai_gudang.show_produk')->with('success', 'Produk berhasil dibuat!');
     }
 
     // public function update(Request $request, $id)

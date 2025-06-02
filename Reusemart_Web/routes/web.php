@@ -102,7 +102,25 @@ Route::get('/pembeli/dashboard', function () {
     return view('pembeli.dashboard');
 })->name('pembeli.dashboard');
 
-Route::get('/bukti-bayar/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('bukti.bayar');
+Route::post('/transaksi-pembelian', [TransaksiPembelianController::class, 'store'])->name('transaksi-pembelian.store');
+
+Route::get('/bukti-bayar', [TransaksiPembelianController::class, 'buktiBayar'])->name('bukti-bayar');
+// Route::get('/upload-bukti', [PembayaranController::class, 'uploadBukti'])->name('bukti-bayar-upload');
+
+Route::get('/upload-bukti', function () {
+    return view('produk.bukti_bayar'); // ini sesuai dengan nama file blade kamu
+})->name('bukti_bayar');
+
+Route::get('/pegawai_gudang/transaksi_pembelian', function () {
+    return view('pegawai_gudang.konfirmasi_pembelian'); // ini sesuai dengan nama file blade kamu
+})->name('konfirmasi_pembelian');
+
+Route::put('/upload-bukti/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('uploadBuktiBayar');
+
+
+// Route::get('/upload-bukti', function () {
+//     return view('produk.bukti_bayar');
+// })->name('bukti-bayar-upload');
 //KEVIN===============================================================================================================
 
 
@@ -133,6 +151,7 @@ Route::delete('/pegawai_gudang/delete/{id}', [TransaksiPenitipanController::clas
 Route::get('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'edit'])->name('pegawai_gudang.edit_transaksi_penitipan');
 Route::put('/pegawai_gudang/update_transaksi_penitipan/{id}', [TransaksiPenitipanController::class, 'update'])->name('pegawai_gudang.update_transaksi_penitipan');
 Route::put('/transaksi-penitipan/{id}/diambil', [TransaksiPenitipanController::class, 'markAsTaken'])->name('pegawai_gudang.mark_as_taken');
+Route::get('/cetak-nota/{id}', [TransaksiPenitipanController::class, 'printNota'])->name('pegawai_gudang.print_nota');
 
 //admin
 Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');

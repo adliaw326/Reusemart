@@ -18,6 +18,7 @@ class Organisasi extends Authenticatable
         'NAMA_ORGANISASI',
         'EMAIL_ORGANISASI',
         'PASSWORD_ORGANISASI',
+        'fcm_token',
     ];
 
     protected $hidden = ['PASSWORD_ORGANISASI'];

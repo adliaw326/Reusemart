@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Transaksi Penitipan</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <script>
+        // Cek role dari localStorage
+        const role = localStorage.getItem('role');
+
+        if (role !== 'pegawai_gudang') {
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+        }
+    </script>
 </head>
 <body>
     <!-- Include Header -->
@@ -14,7 +24,7 @@
         <h1 class="text-center">Update Transaksi Penitipan</h1>
 
         <!-- Form to update an existing Transaksi Penitipan -->
-        <form action="{{ route('pegawai_gudang.update_transaksi_penitipan', $transaksiPenitipan->ID_PENITIPAN) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('pegawai_gudang.update_transaksi_penitipan', $transaksiPenitipan->ID_PENITIPAN) }}" method="POST" id="updateForm" enctype="multipart/form-data">
             
             @csrf
             @method('PUT') <!-- Use PUT method to indicate it's an update request -->
@@ -147,6 +157,16 @@
 
             document.getElementById("TANGGAL_EXPIRED").value = formattedDate;
         }
+
+        // JavaScript untuk konfirmasi sebelum submit
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            // Menampilkan alert konfirmasi
+            var confirmSubmit = confirm('Yakin ingin update transaksi penitipan ini??');
+            if (!confirmSubmit) {
+                // Membatalkan form submit jika user menekan Cancel
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
