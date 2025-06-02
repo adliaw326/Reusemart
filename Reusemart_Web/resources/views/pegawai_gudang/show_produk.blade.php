@@ -9,10 +9,9 @@
     <script>
         // Cek role dari localStorage
         const role = localStorage.getItem('role');
-
         if (role !== 'pegawai_gudang') {
             alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
-            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+            window.location.href = '/login';
         }
     </script>
 
@@ -33,48 +32,43 @@
         .product-images {
             display: flex;
             justify-content: center;
-            gap: 10px; /* Jarak antar gambar */
+            gap: 10px;
         }
         .product-image {
-            width: 80px; /* Ukuran gambar yang kecil agar tidak terlalu besar */
+            width: 80px;
             height: auto;
         }
         .action-column {
-            width: 250px; /* Lebar kolom action lebih besar */
+            width: 250px;
         }
         .btn-group {
-            display: flex; /* Menggunakan Flexbox untuk tombol */
-            gap: 10px; /* Jarak antar tombol */
-            justify-content: center; /* Agar tombol berada di tengah */
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
         .btn-group button {
-            flex: 1; /* Membuat tombol berukuran sama */
+            flex: 1;
         }
     </style>
 </head>
 <body>
-    <!-- Include Header -->
     @include('outer.header')
 
     <div class="container">
         <h1 class="text-center">Daftar Semua Produk</h1>
 
-        <!-- Transaksi Penitipan Button -->
         <div class="mb-3 text-center">
             <a href="{{ route('pegawai_gudang.show_transaksi_penitipan') }}" class="btn btn-success">Transaksi Penitipan</a>
         </div>
 
-        <!-- Search Bar -->
         <div class="mb-3">
             <input type="text" id="searchProduk" class="form-control" placeholder="Cari Produk...">
         </div>
 
-        <!-- Tambah Produk Button (Blue) -->
         <div class="mb-3 text-center">
             <a href="{{ route('produk.create_produk') }}" class="btn btn-primary">Tambah Produk</a>
         </div>
 
-        <!-- Tabel Produk -->
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -86,15 +80,20 @@
                     <th>Berat (kg)</th>
                     <th>Garansi</th>
                     <th>Rating</th>
-                    <th class="action-column">Action</th> <!-- Lebar kolom action lebih besar -->
+                    <th class="action-column">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($produk as $item)
                     <tr>
-                        <!-- Kolom Kode Produk dan Detail -->
-                        <td>{{ $item->KODE_PRODUK }}</td>
-                        <!-- Kolom Foto -->
+                        <td>
+                            @php
+                                $nama = strtoupper($item->NAMA_PRODUK);
+                                $inisial = implode('', array_map(fn($word) => $word[0], explode(' ', $nama)));
+                                $kodeFormat = $inisial . preg_replace('/[^0-9]/', '', $item->KODE_PRODUK); // ambil angka dari kode produk
+                            @endphp
+                            {{ $kodeFormat }}
+                        </td>
                         <td>
                             <div class="product-images">
                                 <img src="{{ asset('foto_produk/' . $item->KODE_PRODUK . '_1.jpg') }}" alt="Foto Produk 1" class="product-image">
@@ -103,18 +102,13 @@
                         </td>
                         <td>{{ $item->NAMA_PRODUK }}</td>
                         <td>{{ $item->KATEGORI }}</td>
-                        <td>Rp {{ number_format($item->HARGA, 0, ',', '.') }} </td>
+                        <td>Rp {{ number_format($item->HARGA, 0, ',', '.') }}</td>
                         <td>{{ number_format($item->BERAT, 2) }}</td>
                         <td>{{ $item->GARANSI ?? 'Tidak Ada' }}</td>
                         <td>{{ $item->RATING ?? 'Tidak Ada' }}</td>
-
-                        <!-- Kolom Action -->
                         <td class="action-column">
                             <div class="btn-group" style="width: 100%;">
-                                <!-- Tombol Update -->
                                 <a href="{{ route('pegawai_gudang.update_produk', $item->KODE_PRODUK) }}" class="btn btn-warning">Update</a>
-
-                                <!-- Tombol Delete -->
                                 <form action="{{ route('pegawai_gudang.delete_produk', $item->KODE_PRODUK) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
                                     @csrf
                                     @method('DELETE')
@@ -128,7 +122,6 @@
         </table>
     </div>
 
-    <!-- Include Footer -->
     @include('outer.footer')
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -136,27 +129,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-    document.getElementById('searchProduk').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase(); // Convert search value to lowercase for case-insensitive search
-        const table = document.querySelector('table'); // Select the table element
-        const rows = table.querySelectorAll('tbody tr'); // Select all table rows in the tbody section
-
-        rows.forEach(row => {
-            let rowText = ''; // Initialize a variable to accumulate the row's text content
-
-            // Loop through all columns (td elements) in the current row
-            row.querySelectorAll('td').forEach(cell => {
-                rowText += cell.textContent.toLowerCase(); // Add the text of each cell to rowText
+        document.getElementById('searchProduk').addEventListener('keyup', function () {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('table tbody tr');
+            rows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                row.style.display = rowText.includes(searchValue) ? '' : 'none';
             });
-
-            // If any part of the row text contains the search value, display the row
-            if (rowText.includes(searchValue)) {
-                row.style.display = ''; // Show the row
-            } else {
-                row.style.display = 'none'; // Hide the row
-            }
         });
-    });
     </script>
 </body>
 </html>

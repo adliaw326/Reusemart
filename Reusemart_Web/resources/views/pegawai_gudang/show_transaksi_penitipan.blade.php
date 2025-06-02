@@ -10,10 +10,9 @@
     <script>
         // Cek role dari localStorage
         const role = localStorage.getItem('role');
-
         if (role !== 'pegawai_gudang') {
             alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
-            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
+            window.location.href = '/login';
         }
     </script>
 
@@ -34,22 +33,22 @@
         .product-images {
             display: flex;
             justify-content: center;
-            gap: 10px; /* Jarak antar gambar */
+            gap: 10px;
         }
         .product-image {
-            width: 80px; /* Ukuran gambar yang kecil agar tidak terlalu besar */
+            width: 80px;
             height: auto;
         }
         .action-column {
-            width: 250px; /* Lebar kolom action lebih besar */
+            width: 250px;
         }
         .btn-group {
-            display: flex; /* Menggunakan Flexbox untuk tombol */
-            gap: 10px; /* Jarak antar tombol */
-            justify-content: center; /* Agar tombol berada di tengah */
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
         .btn-group button {
-            flex: 1; /* Membuat tombol berukuran sama */
+            flex: 1;
         }
         .btn-green {
             background-color: #28a745;
@@ -61,7 +60,6 @@
     </style>
 </head>
 <body>
-    <!-- Include Header -->
     @include('outer.header')
 
     <div class="container">
@@ -72,22 +70,19 @@
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
-        <!-- Green Button to Products Page -->
+
         <div class="mb-3 text-center">
             <a href="{{ route('pegawai_gudang.show_produk') }}" class="btn btn-success">Produk</a>
         </div>
 
-        <!-- Search Bar -->
         <div class="mb-3">
             <input type="text" id="searchTranskasiPenitipan" class="form-control" placeholder="Cari Transaksi Penitipan...">
         </div>
 
-        <!-- Tambah Produk Button (Blue) -->
         <div class="mb-3 text-center">
             <a href="{{ route('pegawai_gudang.create_transaksi_penitipan') }}" class="btn btn-primary">Tambah Transaksi Penitipan</a>
         </div>
 
-        <!-- Tabel Transaksi Penitipan -->
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -100,15 +95,25 @@
                     <th>Status</th>
                     <th>Tanggal Diretur</th>
                     <th>Action</th>
-                    <!-- New Column for Cetak Nota -->
                     <th>Cetak Nota</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($ongoingTransactions as $transaction)
                 <tr>
-                    <td>{{ $transaction->ID_PENITIPAN }}</td>
-                    <td>{{ $transaction->produk->KODE_PRODUK }}</td>
+                    <td>{{ 'T' . $transaction->ID_PENITIPAN }}</td>
+                    <td>
+                        @php
+                            $namaProduk = $transaction->produk->NAMA_PRODUK;
+                            $kodeProduk = $transaction->produk->KODE_PRODUK;
+                            $inisial = '';
+                            foreach (explode(' ', $namaProduk) as $kata) {
+                                $inisial .= strtoupper(substr($kata, 0, 1));
+                            }
+                            $kodeCustom = $inisial . $kodeProduk;
+                        @endphp
+                        {{ $kodeCustom }}
+                    </td>
                     <td>
                         <div class="product-images">
                             <img src="{{ asset('foto_produk/' . $transaction->produk->KODE_PRODUK . '_1.jpg') }}" alt="Foto Produk 1" class="product-image">
@@ -123,13 +128,11 @@
                     <td>
                         <div class="btn-group" style="width: 100%;">
                             <a href="{{ route('pegawai_gudang.update_transaksi_penitipan', $transaction->ID_PENITIPAN) }}" class="btn btn-warning">Update</a>
-
                             <form action="{{ route('pegawai_gudang.delete_transaksi_penitipan', $transaction->ID_PENITIPAN) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
-
                             @if ($transaction->STATUS_PENITIPAN == 'Akan Diambil')
                                 <form action="{{ route('pegawai_gudang.mark_as_taken', $transaction->ID_PENITIPAN) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah produk ini sudah diambil?');">
                                     @csrf
@@ -139,7 +142,6 @@
                             @endif
                         </div>
                     </td>
-                    <!-- Cetak Nota Column -->
                     <td>
                         <a href="{{ route('pegawai_gudang.print_nota', $transaction->ID_PENITIPAN) }}" class="btn btn-green">Cetak Nota</a>
                     </td>
@@ -149,7 +151,6 @@
         </table>
     </div>
 
-    <!-- Include Footer -->
     @include('outer.footer')
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -158,24 +159,16 @@
 
     <script>
     document.getElementById('searchTranskasiPenitipan').addEventListener('keyup', function() {
-        const searchValue = this.value.toLowerCase(); // Convert search value to lowercase for case-insensitive search
-        const table = document.querySelector('table'); // Select the table element
-        const rows = table.querySelectorAll('tbody tr'); // Select all table rows in the tbody section
+        const searchValue = this.value.toLowerCase();
+        const table = document.querySelector('table');
+        const rows = table.querySelectorAll('tbody tr');
 
         rows.forEach(row => {
-            let rowText = ''; // Initialize a variable to accumulate the row's text content
-
-            // Loop through all columns (td elements) in the current row
+            let rowText = '';
             row.querySelectorAll('td').forEach(cell => {
-                rowText += cell.textContent.toLowerCase(); // Add the text of each cell to rowText
+                rowText += cell.textContent.toLowerCase();
             });
-
-            // If any part of the row text contains the search value, display the row
-            if (rowText.includes(searchValue)) {
-                row.style.display = ''; // Show the row
-            } else {
-                row.style.display = 'none'; // Hide the row
-            }
+            row.style.display = rowText.includes(searchValue) ? '' : 'none';
         });
     });
     </script>

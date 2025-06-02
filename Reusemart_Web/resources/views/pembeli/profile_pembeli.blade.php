@@ -71,6 +71,9 @@
                     <a href="/history/pembelian" class="btn btn-primary text-light fw-bold justify-content-end">
                         Lihat Riwayat Pembelian
                     </a>
+                    <a href="{{ route('transaksi_pembelian.history') }}" class="btn btn-primary text-light fw-bold">
+                        Histori
+                    </a>
                 </div>
             </div>
         </div>
