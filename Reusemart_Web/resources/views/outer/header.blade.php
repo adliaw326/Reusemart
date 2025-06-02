@@ -122,7 +122,7 @@
                                 break;
                             case 'pegawai_gudang':
                                 userName = data.NAMA_PEGAWAI;
-                                profileLink = '/profile/pegawai';
+                                profileLink = '/pegawai_gudang/pilih_transaksi';
                                 break;
                             case 'penitip':
                                 userName = data.NAMA_PENITIP;

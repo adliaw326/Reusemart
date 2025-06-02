@@ -109,4 +109,10 @@ public function create()
         $pegawai->delete();
         return redirect()->back()->with('success', 'Pegawai berhasil dihapus');
     }
+
+    public function getByRole($id_role)
+    {
+        $pegawai = Pegawai::where('ID_ROLE', $id_role)->select('ID_PEGAWAI', 'NAMA_PEGAWAI')->get();
+        return response()->json($pegawai);
+    }
 }
