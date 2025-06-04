@@ -26,10 +26,14 @@ class LoginController extends Controller
 
         $email = $credentials['email'];
         $password = $credentials['password'];
-
+        $fcmToken = $request->input('fcm_token');
         // 🔍 1. Cek Pegawai
         $pegawai = Pegawai::where('EMAIL_PEGAWAI', $email)->first();
         if ($pegawai && $this->passwordMatches($password, $pegawai->PASSWORD_PEGAWAI)) {
+            if ($fcmToken) {
+                $pegawai->fcm_token = $fcmToken;
+                $pegawai->save();
+            }
             $roleMap = [
                 'RL001' => 'cs',
                 'RL002' => 'owner',
@@ -53,6 +57,10 @@ class LoginController extends Controller
         // 🔍 2. Cek Penitip
         $penitip = Penitip::where('EMAIL_PENITIP', $email)->first();
         if ($penitip && $this->passwordMatches($password, $penitip->PASSWORD_PENITIP)) {
+            if ($fcmToken) {
+                $penitip->fcm_token = $fcmToken;
+                $penitip->save();
+            }
             $token = $penitip->createToken('penitip-token')->plainTextToken;
             return response()->json([
                 'token' => $token,
@@ -65,6 +73,10 @@ class LoginController extends Controller
         // 🔍 3. Cek Organisasi
         $organisasi = Organisasi::where('EMAIL_ORGANISASI', $email)->first();
         if ($organisasi && $this->passwordMatches($password, $organisasi->PASSWORD_ORGANISASI)) {
+            if ($fcmToken) {
+                $organisasi->fcm_token = $fcmToken;
+                $organisasi->save();
+            }
             $token = $organisasi->createToken('organisasi-token')->plainTextToken;
             return response()->json([
                 'token' => $token,
@@ -77,6 +89,10 @@ class LoginController extends Controller
         // 🔍 4. Cek Pembeli
         $pembeli = Pembeli::where('EMAIL_PEMBELI', $email)->first();
         if ($pembeli && $this->passwordMatches($password, $pembeli->PASSWORD_PEMBELI)) {
+            if ($fcmToken) {
+                $pembeli->fcm_token = $fcmToken;
+                $pembeli->save();
+            }
             $token = $pembeli->createToken('pembeli-token')->plainTextToken;
             return response()->json([
                 'token' => $token,

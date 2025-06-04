@@ -22,5 +22,5 @@ class ProdukPenitipanController extends Controller
             ->get();
 
         return response()->json($produk);
-        }
+    }
 }

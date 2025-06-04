@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semua Produk</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <link rel="icon" href="{{ asset('images/logo1.webp') }}" type="image/webp">
     <script>
         // Cek role dari localStorage
         const role = localStorage.getItem('role');
         if (role !== 'pegawai_gudang') {
-            alert('Akses ditolak. Halaman ini hanya untuk pegawai gudang.');
+            alert('Akses ditolak. Halaman ini hanya untuk pegawai_gudang.');
             window.location.href = '/login';
         }
     </script>
-
     <style>
         table {
             border: 2px solid black;
@@ -55,12 +56,23 @@
     @include('outer.header')
 
     <div class="container">
+        <div class="mb-3">
+            <a href="{{ route('showPilihTransaksi') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
         <h1 class="text-center">Daftar Semua Produk</h1>
 
         <div class="mb-3 text-center">
             <a href="{{ route('pegawai_gudang.show_transaksi_penitipan') }}" class="btn btn-success">Transaksi Penitipan</a>
         </div>
+        
+        //buat apa ini wak
+        <!-- <div class="mb-3 text-center">
+            <a href="{{ route('konfirmasi_pembelian') }}" class="btn btn-info">Konfirmasi Transaksi Pembelian</a>
+        </div> --> 
 
+        <!-- Search Bar -->
         <div class="mb-3">
             <input type="text" id="searchProduk" class="form-control" placeholder="Cari Produk...">
         </div>

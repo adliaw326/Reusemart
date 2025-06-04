@@ -55,7 +55,7 @@
                 <div>
                     <div>
                         <p class="mb-1 fw-semibold">Total Harga: <span id="total-harga-produk">Rp 0</span></p>
-                        <p class="mb-0 fw-semibold" id="ongkir-text" style="display: none;">Ongkir: <span id="ongkir">Rp 10.000</span></p>
+                        <p class="mb-0 fw-semibold" id="ongkir-text" style="display: none;">Ongkir: <span id="ongkir">Rp 100.000</span></p>
                         <p id="diskon-text" class="text-success" style="display: none;"></p>
                         <p class="mb-1 fw-semibold">Total Bayar: <span id="total-harga">Rp 0</span></p>
                         <p class="mb-0 text-primary" id="poin-didapat" style="font-weight: 600;">Poin yang bisa didapat: 0</p>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <button id="checkout-btn" class="btn btn-success">Checkout</button>
-            </div>
+            </div>            
         </div>
 
         <div class="modal fade" id="modalPilihAlamat" tabindex="-1" aria-labelledby="modalPilihAlamatLabel" aria-hidden="true">
@@ -101,7 +101,7 @@
         const formMetode = document.getElementById('formMetodePengiriman');
         const alamatContainer = document.createElement('div');
 
-        const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem('userId');        
 
         const apiProduk = `http://127.0.0.1:8000/api/keranjang/${userId}`;
         const apiAlamat = `http://127.0.0.1:8000/api/alamat/${userId}`;
@@ -116,14 +116,16 @@
         
         let poinTersedia = 0; // nilai poin dari API
         let poinDigunakan = 0;
+        let hargaAsli = 0; // harga asli sebelum diskon
+        let hargaProduk = 0; // total harga produk
 
         const modalAlamat = new bootstrap.Modal(document.getElementById('modalPilihAlamat'));
         const alamatListContainer = document.getElementById('alamat-list');        
         const produkList = [];
+        let idAlamat;
 
         function updateRingkasan() {
-                let total = totalHarga;
-
+                let total = totalHarga;                
                 if (deliveryRadio.checked) {
                     ongkirTextElem.style.display = 'block';
                     if( total >= 1500000) {
@@ -133,9 +135,11 @@
                     }
                     ongkirTextElem.textContent = `Ongkir: Rp ${ongkir.toLocaleString()}`;
                     total += ongkir;
+                    hargaAsli = hargaProduk + ongkir; // total harga asli sebelum diskon
                 } else {
                     ongkirTextElem.style.display = 'none';
                     ongkirTextElem.textContent = '';
+                    hargaAsli = hargaProduk; // total harga asli sebelum diskon
                 }
                 
                 poinDigunakan = parseInt(poinInput.value) || 0;
@@ -153,7 +157,7 @@
                     diskonTextElem.style.display = 'none';
                     diskonTextElem.textContent = '';
                 }
-
+                
                 const poinTersisa = poinTersedia - poinDigunakan;
                 document.getElementById('sisa-poin').textContent = `Sisa Poin: ${poinTersisa.toLocaleString()}`;
 
@@ -194,6 +198,7 @@
                     // cari alamat dengan STATUS_DEFAULT = 1
                     const alamatDefault = data.alamat.find(a => a.STATUS_DEFAULT == 1);
                     if (alamatDefault) {
+                        idAlamat = alamatDefault.ID_ALAMAT; // simpan ID alamat default
                         return alamatDefault.LOKASI;
                     }
                 }
@@ -255,15 +260,16 @@
                     totalHarga += parseInt(produk.HARGA);
 
                     produkList.push({
-                        ID_PRODUK: produk.ID_PRODUK, // pastikan ID tersedia
+                        KODE_PRODUK: produk.KODE_PRODUK, // pastikan ID tersedia
                         NAMA_PRODUK: produk.NAMA_PRODUK,
                         KATEGORI: produk.KATEGORI,
                         BERAT: produk.BERAT,
                         GARANSI: produk.GARANSI,
                         HARGA: parseInt(produk.HARGA)
                     });
-                });
+                });                
                 totalProdukElem.textContent = `Rp ${totalHarga.toLocaleString()}`;
+                hargaProduk = totalHarga; // simpan total harga produk
                 updateRingkasan(); // update tampilan total harga dan ongkir
 
             })
@@ -338,7 +344,6 @@
             formMetode.appendChild(alamatContainer);
             
             const alamatDefault = await fetchAlamatDefault();
-            // console.log(`Alamat default: ${alamatDefault}`); 
             alamatTerpilih.textContent = alamatDefault;
 
             // Pasang event listener radio button
@@ -397,68 +402,53 @@
             });                
         });
 
-        checkoutBtn.addEventListener('click', async () => {
-            // Data yang dibutuhkan
-            const ID_PEMBELI = userId;
-            const STATUS_TRANSAKSI = 'BELUM DIBAYAR'; // default status
-            const STATUS_PENGIRIMAN = deliveryRadio.checked ? 'delivery' : 'pickup';
-            const TANGGAL_PESAN = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-            const TANGGAL_LUNAS = null;
-            const TANGGAL_KIRIM = deliveryRadio.checked ? null : null; // bisa isi logic lebih spesifik
-            const TANGGAL_SAMPAI = deliveryRadio.checked ? null : null;
-            const STATUS_RATING = 'BELUM';
-            const SISA_POIN = document.getElementById('sisa-poin').textContent;
-            const POIN_DIDAPAT = document.getElementById('poin-didapat').textContent;                  
-            const PRODUK = produkList;
-            const BUKTI_BAYAR = null;
-            const TOTAL_BAYAR = document.getElementById('total-harga').textContent;
+        checkoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault(); // cegah submit form atau reload halaman
 
-            // Kirim POST ke route transaksi
+            // Buat object data yang akan dikirim
+            const dataToSend = {                
+                ID_PEMBELI: userId,
+                STATUS_TRANSAKSI: 'BELUM DIBAYAR',
+                TANGGAL_PESAN: new Date().toISOString().split('T')[0],
+                TANGGAL_LUNAS: '',
+                TANGGAL_KIRIM: '',
+                TANGGAL_SAMPAI: '',
+                STATUS_PENGIRIMAN: deliveryRadio.checked ? 'delivery' : 'pickup',
+                STATUS_RATING: 'BELUM',
+                SISA_POIN: parseInt(document.getElementById('sisa-poin').textContent.replace(/\D/g, '')) || 0, // ambil angka dari string
+                POIN_DIGUNAKAN: parseInt(document.getElementById('poin-didapat').textContent.replace(/\D/g, '')) || 0,
+                TOTAL_BAYAR: hargaAsli,
+                PRODUK: produkList,
+                ID_ALAMAT: alamatTerpilih.textContent,
+                POIN_DISKON : poinDigunakan
+            };
+
             try {
-                const res = await fetch('/api/transaksi-pembelian', {
+                const response = await fetch('/api/transaksi-pembelian', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // jika Laravel pakai CSRF
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Jika perlu CSRF token Laravel (bisa ambil dari meta tag juga)
                     },
-                    body: JSON.stringify({
-                        ID_PEMBELI,
-                        STATUS_TRANSAKSI,
-                        TANGGAL_PESAN,
-                        TANGGAL_LUNAS,
-                        TANGGAL_KIRIM,
-                        TANGGAL_SAMPAI,
-                        STATUS_PENGIRIMAN,
-                        STATUS_RATING,
-                        SISA_POIN,
-                        POIN_DIDAPAT,
-                        TOTAL_BAYAR
-                    })
-                    ////INI BELUM BENER KONTOL
+                    body: JSON.stringify(dataToSend)
                 });
 
-                if (!res.ok) {
-                    const errData = await res.json();
-                    console.error('Gagal checkout:', errData);
-                    alert('Gagal melakukan checkout. Periksa data dan coba lagi.');
-                    return;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const responseData = await res.json();
+                const result = await response.json(); // asumsi API mengembalikan JSON
+                console.log('Transaksi berhasil:', result);
 
-                // Redirect atau tampilkan data ke halaman bukti bayar
-                if (responseData.success) {
-                    const ID_PEMBELIAN = responseData.ID_PEMBELIAN;
+                localStorage.setItem('transaksiResult', JSON.stringify(result));
 
-                    // Redirect ke halaman bukti bayar
-                    window.location.href = `/bukti-bayar/${ID_PEMBELIAN}`;
-                } else {
-                    alert('Terjadi kesalahan saat menyimpan transaksi');
-                }
+                // Contoh: Redirect atau tampilkan pesan sukses
+                alert('Checkout berhasil!');
+                window.location.href = '/upload-bukti'; // redirect kalau perlu
 
-            } catch (err) {
-                console.error('Error:', err);
-                alert('Terjadi kesalahan saat melakukan checkout.');
+            } catch (error) {
+                console.error('Gagal melakukan checkout:', error);
+                alert('Checkout gagal, silakan coba lagi.');
             }
         });
 
