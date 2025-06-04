@@ -126,6 +126,7 @@
                     <tr><td colspan="10" class="text-center">Loading...</td></tr>
                 </tbody>
             </table>
+            <a href="{{ route('penukaran.show') }}" class="btn btn-primary">Show Penukaran Merchandise</a>
         </div>
     </div>
 
