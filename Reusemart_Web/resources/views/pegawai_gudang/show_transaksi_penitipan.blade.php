@@ -81,9 +81,9 @@
             <a href="{{ route('pegawai_gudang.show_produk') }}" class="btn btn-success">Produk</a>
         </div>
         
-        <div class="mb-3 text-center">
+        <!-- <div class="mb-3 text-center">
             <a href="{{ route('konfirmasi_pembelian') }}" class="btn btn-info">Konfirmasi Transaksi Pembelian</a>
-        </div>
+        </div> -->
 
         <!-- Search Bar -->
         <div class="mb-3">

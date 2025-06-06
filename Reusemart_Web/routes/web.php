@@ -82,6 +82,7 @@ Route::get('/profile/penitip', function () {
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
 
+Route::get('/CODING', [TransaksiPembelianController::class, 'indexI'])->name('CODING');
 
 //diskusi
 Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('diskusi.store');
@@ -95,6 +96,7 @@ Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('
 Route::get('/keranjang', function () {
     return view('produk.keranjang');
 })->name('produk.keranjang');
+
 
 //PEMBELI
 
@@ -111,9 +113,11 @@ Route::get('/upload-bukti', function () {
     return view('produk.bukti_bayar'); // ini sesuai dengan nama file blade kamu
 })->name('bukti_bayar');
 
-Route::get('/pegawai_gudang/transaksi_pembelian', function () {
-    return view('pegawai_gudang.konfirmasi_pembelian'); // ini sesuai dengan nama file blade kamu
+Route::get('/keranjang/transaksi_pembelian', function () {
+    return view('produk.konfirmasi_pembelian'); // ini sesuai dengan nama file blade kamu
 })->name('konfirmasi_pembelian');
+// Route::post('/transaksi-pembelian/konfirmasi/{id}', [TransaksiPembelianController::class, 'konfirmasi']);
+// Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::class, 'gagalKonfirmasi']);
 
 Route::put('/upload-bukti/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('uploadBuktiBayar');
 

@@ -28,6 +28,34 @@ class Keranjang extends Model
         'TANGGAL_TAMBAH',
     ];
 
+    public static function tambahProduk($userId, $kodeProduk)
+    {
+        $exists = self::where('ID_PEMBELI', $userId)
+                      ->where('KODE_PRODUK', $kodeProduk)
+                      ->exists();
+
+        if ($exists) {
+            return [
+                'success' => false,
+                'message' => 'Produk sudah ada di keranjang',
+                'code' => 409
+            ];
+        }
+
+        $keranjang = self::create([
+            'ID_PEMBELI' => $userId,
+            'KODE_PRODUK' => $kodeProduk,
+            'TANGGAL_TAMBAH' => now()
+        ]);
+
+        return [
+            'success' => true,
+            'data' => $keranjang,
+            'message' => 'Produk berhasil ditambahkan ke keranjang',
+            'code' => 201
+        ];
+    }
+
     // Relasi ke pembeli (asumsi model Pembeli ada)
     public function pembeli()
     {

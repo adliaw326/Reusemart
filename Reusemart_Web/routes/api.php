@@ -15,6 +15,16 @@ use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenitipanController;
 use App\Http\Controllers\ProdukPenitipanController;
 use App\Http\Controllers\PegawaiController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::post('/run-check-transactions', function () {
+    Artisan::call('transactions:check-pending');
+
+    return response()->json([
+        'message' => 'Command executed',
+        'output' => Artisan::output()
+    ]);
+});
 
 
 // Route::get('/user', function (Request $request) {
