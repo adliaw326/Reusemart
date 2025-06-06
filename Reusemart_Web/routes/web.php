@@ -11,6 +11,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\DiskusiProdukController;
+use App\Http\Controllers\PenukaranController;
 
 use App\Models\Penitip;
 
@@ -172,4 +173,12 @@ Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHisto
 Route::get('history-transaksi-pembelian', [TransaksiPembelianController::class, 'history'])->name('transaksi_pembelian.history');
 Route::get('transaksi-pembelian/{id}', [TransaksiPembelianController::class, 'show'])->name('transaksi_pembelian.show');
 Route::post('transaksi-pembelian/{id}/rating', [TransaksiPembelianController::class, 'rating'])->name('transaksi_pembelian.rating');
+
+//merchandise
+Route::get('/penukaran/show', [PenukaranController::class, 'index'])->name('penukaran.show');
+Route::get('/penukaran/sudah-diambil', [PenukaranController::class, 'filterSudahDiambil'])->name('penukaran.sudahDiambil');
+Route::get('/penukaran/belum-diambil', [PenukaranController::class, 'filterBelumDiambil'])->name('penukaran.belumDiambil');
+Route::get('/penukaran/{id}/edit', [PenukaranController::class, 'edit'])->name('penukaran.edit');
+Route::put('/penukaran/{id}', [PenukaranController::class, 'update'])->name('penukaran.update');
+Route::delete('/penukaran/{id}', [PenukaranController::class, 'destroy'])->name('penukaran.destroy');
 //RAFI===============================================================================================================
