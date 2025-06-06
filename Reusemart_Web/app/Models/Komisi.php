@@ -17,6 +17,7 @@ class Komisi extends Model
         'KOMISI_PENITIP',
         'BONUS_PENITIP',
         'JUMLAH_KOMISI',
+        'KOMISI_HUNTER',
     ];
 
     // Opsional: relasi jika diperlukan

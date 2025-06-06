@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Alamat;
+use Barryvdh\DomPDF\Facade as PDF;
+use App\Models\Komisi;
 
 class TransaksiPembelianController extends Controller
 {
@@ -576,7 +578,6 @@ class TransaksiPembelianController extends Controller
         }
         Log::info('Memulai proses komisi untuk pembelian ' . $idPembelian);
     }
-}
 
     public function generateId($idPembelian)
     {
@@ -699,4 +700,96 @@ class TransaksiPembelianController extends Controller
         return response()->json(['message' => 'Transaksi telah DIBATALKAN']);
     }
 
+    public function laporanPenjualan()
+    {
+        // Query untuk mendapatkan laporan penjualan
+        $penjualan = TransaksiPembelian::selectRaw('
+                MONTH(TANGGAL_LUNAS) as bulan,
+                COUNT(*) as jumlah_barang_terjual,   -- Menghitung jumlah transaksi (barang terjual)
+                SUM(produk.HARGA) as jumlah_penjualan_kotor
+            ')
+            ->join('produk', 'produk.ID_PEMBELIAN', '=', 'transaksi_pembelian.ID_PEMBELIAN')  // Menghubungkan ke tabel produk
+            ->whereYear('TANGGAL_LUNAS', 2025) // Filter berdasarkan tahun 2025
+            ->groupBy('bulan') // Mengelompokkan berdasarkan bulan
+            ->orderBy('bulan') // Mengurutkan berdasarkan bulan
+            ->get();
+
+        return view('owner.cetak_penjualan_bulanan', compact('penjualan'));
+    }
+
+    public function laporanPenjualan_pdf()
+    {
+        // Query untuk mendapatkan laporan penjualan
+        $penjualan = TransaksiPembelian::selectRaw('
+                MONTH(TANGGAL_LUNAS) as bulan,
+                COUNT(*) as jumlah_barang_terjual,   -- Menghitung jumlah transaksi (barang terjual)
+                SUM(produk.HARGA) as jumlah_penjualan_kotor
+            ')
+            ->join('produk', 'produk.ID_PEMBELIAN', '=', 'transaksi_pembelian.ID_PEMBELIAN')  // Menghubungkan ke tabel produk
+            ->whereYear('TANGGAL_LUNAS', 2025) // Filter berdasarkan tahun 2025
+            ->groupBy('bulan') // Mengelompokkan berdasarkan bulan
+            ->orderBy('bulan') // Mengurutkan berdasarkan bulan
+            ->get();
+
+        $pdf = \PDF::loadView('owner.cetak_penjualan_bulanan', compact('penjualan'));
+        return $pdf->download('laporan_penjualan_bulanan.pdf');
+    }
+
+    public function laporanKomisi()
+    {
+        // Mengambil data transaksi pembelian dengan relasi produk, komisi, dan transaksi penitipan
+        $transaksiPembelian = TransaksiPembelian::with(['produk', 'komisi', 'transaksiPenitipan'])
+                                                ->whereNotNull('TANGGAL_LUNAS') // Filter hanya yang sudah lunas
+                                                ->get();
+
+        // Mengelompokkan transaksi pembelian berdasarkan bulan TANGGAL_LUNAS
+        $transaksiPembelianByMonth = $transaksiPembelian->groupBy(function ($item) {
+            // Mengelompokkan berdasarkan bulan dari TANGGAL_LUNAS
+            return Carbon::parse($item->TANGGAL_LUNAS)->format('F Y'); // Menggunakan nama bulan dan tahun (misalnya Januari 2025)
+        });
+
+        // Mengirim data ke view
+        return view('owner.cetak_komisi_bulanan', compact('transaksiPembelianByMonth'));
+    }
+
+    public function laporanKomisi_pdf()
+    {
+        // Mengambil data transaksi pembelian dengan relasi produk, komisi, dan transaksi penitipan
+        $transaksiPembelian = TransaksiPembelian::with(['produk', 'komisi', 'transaksiPenitipan'])
+                                                ->whereNotNull('TANGGAL_LUNAS') // Filter hanya yang sudah lunas
+                                                ->get();
+
+        // Mengelompokkan transaksi pembelian berdasarkan bulan TANGGAL_LUNAS
+        $transaksiPembelianByMonth = $transaksiPembelian->groupBy(function ($item) {
+            // Mengelompokkan berdasarkan bulan dari TANGGAL_LUNAS
+            return Carbon::parse($item->TANGGAL_LUNAS)->format('F Y'); // Menggunakan nama bulan dan tahun (misalnya Januari 2025)
+        });
+        
+
+        $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
+        return $pdf->download('laporan_komisi_bulanan.pdf');
+    }
+
+    public function laporanKomisi_pdf_bulan(Request $request)
+    {
+        // Mengambil tahun dan bulan yang dipilih dari parameter GET
+        $tahun = $request->input('year');
+        $bulan = $request->input('month');
+
+        // Mengambil data transaksi pembelian dengan relasi produk, komisi, dan transaksi penitipan
+        $transaksiPembelian = TransaksiPembelian::with(['produk', 'komisi', 'transaksiPenitipan'])
+                                                ->whereNotNull('TANGGAL_LUNAS') // Filter hanya yang sudah lunas
+                                                ->whereYear('TANGGAL_LUNAS', $tahun) // Filter berdasarkan tahun
+                                                ->whereMonth('TANGGAL_LUNAS', $bulan) // Filter berdasarkan bulan
+                                                ->get();
+
+        // Mengelompokkan transaksi pembelian berdasarkan bulan TANGGAL_LUNAS
+        $transaksiPembelianByMonth = $transaksiPembelian->groupBy(function ($item) {
+            return Carbon::parse($item->TANGGAL_LUNAS)->format('F Y'); // Menggunakan nama bulan dan tahun
+        });
+
+        // Memuat tampilan dan mendownload PDF
+        $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
+        return $pdf->download('laporan_komisi_bulanan_' . $tahun . '_' . $bulan . '.pdf');
+    }
 }

@@ -101,15 +101,6 @@
         }
     </style>
 
-    <script>
-        // Cek role dari localStorage
-        const role = localStorage.getItem('role');
-
-        if (role !== 'owner') {
-            alert('Akses ditolak. Halaman ini hanya untuk owner.');
-            window.location.href = '/login'; // Redirect ke halaman login atau dashboard sesuai user
-        }
-    </script>
 </head>
 <body>
     <!-- Sidebar -->
@@ -124,6 +115,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('owner/history_donasi') }}">History Request</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('owner/laporan') }}">Laporan Perusahaan</a>
             </li>
         </ul>
     </div>
