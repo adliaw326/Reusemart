@@ -52,6 +52,10 @@ Route::get('/pegawai_gudang/show_transaksi_pembelian', function () {
     return view('pegawai_gudang.show_transaksi_pembelian');
 })->name('showTransaksiPembelian');
 
+Route::get('/pegawai_gudang/live_coding_2', function () {
+    return view('pegawai_gudang.live_coding_2');
+})->name('showLiveCoding2');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 //KEVIN===============================================================================================================
 
@@ -120,6 +124,9 @@ Route::get('/keranjang/transaksi_pembelian', function () {
 })->name('konfirmasi_pembelian');
 // Route::post('/transaksi-pembelian/konfirmasi/{id}', [TransaksiPembelianController::class, 'konfirmasi']);
 // Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::class, 'gagalKonfirmasi']);
+
+Route::get('/nota/kurir/{id}', [TransaksiPembelianController::class, 'cetakNotaKurir'])
+    ->name('nota.kurir');
 
 Route::put('/upload-bukti/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('uploadBuktiBayar');
 

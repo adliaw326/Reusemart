@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Alamat;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Komisi;
 
@@ -205,14 +206,14 @@ class TransaksiPembelianController extends Controller
         if ($produk) {
             // Mendapatkan rating produk yang sudah ada
             $currentRating = $produk->RATING;
-            
+
             // Jika rating produk masih null, langsung masukkan rating baru
             if (is_null($currentRating)) {
                 $produk->RATING = $request->input('rating');
             } else {
                 // Mendapatkan rating rata-rata produk
                 $currentAverageRating = $produk->RATING_RATA_RATA_P;
-                
+
                 // Menghitung rating baru dan rata-rata rating baru untuk produk
                 $newRating = $request->input('rating');
                 $averageRating = ($currentRating + $newRating) / 2;
@@ -279,8 +280,8 @@ class TransaksiPembelianController extends Controller
             'BUKTI_BAYAR' => 'required|image|max:2048', // maksimal 2MB
         ]);
 
-        
-        
+
+
         $transaksi = TransaksiPembelian::findOrFail($id);
         if (Carbon::parse($transaksi->TANGGAL_PESAN)->diffInMinutes(Carbon::now()) > 1) {
             $transaksi->STATUS_TRANSAKSI = 'BATAL KARENA LAMA';
@@ -291,10 +292,10 @@ class TransaksiPembelianController extends Controller
         
         if ($request->hasFile('BUKTI_BAYAR')) {
             $file = $request->file('BUKTI_BAYAR');
-            
+
             // Simpan file ke storage/app/public/bukti_bayar
             $path = $file->store('bukti_bayar', 'public');
-            
+
             // Simpan path ke database
             $transaksi->BUKTI_BAYAR = $path;
             $transaksi->STATUS_TRANSAKSI = 'MENUNGGU KONFIRMASI'; // Update status transaksi
@@ -332,7 +333,7 @@ class TransaksiPembelianController extends Controller
             'path' => $transaksi->BUKTI_BAYAR,
         ]);
     }
-      
+
     public function showDisiapkan()
     {
         $transaksi = TransaksiPembelian::with([
@@ -423,7 +424,7 @@ class TransaksiPembelianController extends Controller
             // Proses komisi, saldo, dan poin
             $this->prosesKomisiPembelian($item->ID_PEMBELIAN);
         }
-      
+
         return response()->json($transaksi);
     }
 
@@ -547,6 +548,10 @@ class TransaksiPembelianController extends Controller
                 ->where('KODE_PRODUK', $produk->KODE_PRODUK)
                 ->first();
 
+            $pegawai = DB::table('pegawai')
+                ->where('ID_PEGAWAI', $produk->ID_PEGAWAI)
+                ->first();
+
             if (!$penitipan) continue;
 
             $tanggalPenitipan = Carbon::parse($penitipan->TANGGAL_PENITIPAN);
@@ -558,7 +563,7 @@ class TransaksiPembelianController extends Controller
             $komisiReUseMart = $komisiReUseMartAwal;
 
             $komisiHunter = 0;
-            if (!empty($produk->ID_PEGAWAI)) {
+            if (!empty($produk->ID_PEGAWAI) && $pegawai->ID_ROLE === 'RL003') {
                 $komisiHunter = 0.05 * $harga;
                 $komisiReUseMart -= $komisiHunter;
             }
@@ -663,7 +668,7 @@ class TransaksiPembelianController extends Controller
     }
 
     public function konfirmasi($id)
-    {  
+    {
         DB::beginTransaction();
         try{
             $transaksi = TransaksiPembelian::find($id);
@@ -686,14 +691,14 @@ class TransaksiPembelianController extends Controller
             //           ->whereNotNull('fcm_token')
             //           ->pluck('fcm_token')->toArray();
 
-            if (!empty($tokens)) {
-                sendFcmNotification(
-                    $tokens,
-                    'Status Transaksi Update',
-                    'Barang Anda Sudah Terjual dan Sedang Disiapkan untuk Pengiriman',
-                    ['transaksi_id' => $transaksi->id]
-                );
-            }
+            // if (!empty($tokens)) {
+            //     sendFcmNotification(
+            //         $tokens,
+            //         'Status Transaksi Update',
+            //         'Barang Anda Sudah Terjual dan Sedang Disiapkan untuk Pengiriman',
+            //         ['transaksi_id' => $transaksi->id]
+            //     );
+            // }
 
             $totalHarga = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)
                 ->select(DB::raw('SUM(HARGA) as total'))
@@ -706,7 +711,7 @@ class TransaksiPembelianController extends Controller
                     // Update poin pembeli
                     $poinDigunakan = $transaksi->POIN_DISKON;
                     $sisaPoin = $pembeli->POIN_PEMBELI - $poinDigunakan;
-                    $hargaBayar = $transaksi->TOTAL_BAYAR - ($poinDigunakan * 100);         
+                    $hargaBayar = $transaksi->TOTAL_BAYAR - ($poinDigunakan * 100);
                     if($transaksi->STATUS_PENGIRIMAN == 'delivery' && $totalHarga < 1500000){
                         $hargaBayar = $hargaBayar - 100000;
                     }
@@ -726,13 +731,13 @@ class TransaksiPembelianController extends Controller
                 $pembeli = Pembeli::find($transaksi->ID_PEMBELI);
                 if ($pembeli) {
                     $sisaPoin = $pembeli->POIN_PEMBELI;
-                    $hargaBayar = $transaksi->TOTAL_BAYAR;         
+                    $hargaBayar = $transaksi->TOTAL_BAYAR;
                     if($transaksi->STATUS_PENGIRIMAN == 'delivery' && $totalHarga < 1500000){
                         $hargaBayar = $hargaBayar - 100000;
                     }
-                    $hargaBayar = max($hargaBayar, 0); // HARGA UNTUK POIN                
-                    
-                    $bonusPoin = $hargaBayar > 500000 
+                    $hargaBayar = max($hargaBayar, 0); // HARGA UNTUK POIN
+
+                    $bonusPoin = $hargaBayar > 500000
                         ? floor(($hargaBayar / 10000) * 1.2)
                         : floor($hargaBayar / 10000);
                     // dd($bonusPoin, $hargaBayar, $sisaPoin, $pembeli->POIN_PEMBELI);
@@ -778,6 +783,59 @@ class TransaksiPembelianController extends Controller
         }
 
         return response()->json(['message' => 'Transaksi telah DIBATALKAN']);
+    }
+  
+    public function cetakNotaKurir($id_pembelian)
+    {
+        $transaksi = TransaksiPembelian::with(['produk.pegawai', 'pembeli', 'alamat', 'pegawai'])
+            ->where('ID_PEMBELIAN', $id_pembelian)
+            ->firstOrFail();
+
+        if (!$transaksi->TANGGAL_LUNAS) {
+            abort(400, 'Tanggal lunas belum ditentukan.');
+        }
+
+        $tanggalLunas = Carbon::parse($transaksi->TANGGAL_LUNAS);
+        $no_nota = $tanggalLunas->format('y.m') . '.' . $transaksi->ID_PEMBELIAN;
+
+        if (strtolower($transaksi->STATUS_PENGIRIMAN) === 'delivery') {
+            $delivery = 'Kurir ReUseMart (' . ($transaksi->pegawai->NAMA_PEGAWAI ?? 'Nama Kurir Tidak Diketahui') . ')';
+        } else {
+            $delivery = '- (Diambil Sendiri)';
+        }
+
+        // Buat array produk
+        $produkList = [];
+        $totalHarga = 0;
+        foreach ($transaksi->produk as $produk) {
+            $produkList[] = [
+                'nama_produk' => $produk->NAMA_PRODUK,
+                'harga' => $produk->HARGA,
+                'id_pegawai_qc' => $produk->pegawai->ID_PEGAWAI ?? null,
+                'nama_pegawai_qc' => $produk->pegawai->NAMA_PEGAWAI ?? 'Petugas QC',
+            ];
+            $totalHarga += $produk->HARGA;
+        }
+
+        $nota = [
+            'no_nota' => $no_nota,
+            'tanggal_pesan' => $transaksi->TANGGAL_PESAN,
+            'tanggal_lunas' => $transaksi->TANGGAL_LUNAS,
+            'tanggal_kirim' => $transaksi->TANGGAL_KIRIM ?? '-',
+            'tanggal_ambil' => $transaksi->TANGGAL_AMBIL ?? '-',
+            'email_pembeli' => $transaksi->pembeli->EMAIL_PEMBELI ?? '-',
+            'nama_pembeli' => $transaksi->pembeli->NAMA_PEMBELI ?? '-',
+            'poin_pembeli' => $transaksi->pembeli->POIN_PEMBELI ?? 0,
+            'alamat_pembeli' => $transaksi->alamat->LOKASI,
+            'delivery' => $delivery,
+            'poin_diskon' => $transaksi->POIN_DISKON ?? 0,
+            'produk_list' => $produkList,
+            'total_harga' => $totalHarga,
+            'total_bayar' => $transaksi->TOTAL_BAYAR ?? 0,
+        ];
+
+        $pdf = Pdf::loadView('pegawai_gudang.nota_penjualan_kurir', compact('nota'));
+        return $pdf->stream('nota_' . $no_nota . '.pdf');
     }
 
     public function laporanPenjualan()
@@ -871,5 +929,40 @@ class TransaksiPembelianController extends Controller
         // Memuat tampilan dan mendownload PDF
         $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan_' . $tahun . '_' . $bulan . '.pdf');
+    }
+
+    //Mobile
+    public function indexMobile(Request $request)
+    {
+        // Validate that the buyer's ID is provided
+        $request->validate([
+            'ID_PEMBELI' => 'required|exists:pembeli,ID_PEMBELI',
+        ]);
+
+        // Fetch the transaction history for the given Pembeli
+        $transaksi = TransaksiPembelian::where('ID_PEMBELI', $request->ID_PEMBELI)
+            ->with(['produk', 'pegawai', 'alamat', 'komisi']) // Eager load relations
+            ->orderBy('TANGGAL_PESAN', 'desc') // Order by date of order
+            ->get();
+
+        // Return the result as JSON
+        return response()->json($transaksi);
+    }
+
+    // Method to get the details of a specific transaction - Ends with 'Mobile'
+    public function showMobile($id)
+    {
+        // Fetch the transaction details by ID
+        $transaksi = TransaksiPembelian::with(['produk', 'pegawai', 'alamat', 'komisi', 'transaksiPenitipan'])
+            ->where('ID_PEMBELIAN', $id)
+            ->first();
+
+        // Check if the transaction exists
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        // Return the transaction details as JSON
+        return response()->json($transaksi);
     }
 }

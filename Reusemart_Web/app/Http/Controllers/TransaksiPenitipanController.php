@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\TransaksiPenitipan;
 use App\Models\Produk;
 use App\Models\KategoriProduk;
@@ -14,6 +13,7 @@ use App\Models\Organisasi;
 use App\Models\RequestDonasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiPenitipanController extends Controller
 {
@@ -367,6 +367,7 @@ public function update(Request $request, $id)
         return $pdf->download('cetak_stok_gudang.pdf');
     }
 
+<<<<<<< HEAD
     public function cetakDonasiBarang(Request $request)
     {
         $tahun = $request->tahun;
@@ -497,5 +498,40 @@ public function update(Request $request, $id)
         // Return the view with the filtered data and month
         $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
         return $pdf->download('cetak_transaksi_penitip.pdf');
+=======
+    // Mobile - Fetch the penitipan history for the given penitip
+    public function indexMobile(Request $request)
+    {
+        // Validate that the penitip's ID is provided
+        $request->validate([
+            'ID_PENITIP' => 'required|exists:penitip,ID_PENITIP', // Validate penitip ID exists
+        ]);
+
+        // Fetch the penitipan history for the given penitip
+        $penitipan = TransaksiPenitipan::where('ID_PENITIP', $request->ID_PENITIP)
+            ->with(['produk', 'pegawai', 'penitip']) // Eager load relations
+            ->orderBy('TANGGAL_PENITIPAN', 'desc') // Order by date of penitipan
+            ->get();
+
+        // Return the result as JSON
+        return response()->json($penitipan);
+    }
+
+    // Method to get the details of a specific penitipan transaction - Ends with 'Mobile'
+    public function showMobile($id)
+    {
+        // Fetch the penitipan transaction details by ID
+        $penitipan = TransaksiPenitipan::with(['produk', 'pegawai', 'penitip'])
+            ->where('ID_PENITIPAN', $id)
+            ->first();
+
+        // Check if the penitipan exists
+        if (!$penitipan) {
+            return response()->json(['message' => 'Penitipan transaction not found'], 404);
+        }
+
+        // Return the penitipan transaction details as JSON
+        return response()->json($penitipan);
+>>>>>>> b67761ef6c7852824448541c19494cb1e5a59b08
     }
 }

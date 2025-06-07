@@ -57,8 +57,8 @@
     <div class="nota">
         <h2>ReUse Mart</h2>
         <p class="left-align">Jl. Wani Lembur No. 505 Yogyakarta</p>
-        <br> 
-        
+        <br>
+
         <p>No Nota                 : {{ $nota['no_nota'] }}</p>
         <p>Tanggal penitipan       : {{ $nota['tanggal_penitipan'] }}</p>
         <p>Masa penitipan sampai   : {{ $nota['masa_penitipan_sampai'] }}</p>

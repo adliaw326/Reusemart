@@ -220,6 +220,7 @@
                         <td>Rp ${item.TOTAL_BAYAR.toLocaleString()}</td>
                         <td>${item.POIN_DISKON}</td>
                         <td>
+                            <button class="btn btn-sm btn-primary" onclick="showDetail(${item.ID_PEMBELIAN})">Detail</button>
                             ${
                                 item.STATUS_TRANSAKSI === 'Disiapkan'
                                 ? `<button class="btn btn-primary btn-sm" onclick="openModal(${item.ID_PEMBELIAN}, '${item.STATUS_PENGIRIMAN}')">Kirim</button>`
@@ -293,6 +294,9 @@
                             <td>
                                 <button class="btn btn-sm btn-primary" onclick="showDetail(${item.ID_PEMBELIAN})">Detail</button>
                                 <button class="btn btn-sm btn-success ms-2" onclick="markSelesai(${item.ID_PEMBELIAN}, '${item.STATUS_PENGIRIMAN}')">Selesai</button>
+                                <a href="/nota/kurir/${item.ID_PEMBELIAN}" target="_blank" class="btn btn-sm btn-secondary ms-2">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </a>
                             </td>
                         </tr>`;
                         tableBody.innerHTML += row;
@@ -399,6 +403,11 @@
                         <td>${item.STATUS_PENGIRIMAN}</td>
                         <td>Rp ${item.TOTAL_BAYAR.toLocaleString()}</td>
                         <td>${item.POIN_DISKON}</td>
+                        <td>
+                            <a href="/nota/kurir/${item.ID_PEMBELIAN}" target="_blank" class="btn btn-sm btn-secondary ms-2">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </td>
                     </tr>`;
                     tableBody.innerHTML += row;
                 });
