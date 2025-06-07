@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\TransaksiPenitipan;
 use App\Models\Produk;
 use App\Models\KategoriProduk;
@@ -11,6 +10,7 @@ use App\Models\Penitip;
 use App\Models\Alamat;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiPenitipanController extends Controller
 {
