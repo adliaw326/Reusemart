@@ -336,4 +336,31 @@ public function update(Request $request, $id)
         }
     }
 
+    public function cetakStokGudang()
+    {
+        // Fetch the products with 'STATUS_PENITIPAN' as "Berlangsung"
+        $produk = Produk::whereHas('transaksiPenitipan', function($query) {
+            $query->where('STATUS_PENITIPAN', 'Berlangsung');
+        })->get();
+
+        // Determine the current month and pass it to the view
+        $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        return view('owner.cetak_stok_gudang', compact('produk', 'month'));
+    }
+
+    public function cetakStokGudang_pdf()
+    {
+        // Fetch the products with 'STATUS_PENITIPAN' as "Berlangsung"
+        $produk = Produk::whereHas('transaksiPenitipan', function($query) {
+            $query->where('STATUS_PENITIPAN', 'Berlangsung');
+        })->get();
+
+        // Determine the current month and pass it to the view
+        $month = now()->format('F Y');
+
+        $pdf = \PDF::loadView('owner.cetak_stok_gudang', compact('produk', 'month'));
+        return $pdf->download('cetak_stok_gudang.pdf');
+    }
 }
