@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
 import 'tentang_kami.dart'; // Import Tentang Kami screen
+import 'profile_pembeli.dart'; // Import ProfilePembeliScreen
 
 class PembeliScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
@@ -36,6 +37,10 @@ class PembeliScreen extends StatelessWidget {
             icon: Icon(Icons.info),
             label: 'Tentang Kami',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
         onTap: (index) {
           if (index == 0) {
@@ -48,7 +53,13 @@ class PembeliScreen extends StatelessWidget {
             // Navigate to Tentang Kami
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => TentangKami()),  // Make sure this is the correct import
+              MaterialPageRoute(builder: (_) => TentangKami()),  // Ensure this is the correct import
+            );
+          } else if (index == 2) {
+            // Navigate to Profile (ProfilePembeliScreen)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ProfilePembeliScreen()),
             );
           }
         },

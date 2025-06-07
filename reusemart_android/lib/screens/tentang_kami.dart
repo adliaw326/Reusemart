@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
 import 'pembeli_screen.dart'; // Make sure to import PembeliScreen
+import 'profile_pembeli.dart'; // Make sure to import the Profile screen
 
 class TentangKami extends StatelessWidget {
   @override
@@ -54,6 +55,10 @@ class TentangKami extends StatelessWidget {
             label: 'Tentang Kami',
             backgroundColor: Colors.blue, // Highlight color for current page
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
         onTap: (index) {
           if (index == 0) {
@@ -67,6 +72,12 @@ class TentangKami extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => TentangKami()),
+            );
+          } else if (index == 2) {
+            // Navigate to Profile (ProfilePembeliScreen)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ProfilePembeliScreen()), // Navigate to Profile screen
             );
           }
         },

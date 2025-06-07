@@ -57,10 +57,10 @@ class LoginController extends Controller
         // 🔍 2. Cek Penitip
         $penitip = Penitip::where('EMAIL_PENITIP', $email)->first();
         if ($penitip && $this->passwordMatches($password, $penitip->PASSWORD_PENITIP)) {
-            if ($fcmToken) {
-                $penitip->fcm_token = $fcmToken;
-                $penitip->save();
-            }
+            // if ($fcmToken) {
+            //     $penitip->fcm_token = $fcmToken;
+            //     $penitip->save();
+            // }
             $token = $penitip->createToken('penitip-token')->plainTextToken;
             return response()->json([
                 'token' => $token,
@@ -89,10 +89,10 @@ class LoginController extends Controller
         // 🔍 4. Cek Pembeli
         $pembeli = Pembeli::where('EMAIL_PEMBELI', $email)->first();
         if ($pembeli && $this->passwordMatches($password, $pembeli->PASSWORD_PEMBELI)) {
-            if ($fcmToken) {
-                $pembeli->fcm_token = $fcmToken;
-                $pembeli->save();
-            }
+            // if ($fcmToken) {
+            //     $pembeli->fcm_token = $fcmToken;
+            //     $pembeli->save();
+            // }
             $token = $pembeli->createToken('pembeli-token')->plainTextToken;
             return response()->json([
                 'token' => $token,

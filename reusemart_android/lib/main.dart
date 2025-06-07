@@ -7,13 +7,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // runApp(MaterialApp(
-  //   home: LoginScreen(),
-  //   debugShowCheckedModeBanner: false,
-  // ));
-
   runApp(MaterialApp(
-    home: TentangKami(),
+    home: LoginScreen(),
     debugShowCheckedModeBanner: false,
   ));
+
+  // runApp(MaterialApp(
+  //   home: TentangKami(),
+  //   debugShowCheckedModeBanner: false,
+  // ));
 }

@@ -42,6 +42,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pegawai-by-role/{id_role}', [PegawaiController::class, 'getByRole']);
     Route::post('/produk-by-pembelian', [TransaksiPembelianController::class, 'produkByPembelian']);
     Route::post('/transaksi-pembelian/update-status', [TransaksiPembelianController::class, 'updateStatus']);
+
+    //Mobile------------------------------------------------------------------------------------------------------------------->$_COOKIE
+    Route::get('/profile/mobile', [PembeliController::class, 'showProfileMobile']);
+    Route::get('/transaksi-pembelian/mobile', [TransaksiPembelianController::class, 'indexMobile']);
+    Route::get('/transaksi-pembelian/{id}/mobile', [TransaksiPembelianController::class, 'showMobile']);
+
+    Route::get('/penitip/profile/mobile', [PenitipController::class, 'showProfileMobile']);
+    Route::get('/transaksi-penitipan/mobile', [TransaksiPenitipanController::class, 'indexMobile']);
+    Route::get('/transaksi-penitipan/{id}/mobile', [TransaksiPenitipanController::class, 'showMobile']);
 });
 
 // ORGANISASI
