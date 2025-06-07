@@ -850,4 +850,39 @@ class TransaksiPembelianController extends Controller
         $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan_' . $tahun . '_' . $bulan . '.pdf');
     }
+
+    //Mobile
+    public function indexMobile(Request $request)
+    {
+        // Validate that the buyer's ID is provided
+        $request->validate([
+            'ID_PEMBELI' => 'required|exists:pembeli,ID_PEMBELI',
+        ]);
+
+        // Fetch the transaction history for the given Pembeli
+        $transaksi = TransaksiPembelian::where('ID_PEMBELI', $request->ID_PEMBELI)
+            ->with(['produk', 'pegawai', 'alamat', 'komisi']) // Eager load relations
+            ->orderBy('TANGGAL_PESAN', 'desc') // Order by date of order
+            ->get();
+
+        // Return the result as JSON
+        return response()->json($transaksi);
+    }
+
+    // Method to get the details of a specific transaction - Ends with 'Mobile'
+    public function showMobile($id)
+    {
+        // Fetch the transaction details by ID
+        $transaksi = TransaksiPembelian::with(['produk', 'pegawai', 'alamat', 'komisi', 'transaksiPenitipan'])
+            ->where('ID_PEMBELIAN', $id)
+            ->first();
+
+        // Check if the transaction exists
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        // Return the transaction details as JSON
+        return response()->json($transaksi);
+    }
 }

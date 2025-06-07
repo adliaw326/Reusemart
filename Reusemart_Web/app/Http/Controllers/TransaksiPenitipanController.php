@@ -336,4 +336,66 @@ public function update(Request $request, $id)
         }
     }
 
+    public function cetakStokGudang()
+    {
+        // Fetch the products with 'STATUS_PENITIPAN' as "Berlangsung"
+        $produk = Produk::whereHas('transaksiPenitipan', function($query) {
+            $query->where('STATUS_PENITIPAN', 'Berlangsung');
+        })->get();
+
+        // Determine the current month and pass it to the view
+        $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        return view('owner.cetak_stok_gudang', compact('produk', 'month'));
+    }
+
+    public function cetakStokGudang_pdf()
+    {
+        // Fetch the products with 'STATUS_PENITIPAN' as "Berlangsung"
+        $produk = Produk::whereHas('transaksiPenitipan', function($query) {
+            $query->where('STATUS_PENITIPAN', 'Berlangsung');
+        })->get();
+
+        // Determine the current month and pass it to the view
+        $month = now()->format('F Y');
+
+        $pdf = \PDF::loadView('owner.cetak_stok_gudang', compact('produk', 'month'));
+        return $pdf->download('cetak_stok_gudang.pdf');
+    }
+
+    // Mobile - Fetch the penitipan history for the given penitip
+    public function indexMobile(Request $request)
+    {
+        // Validate that the penitip's ID is provided
+        $request->validate([
+            'ID_PENITIP' => 'required|exists:penitip,ID_PENITIP', // Validate penitip ID exists
+        ]);
+
+        // Fetch the penitipan history for the given penitip
+        $penitipan = TransaksiPenitipan::where('ID_PENITIP', $request->ID_PENITIP)
+            ->with(['produk', 'pegawai', 'penitip']) // Eager load relations
+            ->orderBy('TANGGAL_PENITIPAN', 'desc') // Order by date of penitipan
+            ->get();
+
+        // Return the result as JSON
+        return response()->json($penitipan);
+    }
+
+    // Method to get the details of a specific penitipan transaction - Ends with 'Mobile'
+    public function showMobile($id)
+    {
+        // Fetch the penitipan transaction details by ID
+        $penitipan = TransaksiPenitipan::with(['produk', 'pegawai', 'penitip'])
+            ->where('ID_PENITIPAN', $id)
+            ->first();
+
+        // Check if the penitipan exists
+        if (!$penitipan) {
+            return response()->json(['message' => 'Penitipan transaction not found'], 404);
+        }
+
+        // Return the penitipan transaction details as JSON
+        return response()->json($penitipan);
+    }
 }

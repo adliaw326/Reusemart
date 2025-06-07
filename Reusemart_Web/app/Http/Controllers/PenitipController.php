@@ -126,4 +126,33 @@ class PenitipController extends Controller
             'penitip' => $penitip,
         ]);
     }
+
+    //Mobile
+    public function showProfileMobile(Request $request)
+    {
+        // Get the authenticated user via Sanctum
+        $user = $request->user();
+
+        // Fetch penitip profile using the authenticated user's ID
+        $penitip = Penitip::where('ID_PENITIP', $user->ID_PENITIP)->first();
+
+        // Check if penitip exists
+        if (!$penitip) {
+            return response()->json(['message' => 'Penitip not found'], 404);
+        }
+
+        // Return the penitip profile as JSON response
+        return response()->json([
+            'ID_PENITIP' => $penitip->ID_PENITIP,
+            'NAMA_PENITIP' => $penitip->NAMA_PENITIP,
+            'EMAIL_PENITIP' => $penitip->EMAIL_PENITIP,
+            'NIK' => $penitip->NIK,
+            'NO_TELP_PENITIP' => $penitip->NO_TELP_PENITIP,
+            'RATING_RATA_RATA_P' => $penitip->RATING_RATA_RATA_P,
+            'SALDO_PENITIP' => $penitip->SALDO_PENITIP,
+            'POIN_PENITIP' => $penitip->POIN_PENITIP,
+            'TOTAL_BARANG_TERJUAL' => $penitip->TOTAL_BARANG_TERJUAL,
+        ]);
+    }
+
 }
