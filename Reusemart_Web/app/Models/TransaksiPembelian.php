@@ -43,7 +43,7 @@ class TransaksiPembelian extends Model
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
+        return $this->hasMany(Produk::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
     }
 
      public function pegawai()

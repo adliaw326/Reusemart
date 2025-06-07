@@ -50,6 +50,10 @@ Route::get('/pegawai_gudang/show_transaksi_pembelian', function () {
     return view('pegawai_gudang.show_transaksi_pembelian');
 })->name('showTransaksiPembelian');
 
+Route::get('/pegawai_gudang/live_coding_2', function () {
+    return view('pegawai_gudang.live_coding_2');
+})->name('showLiveCoding2');
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 //KEVIN===============================================================================================================
 
@@ -114,6 +118,9 @@ Route::get('/upload-bukti', function () {
 Route::get('/pegawai_gudang/transaksi_pembelian', function () {
     return view('pegawai_gudang.konfirmasi_pembelian'); // ini sesuai dengan nama file blade kamu
 })->name('konfirmasi_pembelian');
+
+Route::get('/nota/kurir/{id}', [TransaksiPembelianController::class, 'cetakNotaKurir'])
+    ->name('nota.kurir');
 
 Route::put('/upload-bukti/{id}', [TransaksiPembelianController::class, 'buktiBayar'])->name('uploadBuktiBayar');
 
