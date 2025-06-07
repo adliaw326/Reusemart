@@ -80,6 +80,17 @@ Route::post('/transaksi-pembelian/konfirmasi/{id}', [TransaksiPembelianControlle
 Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::class, 'gagalKonfirmasi']);
 
                             Route::post('/update-fcm-token', [UserDataController::class, 'updateFcmToken']);
+
+
+
+
+
+//////////////////////////////////////////////////////MOBILE
+Route::get('/pegawai/showKurir/{id}', [PegawaiController::class, 'showKurir']);
+
+    
+
+
 // Route khusus PENITIP
 // Route::middleware(['auth:penitip'])->group(function () {
 //     Route::get('/penitip/profile', [PenitipController::class, 'profile']);
