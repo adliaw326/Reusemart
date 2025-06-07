@@ -172,7 +172,7 @@
                 
                 <!-- Laporan Stok Gudang Button -->
                 <div class="col mb-3">
-                    <a href="{{ url('owner/history_donasi') }}" class="btn btn-custom w-100">Laporan Stok Gudang</a>
+                    <a href="{{ url('/owner/cetak_stok_gudang') }}" class="btn btn-custom w-100">Laporan Stok Gudang</a>
                 </div>
             </div>
         </div>
@@ -192,7 +192,7 @@
                 
                 <!-- Laporan Stok Gudang Button -->
                 <div class="col mb-3">
-                    <a href="{{ url('owner/history_donasi') }}" class="btn btn-custom w-100">Cetak Laporan Stok Gudang</a>
+                    <a href="{{ url('/owner/cetak_stok_gudang_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Stok Gudang</a>
                 </div>
             </div>
         </div>
