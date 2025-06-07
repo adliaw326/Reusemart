@@ -54,6 +54,16 @@ class TransaksiPembelian extends Model
     public function alamat()
     {
         return $this->belongsTo(Alamat::class, 'ID_ALAMAT', 'ID_ALAMAT');
-
     }
+
+    public function komisi()
+    {
+        return $this->hasMany(Komisi::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
+    }
+
+    public function transaksiPenitipan()
+    {
+        return $this->hasManyThrough(TransaksiPenitipan::class, Produk::class, 'ID_PEMBELIAN', 'KODE_PRODUK', 'ID_PEMBELIAN', 'KODE_PRODUK');
+    }
+
 }
