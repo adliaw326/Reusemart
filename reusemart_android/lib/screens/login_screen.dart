@@ -4,6 +4,11 @@ import 'pegawai_screen.dart';
 import 'penitip_screen.dart';
 import 'organisasi_screen.dart';
 import 'pembeli_screen.dart';
+import 'admin_screen.dart';
+import 'kurir_screen.dart';
+import 'hunter_screen.dart';
+import 'owner_screen.dart';
+import 'cs_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -34,10 +39,20 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result['success']) {
       switch (result['role']) {
         case 'cs':
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => CSScreen()));
+          break;
         case 'owner':
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => OwnerScreen()));
+          break;
         case 'hunter':
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HunterScreen()));
+          break;
         case 'kurir':
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => KurirScreen()));
+          break;
         case 'admin':
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => AdminScreen()));
+          break;
         case 'pegawai_gudang':
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => PegawaiScreen()));
           break;

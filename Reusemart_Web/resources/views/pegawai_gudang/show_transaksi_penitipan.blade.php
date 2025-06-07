@@ -80,9 +80,9 @@
             <a href="{{ route('pegawai_gudang.show_produk') }}" class="btn btn-success">Produk</a>
         </div>
         
-        <div class="mb-3 text-center">
+        <!-- <div class="mb-3 text-center">
             <a href="{{ route('konfirmasi_pembelian') }}" class="btn btn-info">Konfirmasi Transaksi Pembelian</a>
-        </div>
+        </div> -->
 
         <div class="mb-3">
             <input type="text" id="searchTranskasiPenitipan" class="form-control" placeholder="Cari Transaksi Penitipan...">

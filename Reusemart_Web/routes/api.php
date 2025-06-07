@@ -15,6 +15,16 @@ use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenitipanController;
 use App\Http\Controllers\ProdukPenitipanController;
 use App\Http\Controllers\PegawaiController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::post('/run-check-transactions', function () {
+    Artisan::call('transactions:check-pending');
+
+    return response()->json([
+        'message' => 'Command executed',
+        'output' => Artisan::output()
+    ]);
+});
 
 
 // Route::get('/user', function (Request $request) {
@@ -79,6 +89,17 @@ Route::post('/transaksi-pembelian/konfirmasi/{id}', [TransaksiPembelianControlle
 Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::class, 'gagalKonfirmasi']);
 
                             Route::post('/update-fcm-token', [UserDataController::class, 'updateFcmToken']);
+
+
+
+
+
+//////////////////////////////////////////////////////MOBILE
+Route::get('/pegawai/showKurir/{id}', [PegawaiController::class, 'showKurir']);
+
+    
+
+
 // Route khusus PENITIP
 // Route::middleware(['auth:penitip'])->group(function () {
 //     Route::get('/penitip/profile', [PenitipController::class, 'profile']);

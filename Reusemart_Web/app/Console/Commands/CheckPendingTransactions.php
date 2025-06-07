@@ -6,6 +6,7 @@ use App\Models\TransaksiPembelian;
 use App\Models\Pembeli;
 use App\Models\Produk;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Console\Scheduling\Schedule;
 
 class CheckPendingTransactions extends Command
 {
@@ -15,8 +16,9 @@ class CheckPendingTransactions extends Command
     public function handle()
     {
         // Ambil transaksi yang menunggu bayar > 1 menit
+        $this->info('Mengecek transaksi pending...'); // << tampil di CMD
         $pendingTransactions = TransaksiPembelian::where('STATUS_TRANSAKSI', 'BELUM DIBAYAR')
-            ->where('created_at', '<', now()->subMinute())
+            ->where('TANGGAL_PESAN', '<', now()->subMinute())
             ->get();
 
         foreach ($pendingTransactions as $transaksi) {
@@ -42,5 +44,6 @@ class CheckPendingTransactions extends Command
 
             $this->info("Transaksi {$transaksi->ID_PEMBELIAN} dibatalkan karena timeout.");
         }
+        $this->info('Pengecekan transaksi pending selesai.');
     }
 }

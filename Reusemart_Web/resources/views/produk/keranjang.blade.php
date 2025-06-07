@@ -40,16 +40,15 @@
             <form id="formMetodePengiriman" class="mt-3 d-flex align-items-center gap-3">
                 <label class="mb-0 fw-semibold">Pilih Metode Pengantaran :</label>
 
-                <label class="form-check-label" for="pickup">
-                    <input type="radio" class="form-check-input ms-2" name="metode_pengiriman" id="pickup" value="Pick Up" required>
+                <label class="form-check-label d-flex align-items-center gap-1">
+                    <input type="radio" class="form-check-input" name="metode_pengiriman" id="pickup" value="Pick Up" required>
                     Pick Up
                 </label>
 
-                <label class="form-check-label" for="delivery">
-                    <input type="radio" class="form-check-input ms-2" name="metode_pengiriman" id="delivery" value="Delivery" required>
+                <label class="form-check-label d-flex align-items-center gap-1">
+                    <input type="radio" class="form-check-input" name="metode_pengiriman" id="delivery" value="Delivery" required>
                     Delivery
                 </label>
-
             </form>
             <div id="ringkasan-pembelian" class="mt-4 d-flex justify-content-between align-items-center p-3 border rounded bg-white">
                 <div>
@@ -90,6 +89,7 @@
         const totalProdukElem = document.getElementById('total-harga-produk');    
         const ongkirTextElem = document.getElementById('ongkir-text');
         const checkoutBtn = document.getElementById('checkout-btn');        
+        // cekRadioDipilih(); 
 
         const deliveryRadio = document.getElementById('delivery');
         const pickupRadio = document.getElementById('pickup');
@@ -124,6 +124,17 @@
         const produkList = [];
         let idAlamat;
 
+        // function cekRadioDipilih() {
+        //     const pickupRadio = document.getElementById('pickup');
+        //     const deliveryRadio = document.getElementById('delivery');
+        //     const checkoutButton = document.getElementById('checkoutButton');
+
+        //     if (pickupRadio.checked || deliveryRadio.checked) {
+        //         checkoutButton.disabled = false;
+        //     } else {
+        //         checkoutButton.disabled = true;
+        //     }
+        // }
         function updateRingkasan() {
                 let total = totalHarga;                
                 if (deliveryRadio.checked) {
@@ -137,6 +148,7 @@
                     total += ongkir;
                     hargaAsli = hargaProduk + ongkir; // total harga asli sebelum diskon
                 } else {
+                    ongkir = 0;
                     ongkirTextElem.style.display = 'none';
                     ongkirTextElem.textContent = '';
                     hargaAsli = hargaProduk; // total harga asli sebelum diskon
@@ -157,12 +169,13 @@
                     diskonTextElem.style.display = 'none';
                     diskonTextElem.textContent = '';
                 }
-                
+                let hargaUntukPoin = hargaAsli - ongkir - potongan;
                 const poinTersisa = poinTersedia - poinDigunakan;
                 document.getElementById('sisa-poin').textContent = `Sisa Poin: ${poinTersisa.toLocaleString()}`;
 
                 totalHargaElem.textContent = `Total: Rp ${total.toLocaleString()}`;
-                let poinDidapat = Math.floor(total / 10000);
+
+                let poinDidapat = Math.floor(hargaUntukPoin / 10000);
                 if (total > 500000) {
                     poinDidapat += Math.floor(poinDidapat * 0.2);
                 }
@@ -299,7 +312,7 @@
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////        
 
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', async function() {            
             function toggleAlamatContainer() {
                 if (deliveryRadio.checked) {
                     alamatContainer.style.display = 'flex'; // tampilkan alamat
@@ -350,10 +363,12 @@
             deliveryRadio.addEventListener('change', () => {
                 toggleAlamatContainer();
                 updateRingkasan();
+                // cekRadioDipilih(); 
             });
             pickupRadio.addEventListener('change', () => {
                 toggleAlamatContainer();
                 updateRingkasan();
+                // cekRadioDipilih(); 
             });
 
             // Jalankan sekali saat load untuk cek status radio
@@ -403,13 +418,20 @@
         });
 
         checkoutBtn.addEventListener('click', async (e) => {
+            const pickupRadio = document.getElementById('pickup');
+            const deliveryRadio = document.getElementById('delivery');
+            const checkoutButton = document.getElementById('checkoutButton');
+            if (!pickupRadio.checked && !deliveryRadio.checked) {
+                alert("Harus pilih metode pengiriman");
+                return;
+            }
             e.preventDefault(); // cegah submit form atau reload halaman
 
             // Buat object data yang akan dikirim
             const dataToSend = {                
                 ID_PEMBELI: userId,
                 STATUS_TRANSAKSI: 'BELUM DIBAYAR',
-                TANGGAL_PESAN: new Date().toISOString().split('T')[0],
+                TANGGAL_PESAN: new Date().toISOString().slice(0, 19).replace('T', ' '),
                 TANGGAL_LUNAS: '',
                 TANGGAL_KIRIM: '',
                 TANGGAL_SAMPAI: '',

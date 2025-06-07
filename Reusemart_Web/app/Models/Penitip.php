@@ -37,4 +37,9 @@ class Penitip extends Authenticatable
         return $this->hasOne(Alamat::class, 'ID_PENITIP', 'ID_PENITIP')
                     ->where('STATUS_DEFAULT', 1);
     }
+
+    public function transaksiPenitipan()
+{
+    return $this->hasMany(TransaksiPenitipan::class, 'ID_PENITIP', 'ID_PENITIP');
+}
 }

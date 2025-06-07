@@ -56,13 +56,14 @@ class Produk extends Model
 
     public function transaksiPenitipan()
     {
-        return $this->hasMany(TransaksiPenitipan::class, 'KODE_PRODUK', 'KODE_PRODUK');
+        return $this->hasOne(TransaksiPenitipan::class, 'KODE_PRODUK', 'KODE_PRODUK');
     }
 
     public function transaksiPembelian()
     {
-        return $this->hasMany(TransaksiPembelian::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
+        return $this->belongsTo(TransaksiPembelian::class, 'ID_PEMBELIAN', 'ID_PEMBELIAN');
     }
+
 
     public function keranjang()
     {
@@ -82,5 +83,10 @@ class Produk extends Model
     public function hunter()
     {
         return $this->belongsTo(Pegawai::class, 'ID_HUNTER', 'ID_PEGAWAI');
+    }
+
+    public function donasi()
+    {
+        return $this->hasOne(Donasi::class, 'KODE_PRODUK', 'KODE_PRODUK');
     }
 }

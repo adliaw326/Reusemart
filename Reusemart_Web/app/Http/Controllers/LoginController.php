@@ -30,10 +30,10 @@ class LoginController extends Controller
         // 🔍 1. Cek Pegawai
         $pegawai = Pegawai::where('EMAIL_PEGAWAI', $email)->first();
         if ($pegawai && $this->passwordMatches($password, $pegawai->PASSWORD_PEGAWAI)) {
-            if ($fcmToken) {
-                $pegawai->fcm_token = $fcmToken;
-                $pegawai->save();
-            }
+            // if ($fcmToken) {
+            //     $pegawai->fcm_token = $fcmToken;
+            //     $pegawai->save();
+            // }
             $roleMap = [
                 'RL001' => 'cs',
                 'RL002' => 'owner',
@@ -73,10 +73,10 @@ class LoginController extends Controller
         // 🔍 3. Cek Organisasi
         $organisasi = Organisasi::where('EMAIL_ORGANISASI', $email)->first();
         if ($organisasi && $this->passwordMatches($password, $organisasi->PASSWORD_ORGANISASI)) {
-            if ($fcmToken) {
-                $organisasi->fcm_token = $fcmToken;
-                $organisasi->save();
-            }
+            // if ($fcmToken) {
+            //     $organisasi->fcm_token = $fcmToken;
+            //     $organisasi->save();
+            // }
             $token = $organisasi->createToken('organisasi-token')->plainTextToken;
             return response()->json([
                 'token' => $token,

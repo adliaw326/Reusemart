@@ -43,6 +43,9 @@
                 <li class="nav-item mx-2">
                     <a class="nav-link text-warning" href="{{ url('/tentang-kami') }}">Tentang Kami</a>
                 </li>
+                <li class="nav-item mx-2" id="cartNav" style="display: none;">
+                    <a class="nav-link text-warning" href="{{ url('/keranjang') }}">Keranjang</a>
+                </li>
                 <li class="nav-item mx-1" id="loginBtnNav">
                     <a href="{{ url('/login') }}" class="btn btn-outline-warning text-warning" style="transition: none;">Masuk</a>
                 </li>
@@ -87,6 +90,8 @@
                         document.getElementById('userNameNav').style.display = 'none';
                         document.getElementById('loginBtnNav').style.display = 'inline-block';
                         document.getElementById('registerBtnNav').style.display = 'inline-block';
+
+                        document.getElementById('cartNav').style.display = 'none';
                         return;
                     }
 
@@ -149,6 +154,9 @@
                         document.getElementById('userNameNav').style.display = 'flex';
                         document.getElementById('loginBtnNav').style.display = 'none';
                         document.getElementById('registerBtnNav').style.display = 'none';
+
+                        document.getElementById('cartNav').style.display = 'inline-block';
+
 
                         const userLink = document.getElementById('userNameText');
                         userLink.textContent = userName;

@@ -60,6 +60,16 @@ public function create()
         }
         return response()->json($pegawai);
     }
+    
+    public function showKurir($id)
+    {
+        $pegawai = Pegawai::find($id);
+
+        if (!$pegawai || $pegawai->ID_ROLE != "RL003") {
+            return response()->json(['message' => 'Pegawai tidak ditemukan'], 404);
+        }
+        return response()->json($pegawai);
+    }
 
     public function update(Request $request, $id)
     {

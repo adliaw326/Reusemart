@@ -14,6 +14,7 @@ use App\Http\Controllers\DiskusiProdukController;
 use App\Http\Controllers\PenukaranController;
 
 use App\Models\Penitip;
+use App\Models\TransaksiPenitipan;
 
 Route::get('/login', function () {
     return view('login.login');
@@ -87,6 +88,7 @@ Route::get('/profile/penitip', function () {
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
 
+Route::get('/CODING', [TransaksiPembelianController::class, 'indexI'])->name('CODING');
 
 //diskusi
 Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('diskusi.store');
@@ -100,6 +102,7 @@ Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('
 Route::get('/keranjang', function () {
     return view('produk.keranjang');
 })->name('produk.keranjang');
+
 
 //PEMBELI
 
@@ -116,9 +119,11 @@ Route::get('/upload-bukti', function () {
     return view('produk.bukti_bayar'); // ini sesuai dengan nama file blade kamu
 })->name('bukti_bayar');
 
-Route::get('/pegawai_gudang/transaksi_pembelian', function () {
-    return view('pegawai_gudang.konfirmasi_pembelian'); // ini sesuai dengan nama file blade kamu
+Route::get('/keranjang/transaksi_pembelian', function () {
+    return view('produk.konfirmasi_pembelian'); // ini sesuai dengan nama file blade kamu
 })->name('konfirmasi_pembelian');
+// Route::post('/transaksi-pembelian/konfirmasi/{id}', [TransaksiPembelianController::class, 'konfirmasi']);
+// Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::class, 'gagalKonfirmasi']);
 
 Route::get('/nota/kurir/{id}', [TransaksiPembelianController::class, 'cetakNotaKurir'])
     ->name('nota.kurir');
@@ -174,7 +179,10 @@ Route::get('/owner/dashboard', [DashboardOwnerController::class, 'index']);
 Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
 
 //owner (laporan)
-Route::get('/owner/laporan', function () {return view('owner.laporan');});
+Route::get('/owner/laporan', function () {
+    $penitip = Penitip::whereHas('transaksiPenitipan')->get();
+    return view('owner.laporan',compact('penitip'));
+});
 Route::get('/owner/cetak_penjualan_bulanan', [TransaksiPembelianController::class, 'laporanPenjualan']);
 Route::get('/owner/cetak_penjualan_bulanan_pdf', [TransaksiPembelianController::class, 'laporanPenjualan_pdf']);
 
@@ -184,6 +192,15 @@ Route::get('/owner/cetak_komisi_bulanan_pdf_bulan', [TransaksiPembelianControlle
 
 Route::get('/owner/cetak_stok_gudang', [TransaksiPenitipanController::class, 'cetakStokGudang']);
 Route::get('/owner/cetak_stok_gudang_pdf', [TransaksiPenitipanController::class, 'cetakStokGudang_pdf']);
+
+//PDF KEVIN
+Route::get('/owner/cetak_donasi_barang', [TransaksiPenitipanController::class, 'cetakDonasiBarang']);
+Route::get('/owner/cetak_donasi_barang_pdf', [TransaksiPenitipanController::class, 'cetakDonasiBarangPDF']);
+Route::get('/owner/cetak_request_donasi', [TransaksiPenitipanController::class, 'cetakRequestDonasi']);
+Route::get('/owner/cetak_request_donasi_pdf', [TransaksiPenitipanController::class, 'cetakRequestDonasiPDF']);
+Route::get('/owner/cetak_transaksi_penitip', [TransaksiPenitipanController::class, 'cetakTransaksiPenitip']);
+Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipanPDF']);
+
 
 //history transaksi + rating
 Route::get('history-transaksi-pembelian', [TransaksiPembelianController::class, 'history'])->name('transaksi_pembelian.history');

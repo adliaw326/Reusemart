@@ -234,7 +234,67 @@
         </div>
 
         <!-- Form to select year and month -->
+        <div class="buttons-container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <!-- Penjualan Bulanan Keseluruhan Button -->
+                <div class="col mb-3">
+                    <!-- <a href="{{ url('/owner/cetak_donasi_barang') }}" class="btn btn-custom w-100" target="_blank">Lihat Laporan Donasi Barang</a> -->
+                     <button type="button" class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalLihatDonasiBarang">
+                        Lihat Laporan Donasi Barang
+                    </button>
+                </div>
+                
+                <!-- Laporan Komisi Bulanan per Produk Button -->
+                <div class="col mb-3">
+                    <a href="{{ url('/owner/cetak_request_donasi') }}" class="btn btn-custom w-100" target="_blank">Lihat Laporan Request Donasi</a>
+                </div>
+                
+                <!-- Laporan Stok Gudang Button -->
+                <div class="col mb-3">
+                    <!-- <a href="{{ url('/owner/cetak_transaksi_penitipan') }}" class="btn btn-custom w-100" target="_blank">Lihat Laporan Transaksi Penitip</a> -->
+                     <button class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalLihatTransaksiPenitip">
+                        Lihat Laporan Transaksi Penitip
+                    </button>
+                </div>
+            </div>
+        </div>
 
+        <!-- Another group of buttons -->
+        <div class="buttons-container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <!-- Penjualan Bulanan Keseluruhan Button -->
+                <div class="col mb-3">
+                    <!-- <a href="{{ url('/owner/cetak_donasi_barang_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Donasi Barang</a> -->
+                     <button type="button" class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalCetakDonasiBarang">
+                        Cetak Laporan Donasi Barang
+                    </button>
+                </div>
+                
+                <!-- Laporan Komisi Bulanan per Produk Button -->
+                <div class="col mb-3">
+                    <a href="{{ url('/owner/cetak_request_donasi_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Request Donasi</a>
+                </div>
+                
+                <!-- Laporan Stok Gudang Button -->
+                <div class="col mb-3">
+                    <!-- <a href="{{ url('/owner/cetak_transaksi_penitipan_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Transaksi Penitip</a> -->
+                     <button class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalCetakPenitip">
+                        Cetak Laporan Transaksi Penitip
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <div class="col mb-3">
+                    <!-- Biar rapi hehe -->
+                </div>
+                <div class="col mb-3">
+                    <!-- Biar rapi hehe -->
+                </div>                
+            </div>
+        </div>
 
     </div>
 
@@ -242,5 +302,165 @@
     @include('outer.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap 5 JS -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalLihatDonasiBarang" tabindex="-1" aria-labelledby="modalLihatDonasiBarangLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="{{ url('/owner/cetak_donasi_barang') }}" method="GET" target="_blank">
+            <div class="modal-header">
+            <h5 class="modal-title" id="modalLihatDonasiBarangLabel">Laporan Donasi Barang Tahun Berapa?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+            <label for="tahun">Pilih Tahun:</label>
+            <select name="tahun" id="tahun" class="form-select" required>
+                <option value="">-- Pilih Tahun --</option>
+                @for($y = now()->year; $y >= 2020; $y--)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                @endfor
+            </select>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lihat Laporan</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalCetakDonasiBarang" tabindex="-1" aria-labelledby="modalCetakDonasiBarangLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="{{ url('/owner/cetak_donasi_barang_pdf') }}" method="GET" target="_blank">
+            <div class="modal-header">
+            <h5 class="modal-title" id="modalCetakDonasiBarangLabel">Laporan Donasi Barang Tahun Berapa?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+            <label for="tahun_pdf">Pilih Tahun:</label>
+            <select name="tahun" id="tahun_pdf" class="form-select" required>
+                <option value="">-- Pilih Tahun --</option>
+                @for($y = now()->year; $y >= 2020; $y--)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                @endfor
+            </select>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Cetak PDF</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalCetakPenitip" tabindex="-1" aria-labelledby="modalCetakPenitipLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <form action="{{ url('owner/cetak_transaksi_penitip_pdf') }}" method="GET" target="_blank">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCetakPenitipLabel">Transaksi Penitip Siapa?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    {{-- Dropdown Penitip --}}
+                    <label for="penitip">Pilih Penitip:</label>
+                    <select name="penitip_id" id="penitip" class="form-select" required>
+                        <option value="">-- Pilih Penitip --</option>
+                        @foreach($penitip as $p)
+                            <option value="{{ $p->ID_PENITIP }}">
+                                {{ $p->ID_PENITIP }} - {{ $p->NAMA_PENITIP }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    {{-- Dropdown Bulan --}}
+                    <label for="bulan" class="mt-3">Pilih Bulan:</label>
+                    <select name="bulan" id="bulan" class="form-select" required>
+                        <option value="">-- Pilih Bulan --</option>
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}">{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}</option>
+                        @endfor
+                    </select>
+
+                    {{-- Dropdown Tahun --}}
+                    <label for="tahun" class="mt-3">Pilih Tahun:</label>
+                    <select name="tahun" id="tahun" class="form-select" required>
+                        <option value="">-- Pilih Tahun --</option>
+                        @for ($year = now()->year; $year >= 2020; $year--)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endfor
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Cetak PDF</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalLihatTransaksiPenitip" tabindex="-1" aria-labelledby="modalLihatTransaksiPenitipLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="{{ url('/owner/cetak_transaksi_penitip') }}" method="GET" target="_blank">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLihatTransaksiPenitipLabel">Transaksi Penitip Siapa?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{-- Dropdown Penitip --}}
+                <label for="penitip">Pilih Penitip:</label>
+                <select name="penitip_id" id="penitip" class="form-select" required>
+                    <option value="">-- Pilih Penitip --</option>
+                    @foreach($penitip as $p)
+                        <option value="{{ $p->ID_PENITIP }}">{{ $p->ID_PENITIP }} - {{ $p->NAMA_PENITIP }}</option>
+                    @endforeach
+                </select>
+
+                {{-- Dropdown Bulan --}}
+                <label for="bulan" class="mt-3">Pilih Bulan:</label>
+                <select name="bulan" id="bulan" class="form-select" required>
+                    <option value="">-- Pilih Bulan --</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}">{{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}</option>
+                    @endfor
+                </select>
+
+                {{-- Dropdown Tahun --}}
+                <label for="tahun" class="mt-3">Pilih Tahun:</label>
+                <select name="tahun" id="tahun" class="form-select" required>
+                    <option value="">-- Pilih Tahun --</option>
+                    @for ($year = now()->year; $year >= 2020; $year--)
+                        <option value="{{ $year }}">{{ $year }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Lihat Laporan</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+    </div>
 </body>
 </html>

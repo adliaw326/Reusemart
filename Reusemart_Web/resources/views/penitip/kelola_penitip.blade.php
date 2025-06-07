@@ -97,6 +97,9 @@
                 <h2 class="mb-0">Kelola Penitip</h2>
             </div>
             <div class="d-flex align-items-center">
+                <button class="btn-back" onclick="window.location.href='{{ route('konfirmasi_pembelian') }}'">
+                    Konfirmasi Pembelian
+                </button>
                 <form class="search-box me-2" onsubmit="return false;">
                     <input type="text" id="searchPenitip" class="form-control" placeholder="Cari Penitip..." />
                 </form>
