@@ -30,6 +30,7 @@ class Produk extends Model
         'HARGA',
         'GARANSI',
         'RATING',
+        'ID_HUNTER',
     ];
 
     // Relasi opsional jika ada model terkait
@@ -76,5 +77,10 @@ class Produk extends Model
     public function foto()
     {
         return $this->hasMany(FotoProduk::class, 'KODE_PRODUK', 'KODE_PRODUK');
+    }
+
+    public function hunter()
+    {
+        return $this->belongsTo(Pegawai::class, 'ID_HUNTER', 'ID_PEGAWAI');
     }
 }

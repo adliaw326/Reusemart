@@ -86,4 +86,25 @@ class PembeliController extends Controller
         $pembeli->delete();
         return response()->json(['message' => 'Pembeli berhasil dihapus']);
     }
+
+    //Mobile------------------------------------------------------------------------------------------------------>
+
+    public function showProfileMobile(Request $request)
+    {
+        // Assuming the user is authenticated via Sanctum
+        $user = $request->user();
+
+        // Fetch the user's profile
+        $profile = Pembeli::where('ID_PEMBELI', $user->ID_PEMBELI)->first();
+
+        if (!$profile) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return response()->json([
+            'name' => $profile->NAMA_PEMBELI,
+            'email' => $profile->EMAIL_PEMBELI,
+            'points' => $profile->POIN_PEMBELI
+        ]);
+    }
 }

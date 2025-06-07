@@ -188,6 +188,9 @@
                 case 'pembeli':
                     window.location.href = '/show';
                     break;
+                case 'owner':
+                    window.location.href = '/owner/dashboard';
+                    break;
                 default:
                     window.location.href = '/show';
             }

@@ -136,6 +136,10 @@
                                 userName = data.NAMA_ORGANISASI;
                                 profileLink = '/profile/organisasi';
                                 break;
+                            case 'owner':
+                                userName = data.NAMA_PEGAWAI;
+                                profileLink = '/profile/owner';
+                                break;
                             default:
                                 console.error('Role tidak dikenali:', role);
                                 return;
