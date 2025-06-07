@@ -19,6 +19,7 @@
             border-radius: 5px;
             font-size: 14px;
         }
+        
 
         .nota h2 {
             text-align: left;

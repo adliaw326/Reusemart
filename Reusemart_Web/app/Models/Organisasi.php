@@ -27,4 +27,21 @@ class Organisasi extends Authenticatable
     {
         return $this->PASSWORD_ORGANISASI;
     }
+    public function donasi()
+    {
+        return $this->hasMany(Donasi::class, 'ID_ORGANISASI', 'ID_ORGANISASI');
+    }
+
+    public function alamat()
+    {
+        return $this->hasMany(Alamat::class, 'ID_ORGANISASI', 'ID_ORGANISASI');
+    }
+
+    public function alamatDefault()
+    {
+        return $this->hasOne(Alamat::class, 'ID_ORGANISASI', 'ID_ORGANISASI')
+                    ->where('STATUS_DEFAULT', 1);
+    }
+
+
 }

@@ -35,4 +35,6 @@ class Donasi extends Model
     {
         return $this->belongsTo(RequestDonasi::class, 'ID_REQUEST', 'ID_REQUEST');
     }
+
+    
 }

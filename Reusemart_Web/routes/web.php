@@ -14,6 +14,7 @@ use App\Http\Controllers\DiskusiProdukController;
 use App\Http\Controllers\PenukaranController;
 
 use App\Models\Penitip;
+use App\Models\TransaksiPenitipan;
 
 Route::get('/login', function () {
     return view('login.login');
@@ -171,7 +172,10 @@ Route::get('/owner/dashboard', [DashboardOwnerController::class, 'index']);
 Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
 
 //owner (laporan)
-Route::get('/owner/laporan', function () {return view('owner.laporan');});
+Route::get('/owner/laporan', function () {
+    $penitip = Penitip::whereHas('transaksiPenitipan')->get();
+    return view('owner.laporan',compact('penitip'));
+});
 Route::get('/owner/cetak_penjualan_bulanan', [TransaksiPembelianController::class, 'laporanPenjualan']);
 Route::get('/owner/cetak_penjualan_bulanan_pdf', [TransaksiPembelianController::class, 'laporanPenjualan_pdf']);
 
@@ -181,6 +185,15 @@ Route::get('/owner/cetak_komisi_bulanan_pdf_bulan', [TransaksiPembelianControlle
 
 Route::get('/owner/cetak_stok_gudang', [TransaksiPenitipanController::class, 'cetakStokGudang']);
 Route::get('/owner/cetak_stok_gudang_pdf', [TransaksiPenitipanController::class, 'cetakStokGudang_pdf']);
+
+//PDF KEVIN
+Route::get('/owner/cetak_donasi_barang', [TransaksiPenitipanController::class, 'cetakDonasiBarang']);
+Route::get('/owner/cetak_donasi_barang_pdf', [TransaksiPenitipanController::class, 'cetakDonasiBarangPDF']);
+Route::get('/owner/cetak_request_donasi', [TransaksiPenitipanController::class, 'cetakRequestDonasi']);
+Route::get('/owner/cetak_request_donasi_pdf', [TransaksiPenitipanController::class, 'cetakRequestDonasiPDF']);
+Route::get('/owner/cetak_transaksi_penitip', [TransaksiPenitipanController::class, 'cetakTransaksiPenitip']);
+Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipanPDF']);
+
 
 //history transaksi + rating
 Route::get('history-transaksi-pembelian', [TransaksiPembelianController::class, 'history'])->name('transaksi_pembelian.history');

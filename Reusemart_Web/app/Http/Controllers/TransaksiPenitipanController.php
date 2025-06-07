@@ -9,6 +9,9 @@ use App\Models\Produk;
 use App\Models\KategoriProduk;
 use App\Models\Penitip;
 use App\Models\Alamat;
+use App\Models\Donasi;
+use App\Models\Organisasi;
+use App\Models\RequestDonasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
@@ -362,5 +365,137 @@ public function update(Request $request, $id)
 
         $pdf = \PDF::loadView('owner.cetak_stok_gudang', compact('produk', 'month'));
         return $pdf->download('cetak_stok_gudang.pdf');
+    }
+
+    public function cetakDonasiBarang(Request $request)
+    {
+        $tahun = $request->tahun;
+
+        $produk = Produk::whereHas('transaksiPenitipan', function($query) {
+        $query->where('STATUS_PENITIPAN', 'Didonasikan');
+            })
+            ->whereHas('donasi', function($query) use ($tahun) {
+                $query->whereYear('TANGGAL_DONASI', $tahun);
+            })
+            ->get();
+    //     $produk = Produk::with(['transaksiPenitipan', 'donasi.organisasi'])  // eager load relasi yg diinginkan
+    // ->whereHas('transaksiPenitipan', function($query) {
+    //     $query->where('STATUS_PENITIPAN', 'Didonasikan');
+    // })
+    // ->whereHas('donasi', function($query) use ($tahun) {
+    //     $query->whereYear('TANGGAL_DONASI', $tahun);
+    // })
+    // ->get();
+        // dd($produk);
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
+        return $pdf->stream('cetak_donasi_barang.pdf');
+    }
+    
+    public function cetakDonasiBarangPDF(Request $request)
+    {
+        $tahun = $request->tahun;
+        // Fetch the products with 'STATUS_PENITIPAN' as "Berlangsung"
+        $produk = Produk::whereHas('transaksiPenitipan', function($query) {
+        $query->where('STATUS_PENITIPAN', 'Didonasikan');
+            })
+            ->whereHas('donasi', function($query) use ($tahun) {
+                $query->whereYear('TANGGAL_DONASI', $tahun);
+            })
+            ->get();
+        
+
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        $pdf = \PDF::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
+        return $pdf->download('cetak_donasi_barang.pdf');
+    }
+
+    public function cetakRequestDonasi()
+    {
+        $request = RequestDonasi::with('organisasi') // ambil data organisasi dari relasi
+                    ->whereNotNull('ID_ORGANISASI')    // pastikan request punya organisasi
+                    ->get();
+
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.cetak_request_donasi', compact('request'));
+        return $pdf->stream('cetak_request_donasi.pdf');
+    }
+
+    public function cetakRequestDonasiPDF()
+    {
+        $request = RequestDonasi::with('organisasi') // ambil data organisasi dari relasi
+                    ->whereNotNull('ID_ORGANISASI')    // pastikan request punya organisasi
+                    ->get();
+
+        $pdf = \PDF::loadView('owner.cetak_request_donasi', compact('request'));
+        return $pdf->download('cetak_request_donasi.pdf');
+    }
+
+    public function cetakTransaksiPenitip(Request $request)
+    {
+        $id = $request->penitip_id;
+
+        $penitip = Penitip::find($id);
+        $bulan = (int) $request->bulan; // atau apapun asal hasilnya int
+        $tahun = $request->tahun;
+
+        // $transaksi = TransaksiPenitipan::where('ID_PENITIP', $id)
+        //         ->where('STATUS_PENITIPAN', 'Laku')
+        //         ->whereMonth('TANGGAL_PENITIPAN', $bulan)
+        //         ->whereYear('TANGGAL_PENITIPAN', $tahun)
+        //         ->get();
+        $transaksi = TransaksiPenitipan::where('ID_PENITIP', $id)
+            ->where('STATUS_PENITIPAN', 'Laku')
+            ->whereHas('produk.transaksiPembelian', function ($query) use ($bulan, $tahun) {
+                $query->whereMonth('TANGGAL_LUNAS', $bulan)
+                    ->whereYear('TANGGAL_LUNAS', $tahun);
+            })
+            ->get();
+        // dd($transaksi);
+
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
+        return $pdf->stream('cetak_transaksi_penitip.pdf');
+    }
+    
+    public function cetakTransaksiPenitipPDF(Request $request)
+    {
+        $id = $request->penitip_id;
+
+        $penitip = Penitip::find($id);
+        $bulan = (int) $request->bulan; // atau apapun asal hasilnya int
+
+        $tahun = $request->tahun;
+
+        // $transaksi = TransaksiPenitipan::where('ID_PENITIP', $id)
+        //         ->where('STATUS_PENITIPAN', 'Laku')
+        //         ->whereMonth('TANGGAL_PENITIPAN', $bulan)
+        //         ->whereYear('TANGGAL_PENITIPAN', $tahun)
+        //         ->get();
+        $transaksi = TransaksiPenitipan::where('ID_PENITIP', $id)
+            ->where('STATUS_PENITIPAN', 'Laku')
+            ->whereHas('produk.transaksiPembelian', function ($query) use ($bulan, $tahun) {
+                $query->whereMonth('TANGGAL_LUNAS', $bulan)
+                    ->whereYear('TANGGAL_LUNAS', $tahun);
+            })
+            ->get();
+        
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
+        return $pdf->download('cetak_transaksi_penitip.pdf');
     }
 }
