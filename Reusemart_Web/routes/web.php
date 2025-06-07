@@ -167,7 +167,16 @@ Route::match(['get', 'put'], 'pegawai/update/{id}', [PegawaiController::class, '
 Route::delete('pegawai/delete/{id}', [PegawaiController::class, 'destroy']);
 
 //owner
+Route::get('/owner/dashboard', [DashboardOwnerController::class, 'index']);
 Route::get('/owner/history_donasi', [DashboardOwnerController::class, 'showHistory']);
+
+//owner (laporan)
+Route::get('/owner/laporan', function () {return view('owner.laporan');});
+Route::get('/owner/cetak_penjualan_bulanan', [TransaksiPembelianController::class, 'laporanPenjualan']);
+Route::get('/owner/cetak_penjualan_bulanan_pdf', [TransaksiPembelianController::class, 'laporanPenjualan_pdf']);
+Route::get('/owner/cetak_komisi_bulanan', [TransaksiPembelianController::class, 'laporanKomisi']);
+Route::get('/owner/cetak_komisi_bulanan_pdf', [TransaksiPembelianController::class, 'laporanKomisi_pdf']);
+Route::get('/owner/cetak_komisi_bulanan_pdf_bulan', [TransaksiPembelianController::class, 'laporanKomisi_pdf_bulan'])->name('cetak_komisi_bulanan_pdf_bulan');
 
 //history transaksi + rating
 Route::get('history-transaksi-pembelian', [TransaksiPembelianController::class, 'history'])->name('transaksi_pembelian.history');
