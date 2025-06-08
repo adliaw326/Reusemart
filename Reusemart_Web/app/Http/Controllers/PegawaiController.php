@@ -65,7 +65,7 @@ public function create()
     {
         $pegawai = Pegawai::find($id);
 
-        if (!$pegawai || $pegawai->ID_ROLE != "RL003") {
+        if (!$pegawai || $pegawai->ID_ROLE != "RL004") {
             return response()->json(['message' => 'Pegawai tidak ditemukan'], 404);
         }
         return response()->json($pegawai);

@@ -1,4 +1,6 @@
 <?php
+use Illuminate\Broadcasting\Broadcasters\Broadcaster;
+use Illuminate\Support\Facades\Broadcast;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
@@ -215,3 +217,6 @@ Route::get('/penukaran/{id}/edit', [PenukaranController::class, 'edit'])->name('
 Route::put('/penukaran/{id}', [PenukaranController::class, 'update'])->name('penukaran.update');
 Route::delete('/penukaran/{id}', [PenukaranController::class, 'destroy'])->name('penukaran.destroy');
 //RAFI===============================================================================================================
+
+
+Broadcast::routes();

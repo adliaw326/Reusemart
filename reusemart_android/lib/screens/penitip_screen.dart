@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
 import 'profile_penitip.dart'; // Import Profile Penitip screen
+import 'notifikasi_screen.dart'; // Import NotifikasiScreen (pastikan sudah ada)
 
 class PenitipScreen extends StatefulWidget {
   @override
@@ -26,12 +27,25 @@ class _PenitipScreenState extends State<PenitipScreen> {
     });
   }
 
+  // Fungsi membuka halaman notifikasi
+  void _openNotifications() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => NotifikasiScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(_currentIndex == 0 ? "Halaman Penitip" : "Profile Penitip"), // Dynamic title
         actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: _openNotifications,
+            tooltip: 'Notifikasi',
+          ),
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () => _logout(context),

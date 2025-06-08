@@ -14,7 +14,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Alamat;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Notifikasi;
+// use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Komisi;
 
@@ -964,5 +965,69 @@ class TransaksiPembelianController extends Controller
 
         // Return the transaction details as JSON
         return response()->json($transaksi);
+    }
+
+    public function findKurir($id)
+    {        
+        $transaksi = TransaksiPembelian::with('alamat', 'pembeli')
+            ->where('ID_PEGAWAI', $id)
+            ->where('STATUS_PENGIRIMAN', 'delivery')
+            ->where('STATUS_TRANSAKSI', 'DIKIRIM')
+            ->get();
+
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        return response()->json($transaksi);
+    }
+    public function findKurirHistory($id)
+    {        
+        $transaksi = TransaksiPembelian::with('alamat', 'pembeli')
+            ->where('ID_PEGAWAI', $id)
+            ->where('STATUS_PENGIRIMAN', 'delivery')
+            ->get();
+
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        return response()->json($transaksi);
+    }
+
+    public function selesaiKurir($id){
+        $transaksi = TransaksiPembelian::find($id);
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        $transaksi->STATUS_TRANSAKSI = 'SELESAI';
+        $transaksi->TANGGAL_SAMPAI = now();
+
+        $transaksi->save();      
+
+        $produk = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)->first();
+        $tpen = TransaksiPenitipan::where('KODE_PRODUK', $produk->KODE_PRODUK)->first();        
+
+        Notifikasi::createNotifikasi([
+            'ID_PEMBELI' => $transaksi->ID_PEMBELI,
+            'ISI' => 'Pesanan Anda :'.$produk->NAMA_PRODUK. ' telah sampai di alamat : '.$transaksi->alamat->LOKASI,
+            'TANGGAL' => \Carbon\Carbon::now(),
+        ]);
+
+        Notifikasi::createNotifikasi([
+            'ID_PENITIP' => $tpen->ID_PENITIP,
+            'ISI' => 'Barang Anda :'.$produk->NAMA_PRODUK. ' telah dibeli dan sampai di pembeli : '.$transaksi->pembeli->NAMA_PEMBELI,
+            'TANGGAL' => \Carbon\Carbon::now(),
+        ]);
+
+
+        
+        // event(new notifSelesai($transaksi->ID_PEMBELI, $tpen->ID_PENITIP, 'TRANSAKSI PEMBELIAN KAMU SELESAI'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengiriman Berhasil'
+        ]);
     }
 }

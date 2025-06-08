@@ -27,6 +27,9 @@ class AuthService {
         await SecureStorage.saveToken(data['token']);
         await SecureStorage.saveRole(data['role']);
         await SecureStorage.saveUserId(data['userId'].toString());
+        print('Token disimpan: ${await SecureStorage.getToken()}');
+        print('UserId disimpan: ${await SecureStorage.getUserId()}');
+
 
         return {
           'success': true,
