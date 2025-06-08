@@ -3,27 +3,15 @@ import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
 import 'tentang_kami.dart'; // Import Tentang Kami screen
 import 'profile_pembeli.dart'; // Import ProfilePembeliScreen
+import 'leaderboard_screen.dart'; // Import LeaderboardScreen
 
 class PembeliScreen extends StatelessWidget {
-  void _logout(BuildContext context) async {
-    await SecureStorage.clear();  // Hapus semua data login
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => LoginScreen()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Halaman Pembeli"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () => _logout(context),
-            tooltip: 'Logout',
-          ),
-        ],
       ),
       body: Center(child: Text("Selamat datang, Pembeli!")),
       bottomNavigationBar: BottomNavigationBar(
@@ -63,6 +51,17 @@ class PembeliScreen extends StatelessWidget {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to LeaderboardScreen when clicked
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => LeaderboardScreen()), // Navigate to LeaderboardScreen
+          );
+        },
+        child: Icon(Icons.leaderboard),
+        tooltip: 'Leaderboard',
       ),
     );
   }
