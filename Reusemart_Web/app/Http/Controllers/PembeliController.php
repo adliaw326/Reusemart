@@ -9,7 +9,7 @@ use App\Models\Pembeli;
 
 class PembeliController extends Controller
 {
-    
+
     public function index()
     {
         return response()->json(Pembeli::all());
@@ -34,14 +34,14 @@ class PembeliController extends Controller
     if (!$newId) {
         $newId = 1; // If no records exist, start with ID 1
     }
-    $pembeli = Pembeli::create([  
+    $pembeli = Pembeli::create([
         'ID_PEMBELI' => $newId,
         'EMAIL_PEMBELI' => $request->email,
         'NAMA_PEMBELI' => $request->nama,
         'PASSWORD_PEMBELI' => Hash::make($request->password),
         'POIN_PEMBELI' => 0,
     ]);
-     
+
 
     return response()->json([
         'message' => 'Pembeli berhasil ditambahkan',
@@ -102,6 +102,7 @@ class PembeliController extends Controller
         }
 
         return response()->json([
+            'id_pembeli' => $profile->ID_PEMBELI,
             'name' => $profile->NAMA_PEMBELI,
             'email' => $profile->EMAIL_PEMBELI,
             'points' => $profile->POIN_PEMBELI

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
+import 'produk_show.dart';
 
 class OrganisasiScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
@@ -23,7 +24,7 @@ class OrganisasiScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(child: Text("Selamat datang, Organisasi!")),
+      body: ProdukShow(),
     );
   }
 }

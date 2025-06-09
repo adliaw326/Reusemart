@@ -3,6 +3,8 @@ import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
 import 'tentang_kami.dart'; // Import Tentang Kami screen
 import 'profile_pembeli.dart'; // Import ProfilePembeliScreen
+import 'produk_show.dart';  // pastikan path sesuai struktur folder kamu
+
 
 class PembeliScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
@@ -25,7 +27,7 @@ class PembeliScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(child: Text("Selamat datang, Pembeli!")),
+      body: ProdukShow(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0, // Set current page index (Home is the first page here)
         items: [

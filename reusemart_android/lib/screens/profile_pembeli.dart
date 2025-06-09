@@ -6,6 +6,7 @@ import 'login_screen.dart';
 import 'tentang_kami.dart'; // Import Tentang Kami screen
 import 'pembeli_screen.dart'; // Import PembeliScreen
 import 'history_transaksi.dart'; // Import HistoryTransaksiScreen
+import 'merch_screen.dart'; // Import screen Tukar Merch
 
 class ProfilePembeliScreen extends StatefulWidget {
   @override
@@ -83,15 +84,32 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
                       _buildRoundedField("Poin Reward", _profile!['points'].toString()),
                       SizedBox(height: 16),
                       // Add "Melihat History Transaksi" button
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigate to HistoryTransaksiScreen when clicked
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => HistoryTransaksiScreen()), // Navigate to HistoryTransaksiScreen
-                          );
-                        },
-                        child: Text("Melihat History Transaksi", style: TextStyle(fontSize: 16)),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => HistoryTransaksiScreen()),
+                                );
+                              },
+                              child: Text("History Transaksi", style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => MerchScreen(_profile!['id_pembeli'].toString())),
+                                );
+                              },
+                              child: Text("Tukar Merch", style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

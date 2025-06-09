@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\DashboardAdminController;
@@ -52,11 +53,30 @@ Route::get('/pegawai_gudang/show_transaksi_pembelian', function () {
     return view('pegawai_gudang.show_transaksi_pembelian');
 })->name('showTransaksiPembelian');
 
-Route::get('/pegawai_gudang/live_coding_2', function () {
-    return view('pegawai_gudang.live_coding_2');
-})->name('showLiveCoding2');
+Route::get('/owner/laporan_kategori_per_tahun', [TransaksiPenitipanController::class, 'cetakLaporanKategoriPerTahun']);
+Route::get('/owner/laporan_barang_penitipan_habis', [TransaksiPenitipanController::class, 'cetakProdukExpired']);
 
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
+
+Route::get('/foto/{folder}/{filename}', function ($folder, $filename) {
+    $allowedFolders = ['foto_kategori', 'foto_produk', 'icon', 'images', 'merch'];
+
+    if (!in_array($folder, $allowedFolders)) {
+        abort(404);
+    }
+
+    $path = public_path("$folder/$filename");
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    return response($file, 200)->header("Content-Type", $type);
+});
+
 //KEVIN===============================================================================================================
 
    //registrasi

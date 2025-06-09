@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Alamat;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Komisi;
 
 class TransaksiPembelianController extends Controller
@@ -27,7 +26,7 @@ class TransaksiPembelianController extends Controller
 
         return view('produk.CODING', compact('transaksiPembelian'));
     }
-    
+
     public function index()
     {
         // Mengambil transaksi pembelian dengan relasi produk dan pembeli
@@ -106,7 +105,7 @@ class TransaksiPembelianController extends Controller
         //     'success' => true,
         //     'message' => 'Transaksi Pembelian berhasil ditambahkan!',
         //     'ID_PEMBELIAN' => $transaksi->ID_PEMBELIAN
-        // ]);        
+        // ]);
         $ID_PEMBELI = $transaksi->ID_PEMBELI;
         $NAMA_PEMBELI = $pembeli->NAMA_PEMBELI;
         $ID_PEMBELIAN = $transaksi->ID_PEMBELIAN;
@@ -119,7 +118,7 @@ class TransaksiPembelianController extends Controller
         // dd($TRANSAKSI_PEMBELIAN);
         $ID_TRANSAKSI_PEMBELIAN = $this->generateId($ID_PEMBELIAN);
 
-        
+
         return response()->json([
             'ID_PEMBELI' => $ID_PEMBELI,
             'NAMA_PEMBELI' => $NAMA_PEMBELI,
@@ -289,7 +288,7 @@ class TransaksiPembelianController extends Controller
                 'error' => 'Transaksi sudah lebih dari 1 menit, tidak dapat mengupload bukti bayar.'
             ], 400);
         }
-        
+
         if ($request->hasFile('BUKTI_BAYAR')) {
             $file = $request->file('BUKTI_BAYAR');
 
@@ -621,7 +620,7 @@ class TransaksiPembelianController extends Controller
     {
         // Ambil tanggal sekarang atau tanggal lunas sesuai kebutuhan
         $tanggalLunasS = TransaksiPembelian::find($idPembelian); // pakai Carbon bawaan Laravel
-        $tanggalLunasS = $tanggalLunasS->TANGGAL_PESAN;                
+        $tanggalLunasS = $tanggalLunasS->TANGGAL_PESAN;
         // dd($tanggalLunas);
         // Format tahun dan bulan
         $tanggalLunas = Carbon::parse($tanggalLunasS);
@@ -663,7 +662,7 @@ class TransaksiPembelianController extends Controller
 
         $transaksi->STATUS_TRANSAKSI = "GAGAL KONFIRMASI";
 
-        
+
         return redirect()->back()->with('error', 'GAGAL UBAH STATUS TRANSAKSI!');
     }
 
@@ -686,7 +685,7 @@ class TransaksiPembelianController extends Controller
 
             $idPenitips = TransaksiPenitipan::whereIn('KODE_PRODUK', $produkIds)
                         ->pluck('ID_PENITIP')->unique();
-            
+
             // $tokens = Penitip::whereIn('id', $idPenitips)
             //           ->whereNotNull('fcm_token')
             //           ->pluck('fcm_token')->toArray();
@@ -716,11 +715,11 @@ class TransaksiPembelianController extends Controller
                         $hargaBayar = $hargaBayar - 100000;
                     }
                     $hargaBayar = $hargaBayar - ($poinDigunakan*100);
-                    
-                    $hargaBayar = max($hargaBayar, 0); // HARGA UNTUK POIN                
 
-                    
-                    $bonusPoin = $hargaBayar > 500000 
+                    $hargaBayar = max($hargaBayar, 0); // HARGA UNTUK POIN
+
+
+                    $bonusPoin = $hargaBayar > 500000
                         ? floor(($hargaBayar / 10000) * 1.2)
                         : floor($hargaBayar / 10000);
                     // dd($bonusPoin, $hargaBayar, $sisaPoin, $poinDigunakan, $pembeli->POIN_PEMBELI);
@@ -762,18 +761,18 @@ class TransaksiPembelianController extends Controller
         }
 
         $transaksi->STATUS_TRANSAKSI = "BUKTI TIDAK VALID";
-        $transaksi->save();        
-        $produkList = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)->get();        
+        $transaksi->save();
+        $produkList = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)->get();
 
         foreach ($produkList as $produk) {
             // Contoh: menyimpan ke tabel detail_pembelian
             $produkModel = Produk::find($produk['KODE_PRODUK']);
-            if ($produkModel) {                
+            if ($produkModel) {
                 Keranjang::tambahProduk($transaksi->ID_PEMBELI, $produkModel->KODE_PRODUK);
                 // Contoh: update kolom TERJUAL
                 $produkModel->ID_PEMBELIAN = null; // Set ID_PEMBELIAN pada produk
                 $penitipan = TransaksiPenitipan::where('KODE_PRODUK', $produkModel->KODE_PRODUK)->first();
-                $penitipan->STATUS_PENITIPAN = 'Berlangsung'; // Update status penitipan             
+                $penitipan->STATUS_PENITIPAN = 'Berlangsung'; // Update status penitipan
 
                 // Contoh: update kolom STATUS jika null
 
@@ -784,7 +783,7 @@ class TransaksiPembelianController extends Controller
 
         return response()->json(['message' => 'Transaksi telah DIBATALKAN']);
     }
-  
+
     public function cetakNotaKurir($id_pembelian)
     {
         $transaksi = TransaksiPembelian::with(['produk.pegawai', 'pembeli', 'alamat', 'pegawai'])
@@ -869,7 +868,7 @@ class TransaksiPembelianController extends Controller
             ->orderBy('bulan') // Mengurutkan berdasarkan bulan
             ->get();
 
-        $pdf = \PDF::loadView('owner.cetak_penjualan_bulanan', compact('penjualan'));
+        $pdf = Pdf::loadView('owner.cetak_penjualan_bulanan', compact('penjualan'));
         return $pdf->download('laporan_penjualan_bulanan.pdf');
     }
 
@@ -902,9 +901,9 @@ class TransaksiPembelianController extends Controller
             // Mengelompokkan berdasarkan bulan dari TANGGAL_LUNAS
             return Carbon::parse($item->TANGGAL_LUNAS)->format('F Y'); // Menggunakan nama bulan dan tahun (misalnya Januari 2025)
         });
-        
 
-        $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
+
+        $pdf = Pdf::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan.pdf');
     }
 
@@ -927,7 +926,7 @@ class TransaksiPembelianController extends Controller
         });
 
         // Memuat tampilan dan mendownload PDF
-        $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
+        $pdf = Pdf::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan_' . $tahun . '_' . $bulan . '.pdf');
     }
 
