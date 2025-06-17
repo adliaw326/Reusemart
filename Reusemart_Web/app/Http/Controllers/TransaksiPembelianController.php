@@ -986,6 +986,7 @@ class TransaksiPembelianController extends Controller
         $transaksi = TransaksiPembelian::with('alamat', 'pembeli')
             ->where('ID_PEGAWAI', $id)
             ->where('STATUS_PENGIRIMAN', 'delivery')
+            // ->where('STATUS_TRANSAKSI', 'SELESAI')
             ->get();
 
         if (!$transaksi) {
@@ -1013,12 +1014,14 @@ class TransaksiPembelianController extends Controller
             'ID_PEMBELI' => $transaksi->ID_PEMBELI,
             'ISI' => 'Pesanan Anda :'.$produk->NAMA_PRODUK. ' telah sampai di alamat : '.$transaksi->alamat->LOKASI,
             'TANGGAL' => \Carbon\Carbon::now(),
+            'JUDUL' => 'Pembelian ReuseMart sudah sampai'
         ]);
 
         Notifikasi::createNotifikasi([
             'ID_PENITIP' => $tpen->ID_PENITIP,
             'ISI' => 'Barang Anda :'.$produk->NAMA_PRODUK. ' telah dibeli dan sampai di pembeli : '.$transaksi->pembeli->NAMA_PEMBELI,
             'TANGGAL' => \Carbon\Carbon::now(),
+            'JUDUL' => 'Penjualan Barang di ReuseMart telah berhasil'
         ]);
 
 
@@ -1028,6 +1031,6 @@ class TransaksiPembelianController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pengiriman Berhasil'
-        ]);
+        ], 200);
     }
 }

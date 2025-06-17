@@ -26,6 +26,7 @@ class _KurirScreenState extends State<KurirScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadKurirDataFromBackend();
       _loadDataPesanan();
+      _loadDataHistory();
     });
   }
 
@@ -501,6 +502,7 @@ class _KurirScreenState extends State<KurirScreen> {
                         );
                       }
                       _loadDataPesanan();
+                      _loadDataHistory();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Terjadi kesalahan saat mengirim data.")),

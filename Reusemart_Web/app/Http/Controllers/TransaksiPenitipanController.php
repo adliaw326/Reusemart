@@ -419,6 +419,7 @@ public function update(Request $request, $id)
     {
         $request = RequestDonasi::with('organisasi') // ambil data organisasi dari relasi
                     ->whereNotNull('ID_ORGANISASI')    // pastikan request punya organisasi
+                    ->where('STATUS_REQUEST', 'pending')
                     ->get();
 
         // Determine the current month and pass it to the view
@@ -531,5 +532,53 @@ public function update(Request $request, $id)
 
         // Return the penitipan transaction details as JSON
         return response()->json($penitipan);
+    }
+
+    public function cetakCoding(){
+        $donasi = Donasi::whereNotNull('KODE_PRODUK')
+            ->whereHas('produk', function ($query) {
+                $query->whereNotNull('ID_HUNTER');
+            })
+            ->get();
+
+
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.CODING', compact('donasi'));
+        return $pdf->stream('CODING.pdf');
+    }
+
+    public function cetakCodingpdf(){
+        $donasi = Donasi::whereNotNull('KODE_PRODUK')
+            ->whereHas('produk', function ($query) {
+                $query->whereNotNull('ID_HUNTER');
+            })
+            ->get();
+
+
+        // Determine the current month and pass it to the view
+        // $month = now()->format('F Y');
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.CODING', compact('donasi'));
+        return $pdf->download('CODING.pdf');
+    }
+
+    public function cetakCodingLAMA(Request $request){
+        $tahun = $request->tahun;
+
+        $produk = Produk::whereHas('donasi', function($query) use ($tahun) {
+                $query->whereYear('TANGGAL_DONASI', $tahun);
+            })
+            ->whereHas('hunter', function ($query) {
+                $query->whereNotNull('ID_HUNTER');
+            })
+            ->get();
+
+        // Return the view with the filtered data and month
+        $pdf = \PDF::loadView('owner.CODINGLAMA', compact('produk','tahun'));
+        return $pdf->stream('CODINGLAMA.pdf');
     }
 }

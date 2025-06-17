@@ -1,31 +1,27 @@
 <?php
-namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
+namespace App\Services; // WAJIB! Ini namespace-nya
 
-class FirebaseService
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
+
+class FirebaseNotificationService
 {
-    protected $serverKey;
+    protected $messaging;
 
     public function __construct()
     {
-        $this->serverKey = env('FIREBASE_SERVER_KEY');
+        $factory = (new Factory)->withServiceAccount(storage_path('firebase/firebase-adminsdk.json'));
+        $this->messaging = $factory->createMessaging();
     }
 
-    public function sendNotification($fcmToken, $title, $body)
+    public function sendNotification($deviceToken, $title, $body, $data = [])
     {
-        $response = Http::withHeaders([
-            'Authorization' => 'key=' . $this->serverKey,
-            'Content-Type' => 'application/json',
-        ])->post('https://fcm.googleapis.com/fcm/send', [
-            'to' => $fcmToken,
-            'notification' => [
-                'title' => $title,
-                'body' => $body,
-            ],
-            'priority' => 'high',
-        ]);
+        $message = CloudMessage::withTarget('token', $deviceToken)
+            ->withNotification(Notification::create($title, $body))
+            ->withData($data);
 
-        return $response->successful();
+        return $this->messaging->send($message);
     }
 }

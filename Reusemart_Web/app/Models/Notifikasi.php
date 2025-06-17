@@ -10,7 +10,7 @@ class Notifikasi extends Model
     protected $primaryKey = 'ID_NOTIFIKASI';
     public $timestamps = false;
     protected $fillable = [
-        'ID_PEMBELI', 'ID_PENITIP', 'ID_PEGAWAI', 'ISI', 'TANGGAL', 'JUDUl'
+        'ID_PEMBELI', 'ID_PENITIP', 'ID_PEGAWAI', 'ISI', 'TANGGAL', 'JUDUL'
     ];
 
     // Relasi ke Pembeli

@@ -104,6 +104,9 @@ Route::post('/kurir/selesaiKurir/{id}', [TransaksiPembelianController::class, 's
 
 Route::get('/pembeli/notif/{id}', [NotifikasiController::class, 'findPembeli']);
 Route::get('/penitip/notif/{id}', [NotifikasiController::class, 'findPenitip']);
+use App\Http\Controllers\NotificationController;
+
+Route::post('/send-notification', [NotificationController::class, 'send']);
 
     
 

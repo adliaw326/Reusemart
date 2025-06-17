@@ -284,6 +284,45 @@
                 </div>
             </div>
         </div>
+        <div class="buttons-container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <!-- Penjualan Bulanan Keseluruhan Button -->
+                <div class="col mb-3">
+                    <a href="{{ url('/owner/cetak_coding') }}" class="btn btn-custom w-100">Lihat LAPORAN DONASI HUNTER</a>
+                     <!-- <button type="button" class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalCetakDonasiBarang">
+                        LIVE CODING TAMPIL
+                    </button> -->
+                </div>            
+                
+                <!-- Laporan Stok Gudang Button -->
+                <div class="col mb-3">
+                    <a href="{{ url('/owner/cetak_codingpdf') }}" class="btn btn-custom w-100">Donwload LAPORAN DONASI HUNTER</a>
+                     <!-- <button class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalCetakPenitip">
+                        LIVE CODING DONLOT
+                    </button> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <!-- Penjualan Bulanan Keseluruhan Button -->
+                <div class="col mb-3">
+                    <!-- <a href="{{ url('/owner/cetak_coding') }}" class="btn btn-custom w-100">Lihat LAPORAN DONASI HUNTER</a> -->
+                     <button type="button" class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalCetakDonasiHunter">
+                        Lihat Laporan DOnasi Hunter
+                    </button>
+                </div>            
+                
+                <!-- Laporan Stok Gudang Button -->
+                <div class="col mb-3">
+                    <!-- <a href="{{ url('/owner/cetak_codingpdf') }}" class="btn btn-custom w-100">Donwload LAPORAN DONASI HUNTER</a> -->
+                     <button class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#modalCetakDonasiHunter">
+                        Download Laporan Donasi HUnter
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="buttons-container">
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
@@ -459,6 +498,34 @@
             </div>
         </form>
 
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="modalCetakDonasiHunter" tabindex="-1" aria-labelledby="modalCetakDonasiHunterLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="{{ url('/owner/cetak_codingLAMA') }}" method="GET" target="_blank">
+            <div class="modal-header">
+            <h5 class="modal-title" id="modalCetakDonasiHunterLabel">Laporan Donasi Hunter Tahun Berapa?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+            <label for="tahun_pdf">Pilih Tahun:</label>
+            <select name="tahun" id="tahun_pdf" class="form-select" required>
+                <option value="">-- Pilih Tahun --</option>
+                @for($y = now()->year; $y >= 2020; $y--)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                @endfor
+            </select>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Cetak PDF</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </form>
         </div>
     </div>
     </div>

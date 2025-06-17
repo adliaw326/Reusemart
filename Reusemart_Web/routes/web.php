@@ -201,7 +201,13 @@ Route::get('/owner/cetak_donasi_barang_pdf', [TransaksiPenitipanController::clas
 Route::get('/owner/cetak_request_donasi', [TransaksiPenitipanController::class, 'cetakRequestDonasi']);
 Route::get('/owner/cetak_request_donasi_pdf', [TransaksiPenitipanController::class, 'cetakRequestDonasiPDF']);
 Route::get('/owner/cetak_transaksi_penitip', [TransaksiPenitipanController::class, 'cetakTransaksiPenitip']);
-Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipanPDF']);
+Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipPDF']);
+
+Route::get('/owner/cetak_coding', [TransaksiPenitipanController::class, 'cetakCoding']);
+Route::get('/owner/cetak_codingpdf', [TransaksiPenitipanController::class, 'cetakCodingpdf']);
+
+Route::get('/owner/cetak_codingLAMA', [TransaksiPenitipanController::class, 'cetakCodingLAMA']);
+Route::get('/owner/cetak_codingpdfLAMA', [TransaksiPenitipanController::class, 'cetakCodingpdfLAMA']);
 
 
 //history transaksi + rating
