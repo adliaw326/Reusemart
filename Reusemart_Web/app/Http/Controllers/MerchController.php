@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Penukaran;
 
 class MerchController extends Controller
 {
@@ -83,27 +84,25 @@ class MerchController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function getByPembeli(Request $request)
     {
-        //
-    }
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $data = Penukaran::with('merchandise')
+            ->where('ID_PEMBELI', $user->ID_PEMBELI)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'nama_merchandise' => $item->merchandise->NAMA_MERCHANDISE,
+                    'jumlah_penukaran' => $item->JUMLAH_PENUKARAN,
+                    'jumlah_harga_poin' => $item->JUMLAH_PENUKARAN * $item->merchandise->HARGA_POIN,
+                    'tanggal_claim_penukaran' => $item->TANGGAL_CLAIM_PENU,
+                ];
+            });
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json($data);
     }
 }

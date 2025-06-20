@@ -7,6 +7,7 @@ use App\Models\TransaksiPenitipan;
 use App\Models\Produk;
 use App\Models\KategoriProduk;
 use App\Models\Penitip;
+use App\Models\Pegawai;
 use App\Models\Alamat;
 use App\Models\TransaksiPembelian;
 use App\Models\Donasi;
@@ -616,5 +617,88 @@ public function update(Request $request, $id)
         ]);
 
         return $pdf->stream('laporan_produk_expired.pdf');
+    }
+
+    public function cetakLaporanKategoriPerTahunPdf(Request $request)
+    {
+        $tahun = $request->tahun;
+        $tanggalCetak = Carbon::now()->format('d F Y');
+
+        $kategoriList = KategoriProduk::all();
+
+        $laporan = [];
+
+        $totalTerjual = 0;
+        $totalGagal = 0;
+
+        foreach ($kategoriList as $kategori) {
+            // Jumlah produk terjual berdasarkan transaksi_pembelian yang ada
+            $jumlahTerjual = Produk::where('ID_KATEGORI', $kategori->ID_KATEGORI)
+                ->whereNotNull('ID_PEMBELIAN')
+                ->whereHas('transaksiPembelian', function ($query) use ($tahun) {
+                    $query->whereYear('TANGGAL_LUNAS', $tahun);
+                })
+                ->count();
+
+            // Jumlah gagal terjual (expired dan bukan terjual/berlangsung) dari transaksi_penitipan
+            $jumlahGagalTerjual = Produk::where('ID_KATEGORI', $kategori->ID_KATEGORI)
+                ->whereHas('transaksiPenitipan', function ($query) use ($tahun) {
+                    $query->whereNotIn('STATUS_PENITIPAN', ['Terjual', 'Berlangsung'])
+                        ->whereDate('TANGGAL_EXPIRED', '<=', now())
+                        ->whereYear('TANGGAL_EXPIRED', $tahun);
+                })
+                ->count();
+
+            $laporan[] = [
+                'kategori' => $kategori->NAMA_KATEGORI,
+                'jumlah_terjual' => $jumlahTerjual,
+                'jumlah_gagal_terjual' => $jumlahGagalTerjual,
+            ];
+
+            $totalTerjual += $jumlahTerjual;
+            $totalGagal += $jumlahGagalTerjual;
+        }
+
+        $pdf = Pdf::loadView('owner.laporan_kategori_per_tahun', [
+            'tahun' => $tahun,
+            'tanggal_cetak' => $tanggalCetak,
+            'laporan' => $laporan,
+            'total_terjual' => $totalTerjual,
+            'total_gagal' => $totalGagal,
+        ]);
+
+        return $pdf->download('laporan_kategori_' . $tahun . '.pdf');
+    }
+
+    public function cetakProdukExpiredPdf()
+    {
+        $tanggalCetak = Carbon::now()->translatedFormat('d F Y');
+
+        $produkExpired = Produk::with(['transaksiPenitipan.penitip'])
+            ->whereHas('transaksiPenitipan', function ($query) {
+                $query->where('STATUS_PENITIPAN', 'Expired');
+            })
+            ->get()
+            ->map(function ($produk) {
+                $transaksi = $produk->transaksiPenitipan;
+                $penitip = optional($transaksi)->penitip;
+
+                return [
+                    'kode_produk' => strtoupper(substr($produk->NAMA_PRODUK, 0, 1)) . $produk->KODE_PRODUK,
+                    'nama_produk' => $produk->NAMA_PRODUK,
+                    'id_penitip' => $penitip->ID_PENITIP ?? '-',
+                    'nama_penitip' => $penitip->NAMA_PENITIP ?? '-',
+                    'tanggal_masuk' => optional($transaksi)->TANGGAL_MASUK,
+                    'tanggal_akhir' => optional($transaksi)->TANGGAL_EXPIRED ? Carbon::parse($transaksi->TANGGAL_EXPIRED)->subDay() : null,
+                    'batas_ambil' => optional($transaksi)->TANGGAL_EXPIRED ? Carbon::parse($transaksi->TANGGAL_EXPIRED)->addDays(6) : null,
+                ];
+            });
+
+        $pdf = PDF::loadView('owner.laporan_barang_penitipan_habis', [
+            'produkExpired' => $produkExpired,
+            'tanggal_cetak' => $tanggalCetak,
+        ]);
+
+        return $pdf->download('laporan_produk_expired.pdf');
     }
 }

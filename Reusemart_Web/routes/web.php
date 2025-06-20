@@ -56,6 +56,9 @@ Route::get('/pegawai_gudang/show_transaksi_pembelian', function () {
 Route::get('/owner/laporan_kategori_per_tahun', [TransaksiPenitipanController::class, 'cetakLaporanKategoriPerTahun']);
 Route::get('/owner/laporan_barang_penitipan_habis', [TransaksiPenitipanController::class, 'cetakProdukExpired']);
 
+Route::get('/owner/laporan_kategori_per_tahun_pdf', [TransaksiPenitipanController::class, 'cetakLaporanKategoriPerTahunPdf']);
+Route::get('/owner/laporan_barang_penitipan_habis_pdf', [TransaksiPenitipanController::class, 'cetakProdukExpiredPdf']);
+
 Route::get('/tentang-kami', function () { return view('general.tentang_kami');});
 
 Route::get('/foto/{folder}/{filename}', function ($folder, $filename) {

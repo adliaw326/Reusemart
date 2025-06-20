@@ -39,6 +39,7 @@ Route::get('/produk', [ProdukController::class, 'index']);
 Route::get('/merch', [MerchController::class, 'index']);
 Route::post('/penukaran', [MerchController::class, 'store']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip', [PenitipPegawaiController::class, 'index']);
     Route::post('/get-user-data', [UserDataController::class, 'getUserData']);
@@ -70,6 +71,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/hunter/profile/mobile', [HunterController::class, 'showProfileMobile']);
     Route::get('/history-komisi-mobile', [HunterController::class, 'historyKomisiMobile']);
+
+    Route::get('/penukaran/pembeli', [MerchController::class, 'getByPembeli']);
 });
 
 // ORGANISASI

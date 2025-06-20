@@ -244,6 +244,10 @@ class _MerchScreenState extends State<MerchScreen> {
                                       "$poin poin",
                                       style: TextStyle(color: Colors.green),
                                     ),
+                                    Text(
+                                      "$stok buah",
+                                      style: TextStyle(color: Colors.green),
+                                    ),
                                     ElevatedButton(
                                       onPressed: () {
                                         _showTukarDialog(context, idMerch, nama, poin, stok);

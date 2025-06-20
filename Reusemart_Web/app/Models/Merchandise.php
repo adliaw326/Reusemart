@@ -15,5 +15,6 @@ class Merchandise extends Model
         'ID_MERCHANDISE',
         'NAMA_MERCHANDISE',
         'HARGA_POIN',
+        'JUMLAH_MERCH'
     ];
 }
