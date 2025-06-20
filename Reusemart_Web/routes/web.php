@@ -90,8 +90,6 @@ Route::get('/profile/penitip', function () {
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
 
-Route::get('/CODING', [TransaksiPembelianController::class, 'indexI'])->name('CODING');
-
 //diskusi
 Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('diskusi.store');
 
@@ -203,11 +201,6 @@ Route::get('/owner/cetak_request_donasi_pdf', [TransaksiPenitipanController::cla
 Route::get('/owner/cetak_transaksi_penitip', [TransaksiPenitipanController::class, 'cetakTransaksiPenitip']);
 Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipPDF']);
 
-Route::get('/owner/cetak_coding', [TransaksiPenitipanController::class, 'cetakCoding']);
-Route::get('/owner/cetak_codingpdf', [TransaksiPenitipanController::class, 'cetakCodingpdf']);
-
-Route::get('/owner/cetak_codingLAMA', [TransaksiPenitipanController::class, 'cetakCodingLAMA']);
-Route::get('/owner/cetak_codingpdfLAMA', [TransaksiPenitipanController::class, 'cetakCodingpdfLAMA']);
 
 
 //history transaksi + rating

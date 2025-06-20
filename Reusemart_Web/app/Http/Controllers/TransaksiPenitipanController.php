@@ -394,7 +394,7 @@ public function update(Request $request, $id)
         $pdf = \PDF::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
         return $pdf->stream('cetak_donasi_barang.pdf');
     }
-    
+
     public function cetakDonasiBarangPDF(Request $request)
     {
         $tahun = $request->tahun;
@@ -406,7 +406,7 @@ public function update(Request $request, $id)
                 $query->whereYear('TANGGAL_DONASI', $tahun);
             })
             ->get();
-        
+
 
         // Determine the current month and pass it to the view
         // $month = now()->format('F Y');
@@ -469,7 +469,7 @@ public function update(Request $request, $id)
         $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
         return $pdf->stream('cetak_transaksi_penitip.pdf');
     }
-    
+
     public function cetakTransaksiPenitipPDF(Request $request)
     {
         $id = $request->penitip_id;
@@ -491,7 +491,7 @@ public function update(Request $request, $id)
                     ->whereYear('TANGGAL_LUNAS', $tahun);
             })
             ->get();
-        
+
         // Determine the current month and pass it to the view
         // $month = now()->format('F Y');
 
@@ -532,53 +532,5 @@ public function update(Request $request, $id)
 
         // Return the penitipan transaction details as JSON
         return response()->json($penitipan);
-    }
-
-    public function cetakCoding(){
-        $donasi = Donasi::whereNotNull('KODE_PRODUK')
-            ->whereHas('produk', function ($query) {
-                $query->whereNotNull('ID_HUNTER');
-            })
-            ->get();
-
-
-        // Determine the current month and pass it to the view
-        // $month = now()->format('F Y');
-
-        // Return the view with the filtered data and month
-        $pdf = \PDF::loadView('owner.CODING', compact('donasi'));
-        return $pdf->stream('CODING.pdf');
-    }
-
-    public function cetakCodingpdf(){
-        $donasi = Donasi::whereNotNull('KODE_PRODUK')
-            ->whereHas('produk', function ($query) {
-                $query->whereNotNull('ID_HUNTER');
-            })
-            ->get();
-
-
-        // Determine the current month and pass it to the view
-        // $month = now()->format('F Y');
-
-        // Return the view with the filtered data and month
-        $pdf = \PDF::loadView('owner.CODING', compact('donasi'));
-        return $pdf->download('CODING.pdf');
-    }
-
-    public function cetakCodingLAMA(Request $request){
-        $tahun = $request->tahun;
-
-        $produk = Produk::whereHas('donasi', function($query) use ($tahun) {
-                $query->whereYear('TANGGAL_DONASI', $tahun);
-            })
-            ->whereHas('hunter', function ($query) {
-                $query->whereNotNull('ID_HUNTER');
-            })
-            ->get();
-
-        // Return the view with the filtered data and month
-        $pdf = \PDF::loadView('owner.CODINGLAMA', compact('produk','tahun'));
-        return $pdf->stream('CODINGLAMA.pdf');
     }
 }
