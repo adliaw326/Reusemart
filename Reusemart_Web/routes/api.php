@@ -61,7 +61,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip/profile/mobile', [PenitipController::class, 'showProfileMobile']);
     Route::get('/transaksi-penitipan/mobile', [TransaksiPenitipanController::class, 'indexMobile']);
     Route::get('/transaksi-penitipan/{id}/mobile', [TransaksiPenitipanController::class, 'showMobile']);
+    Route::get('/transaksi-penitipan/{id}', [TransaksiPenitipanController::class, 'showBarangTitipan']);
 });
+
+//Mobile (Top Seller)
+Route::get('/leaderboard-mobile', [TransaksiPembelianController::class, 'leaderboardMobile']);
 
 // ORGANISASI
 Route::post('/organisasi/register', [OrganisasiController::class, 'register']);
