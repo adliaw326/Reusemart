@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "reusemart-d1c49",
+  "private_key_id": "f89c6053ba975562c5bed7a320dd82c5da4830ba",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC3l/wOnq0EBAJd\nwbCqZmjgOLG335/jEowmlvR0BesyTmb1xBky1VK/aHgodR4B1JiDYswCKaiocVEN\nEJ0E1dbt+EZQ/OHTA/haZ2ZOXRcfY4HNSwcv3+a56yT0ZDHYWnjj6tfIvk/YBFxc\n5CbnLzD5lSyxN8uGsfL2SGpW6Et2yV4PNAY4yn9NjlhRFAYZomElcj+xdyUcEbEn\ny70xAM0FgUDut7R7Ck0PqpronBQuYrgVOSdUvYopAdlIGKh0IKBDo4xAohn3xpwt\n9c2mtihfjAVsUIDshWm8Gn2fu+B8bQ7Kh560igL+iVEgEl6jakCTLp3YwZzpZGg0\nr1DEjK71AgMBAAECggEACF5fLkjBWODYksQqH2T8/CuEE6jtNYE6Q5AMozVEhqMt\nl5+ms7sm7clUoNN7LgODfYmwBEaN2jpqwrkHz0PywMouZQaslzJ5IaB7o1rO8QQC\nKK92K70oW+qCDA8nzoA2k9Jin6iSedBJEtrmLbzoSJgqKgcsZH68CnSRPwDmX7Wz\nqziSWjwwipYjPLErCtBjGqtQn9bn6GdU1/H3C4LdZhuE37WEwKSgdd1Syvcd91tJ\nQjLF6nJOujwau8UV5PiqujHN+U/rZq4wztn/9jtoRKHl46qTnaml7YQo1RH/3+Nk\nIX4bl9PyaQV1cPrMAGNF5XE7QX2Mdvx+NrQrVa8uQQKBgQDbUyNnA/h1zlg6SkB8\nHvCuCbExC13alsEm3yy39wd0cV22vgWX05sYKXLu3XsbQJ1nro2C5QLfkEU1p7T2\nLtMItKvo2+MRj8nZmSSRi6npMM216eAG4DtbZZOFt3R6oopf29iSF5//hsDp58Gk\nl1TdxPKdlQtmEkcHBlPExIeGSQKBgQDWS0T9WEB1zmSFpY5gj70EtsTyCr7C8/vS\n2AFtiKZfSzgjBbNFqNvUpmvyZyxRjdszBfJNb+GkjS6zv3vVg96dMpl5MWU4ZrVV\ni342UM3gABxqkcR2XwUFU29JYjzOEOhWa1I77BQnuDyfkd/7arIvCqN2AUH1UsbI\nJCfXQMLzTQKBgQChM40cxU1UARLV3QdiczdBI7yJqKoV5KIY2QW8PSPMkRppG2du\n/UfMTYK9UCqQkEBhGWnHYF1pRleoJRibrTTM/EYyQ5O0r7OTbLz1AOskiwtXfot7\nYkoeVh1Etd8118vOwv59+kFOBZQ7F207dUMaMQyFiCu1nQ95eUwOnshhiQKBgGuV\nYk9mbQY31hOaqD4mK5kgQQPbDSZG41hZBW5+OjiBRO+gPv5r5eF+o5cQ4RkYhMG6\n7Iif8MJx9s5bBcqN58c3zgEgIVcNiWAnJfgS3SjmJV4DTIS484ZW+vn2jdxOdLZe\nLuzSetPuFNFvpOlOCaLAToxB2WFWa2GzdSUF6FnJAoGBAMU23gUX53Sns1lqUNOs\nMat7v1VigExQ/lej87ZQZOxHDuyBTG39zIX73zpRVHL790mtCD3oTz4FEtV2yVA/\n2Q/zv2h9lALnfpM6ezGdQv8cnygRbeZOQTRS7yKgzLh8n9NTwjcMC9Vn7o3vGIU6\nFSvlIe0jUt9eTPHpJeh+r5a3\n-----END PRIVATE KEY-----\n",
+  "client_email": "laravel@reusemart-d1c49.iam.gserviceaccount.com",
+  "client_id": "101214824316551784290",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/laravel%40reusemart-d1c49.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

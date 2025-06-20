@@ -1,4 +1,6 @@
 <?php
+use Illuminate\Broadcasting\Broadcasters\Broadcaster;
+use Illuminate\Support\Facades\Broadcast;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
@@ -87,8 +89,6 @@ Route::get('/profile/penitip', function () {
 
 // histori punya penitip
 Route::get('/penitip/histori', [PenitipController::class, 'history_produk'])->name('historiPenitip');
-
-Route::get('/CODING', [TransaksiPembelianController::class, 'indexI'])->name('CODING');
 
 //diskusi
 Route::post('/diskusi/store', [DiskusiProdukController::class, 'store'])->name('diskusi.store');
@@ -199,7 +199,8 @@ Route::get('/owner/cetak_donasi_barang_pdf', [TransaksiPenitipanController::clas
 Route::get('/owner/cetak_request_donasi', [TransaksiPenitipanController::class, 'cetakRequestDonasi']);
 Route::get('/owner/cetak_request_donasi_pdf', [TransaksiPenitipanController::class, 'cetakRequestDonasiPDF']);
 Route::get('/owner/cetak_transaksi_penitip', [TransaksiPenitipanController::class, 'cetakTransaksiPenitip']);
-Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipanPDF']);
+Route::get('/owner/cetak_transaksi_penitip_pdf', [TransaksiPenitipanController::class, 'cetakTransaksiPenitipPDF']);
+
 
 
 //history transaksi + rating
@@ -215,3 +216,6 @@ Route::get('/penukaran/{id}/edit', [PenukaranController::class, 'edit'])->name('
 Route::put('/penukaran/{id}', [PenukaranController::class, 'update'])->name('penukaran.update');
 Route::delete('/penukaran/{id}', [PenukaranController::class, 'destroy'])->name('penukaran.destroy');
 //RAFI===============================================================================================================
+
+
+Broadcast::routes();

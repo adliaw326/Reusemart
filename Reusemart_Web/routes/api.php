@@ -15,6 +15,7 @@ use App\Http\Controllers\TransaksiPembelianController;
 use App\Http\Controllers\TransaksiPenitipanController;
 use App\Http\Controllers\ProdukPenitipanController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\NotifikasiController;
 use Illuminate\Support\Facades\Artisan;
 
 Route::post('/run-check-transactions', function () {
@@ -100,6 +101,16 @@ Route::post('/transaksi-pembelian/gagal/{id}', [TransaksiPembelianController::cl
 
 //////////////////////////////////////////////////////MOBILE
 Route::get('/pegawai/showKurir/{id}', [PegawaiController::class, 'showKurir']);
+
+Route::get('/kurir/findKurir/{id}', [TransaksiPembelianController::class, 'findKurir']);
+Route::get('/kurir/findKurirHistory/{id}', [TransaksiPembelianController::class, 'findKurirHistory']);
+Route::post('/kurir/selesaiKurir/{id}', [TransaksiPembelianController::class, 'selesaiKurir']);
+
+Route::get('/pembeli/notif/{id}', [NotifikasiController::class, 'findPembeli']);
+Route::get('/penitip/notif/{id}', [NotifikasiController::class, 'findPenitip']);
+use App\Http\Controllers\NotificationController;
+
+Route::post('/send-notification', [NotificationController::class, 'send']);
 
     
 

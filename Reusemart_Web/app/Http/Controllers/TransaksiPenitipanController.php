@@ -367,7 +367,6 @@ public function update(Request $request, $id)
         return $pdf->download('cetak_stok_gudang.pdf');
     }
 
-<<<<<<< HEAD
     public function cetakDonasiBarang(Request $request)
     {
         $tahun = $request->tahun;
@@ -395,7 +394,7 @@ public function update(Request $request, $id)
         $pdf = \PDF::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
         return $pdf->stream('cetak_donasi_barang.pdf');
     }
-    
+
     public function cetakDonasiBarangPDF(Request $request)
     {
         $tahun = $request->tahun;
@@ -407,7 +406,7 @@ public function update(Request $request, $id)
                 $query->whereYear('TANGGAL_DONASI', $tahun);
             })
             ->get();
-        
+
 
         // Determine the current month and pass it to the view
         // $month = now()->format('F Y');
@@ -420,6 +419,7 @@ public function update(Request $request, $id)
     {
         $request = RequestDonasi::with('organisasi') // ambil data organisasi dari relasi
                     ->whereNotNull('ID_ORGANISASI')    // pastikan request punya organisasi
+                    ->where('STATUS_REQUEST', 'pending')
                     ->get();
 
         // Determine the current month and pass it to the view
@@ -469,7 +469,7 @@ public function update(Request $request, $id)
         $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
         return $pdf->stream('cetak_transaksi_penitip.pdf');
     }
-    
+
     public function cetakTransaksiPenitipPDF(Request $request)
     {
         $id = $request->penitip_id;
@@ -491,14 +491,14 @@ public function update(Request $request, $id)
                     ->whereYear('TANGGAL_LUNAS', $tahun);
             })
             ->get();
-        
+
         // Determine the current month and pass it to the view
         // $month = now()->format('F Y');
 
         // Return the view with the filtered data and month
         $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
         return $pdf->download('cetak_transaksi_penitip.pdf');
-=======
+    }
     // Mobile - Fetch the penitipan history for the given penitip
     public function indexMobile(Request $request)
     {
@@ -532,7 +532,6 @@ public function update(Request $request, $id)
 
         // Return the penitipan transaction details as JSON
         return response()->json($penitipan);
->>>>>>> b67761ef6c7852824448541c19494cb1e5a59b08
     }
 
     public function showBarangTitipan($id)

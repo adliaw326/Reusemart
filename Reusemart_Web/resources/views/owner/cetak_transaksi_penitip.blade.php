@@ -131,9 +131,11 @@
                             // Bonus jika lunas dan kurang dari 7 hari dari penitipan
                             $bonus = 0;
                             if ($tanggalLunas) {
-                                $diffInDaysLunasPenitipan = $tanggalLunas->diffInDays($tanggalPenitipan);
+                                $diffInDaysLunasPenitipan = $tanggalPenitipan->diffInDays($tanggalLunas);
                                 if ($diffInDaysLunasPenitipan < 7) {
                                     $bonus = $komisiReusemart * 0.10;  // 10% dari komisi
+                                }else{
+                                    $bonus = 0;
                                 }
                             }
 
@@ -144,6 +146,7 @@
                             $totalBersih += $hargaBersih;
                             $totalBonus += $bonus;
                             $totalPendapatan += $keuntungan;
+
                         @endphp
 
                         <td>{{ number_format($hargaBersih, 0, ',', '.') }}</td>

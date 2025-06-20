@@ -12,7 +12,7 @@
             height: 100%;
             margin: 0;
         }
-        
+
         body {
             background-color: #0b1e33;
         }
@@ -36,15 +36,15 @@
             width: 250px;
             padding-top: 20px;
         }
-        
+
         .sidebar .nav-link {
             color: #ffba42;
         }
-        
+
         .sidebar .nav-link:hover {
             color: #f5a201;
         }
-        
+
         .sidebar .active {
             background-color: #00537a;
         }
@@ -164,12 +164,12 @@
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_penjualan_bulanan') }}" class="btn btn-custom w-100">Lihat Penjualan Bulanan Keseluruhan</a>
                 </div>
-                
+
                 <!-- Laporan Komisi Bulanan per Produk Button -->
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_komisi_bulanan') }}" class="btn btn-custom w-100">Laporan Komisi Bulanan per Produk</a>
                 </div>
-                
+
                 <!-- Laporan Stok Gudang Button -->
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_stok_gudang') }}" class="btn btn-custom w-100">Laporan Stok Gudang</a>
@@ -184,12 +184,12 @@
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_penjualan_bulanan_pdf') }}" class="btn btn-custom w-100">Cetak Penjualan Bulanan Keseluruhan</a>
                 </div>
-                
+
                 <!-- Laporan Komisi Bulanan per Produk Button -->
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_komisi_bulanan_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Komisi Bulanan per Produk</a>
                 </div>
-                
+
                 <!-- Laporan Stok Gudang Button -->
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_stok_gudang_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Stok Gudang</a>
@@ -243,12 +243,12 @@
                         Lihat Laporan Donasi Barang
                     </button>
                 </div>
-                
+
                 <!-- Laporan Komisi Bulanan per Produk Button -->
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_request_donasi') }}" class="btn btn-custom w-100" target="_blank">Lihat Laporan Request Donasi</a>
                 </div>
-                
+
                 <!-- Laporan Stok Gudang Button -->
                 <div class="col mb-3">
                     <!-- <a href="{{ url('/owner/cetak_transaksi_penitipan') }}" class="btn btn-custom w-100" target="_blank">Lihat Laporan Transaksi Penitip</a> -->
@@ -269,12 +269,12 @@
                         Cetak Laporan Donasi Barang
                     </button>
                 </div>
-                
+
                 <!-- Laporan Komisi Bulanan per Produk Button -->
                 <div class="col mb-3">
                     <a href="{{ url('/owner/cetak_request_donasi_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Request Donasi</a>
                 </div>
-                
+
                 <!-- Laporan Stok Gudang Button -->
                 <div class="col mb-3">
                     <!-- <a href="{{ url('/owner/cetak_transaksi_penitipan_pdf') }}" class="btn btn-custom w-100">Cetak Laporan Transaksi Penitip</a> -->
@@ -292,7 +292,7 @@
                 </div>
                 <div class="col mb-3">
                     <!-- Biar rapi hehe -->
-                </div>                
+                </div>
             </div>
         </div>
 
@@ -459,6 +459,34 @@
             </div>
         </form>
 
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="modalCetakDonasiHunter" tabindex="-1" aria-labelledby="modalCetakDonasiHunterLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="{{ url('/owner/cetak_codingLAMA') }}" method="GET" target="_blank">
+            <div class="modal-header">
+            <h5 class="modal-title" id="modalCetakDonasiHunterLabel">Laporan Donasi Hunter Tahun Berapa?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+            <label for="tahun_pdf">Pilih Tahun:</label>
+            <select name="tahun" id="tahun_pdf" class="form-select" required>
+                <option value="">-- Pilih Tahun --</option>
+                @for($y = now()->year; $y >= 2020; $y--)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                @endfor
+            </select>
+            </div>
+
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Cetak PDF</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </form>
         </div>
     </div>
     </div>

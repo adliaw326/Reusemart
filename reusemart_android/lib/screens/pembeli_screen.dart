@@ -3,6 +3,7 @@ import '../utils/storage.dart';  // Import helper SecureStorage
 import 'login_screen.dart';
 import 'tentang_kami.dart'; // Import Tentang Kami screen
 import 'profile_pembeli.dart'; // Import ProfilePembeliScreen
+import 'notifikasi_screen.dart';
 import 'leaderboard_screen.dart'; // Import LeaderboardScreen
 
 class PembeliScreen extends StatelessWidget {
@@ -12,6 +13,18 @@ class PembeliScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Halaman Pembeli"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),  // Icon lonceng notifikasi
+            onPressed: () => _openNotifications(context),
+            tooltip: 'Notifikasi',
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => _logout(context),
+            tooltip: 'Logout',
+          ),
+        ],
       ),
       body: Center(child: Text("Selamat datang, Pembeli!")),
       bottomNavigationBar: BottomNavigationBar(
@@ -41,7 +54,7 @@ class PembeliScreen extends StatelessWidget {
             // Navigate to Tentang Kami
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => TentangKami()),  // Ensure this is the correct import
+              MaterialPageRoute(builder: (_) => TentangKami()),
             );
           } else if (index == 2) {
             // Navigate to Profile (ProfilePembeliScreen)
@@ -63,6 +76,13 @@ class PembeliScreen extends StatelessWidget {
         child: Icon(Icons.leaderboard),
         tooltip: 'Leaderboard',
       ),
+    );
+  }
+
+  void _openNotifications(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => NotifikasiScreen()),
     );
   }
 }
