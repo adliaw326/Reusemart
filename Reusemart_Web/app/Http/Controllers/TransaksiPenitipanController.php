@@ -421,6 +421,7 @@ public function update(Request $request, $id)
     {
         $request = RequestDonasi::with('organisasi') // ambil data organisasi dari relasi
                     ->whereNotNull('ID_ORGANISASI')    // pastikan request punya organisasi
+                    ->where('STATUS_REQUEST', 'pending')
                     ->get();
 
         // Determine the current month and pass it to the view
@@ -700,5 +701,21 @@ public function update(Request $request, $id)
         ]);
 
         return $pdf->download('laporan_produk_expired.pdf');
+    }
+  
+    public function showBarangTitipan($id)
+    {
+        // Fetch all TransaksiPenitipan for the given ID_PENITIP
+        $transaksiPenitipan = TransaksiPenitipan::with(['produk', 'pegawai', 'penitip'])
+            ->where('ID_PENITIP', $id)
+            ->get();
+
+        // Check if data exists
+        if ($transaksiPenitipan->isEmpty()) {
+            return response()->json(['message' => 'No items found for this penitip.'], 404);
+        }
+
+        // Return the data as JSON
+        return response()->json($transaksiPenitipan, 200);
     }
 }

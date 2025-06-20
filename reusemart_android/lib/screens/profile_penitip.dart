@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';  // Correct
 import 'package:http/http.dart' as http;
 import 'dart:convert';  // For JSON parsing
 import 'login_screen.dart';  // Navigate to login if the user is not logged in
+import 'daftar_barang_titipan.dart'; // Import DaftarBarangTitipanScreen
 import 'history_penitipan.dart'; // Import HistoryPenitipanScreen
 
 class ProfilePenitipScreen extends StatefulWidget {
@@ -62,11 +63,11 @@ class _ProfilePenitipScreenState extends State<ProfilePenitipScreen> {
     );
   }
 
-  // Logout method
-  void _logout(BuildContext context) async {
-    await _storage.deleteAll();  // Hapus semua data login
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => LoginScreen()), // Navigate to the login screen after logout
+  // Navigate to DaftarBarangTitipanScreen when clicked
+  void _navigateToDaftarBarangTitipan() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => DaftarBarangTitipanScreen()),
     );
   }
 
@@ -87,9 +88,8 @@ class _ProfilePenitipScreenState extends State<ProfilePenitipScreen> {
                           _buildProfileField("Nama Penitip", _profile!['NAMA_PENITIP']),
                           _buildProfileField("Email", _profile!['EMAIL_PENITIP']),
                           _buildProfileField("NIK", _profile!['NIK']),
-                          _buildProfileField("No Telp", _profile!['NO_TELP_PENITIP']),
                           _buildProfileField("Rating Rata-Rata", _profile!['RATING_RATA_RATA_P']),
-                          _buildProfileField("Saldo", "Rp. ${_profile!['SALDO_PENITIP']}"),
+                          _buildProfileField("Saldo", "Rp. ${_formatCurrency(_profile!['SALDO_PENITIP'])}"),
                           _buildProfileField("Poin Penitip", _profile!['POIN_PENITIP'].toString()),
                           _buildProfileField("Total Barang Terjual", _profile!['TOTAL_BARANG_TERJUAL'].toString()),
                           SizedBox(height: 20), // Add some spacing between fields and button
@@ -97,16 +97,52 @@ class _ProfilePenitipScreenState extends State<ProfilePenitipScreen> {
                             onPressed: _navigateToHistoryPenitipan, // Navigate to HistoryPenitipanScreen
                             child: Text("Melihat History Penitipan", style: TextStyle(fontSize: 16)),
                           ),
+                          SizedBox(height: 10), // Spacing between buttons
+                          ElevatedButton(
+                            onPressed: _navigateToDaftarBarangTitipan, // Navigate to Daftar Barang Titipan Screen
+                            child: Text("Daftar Barang Titipan", style: TextStyle(fontSize: 16)),
+                          ),
                         ],
                       ),
                     ),
     );
   }
 
+  // Helper method to format currency for Saldo
+  String _formatCurrency(int value) {
+    String formattedValue = value.toString();
+    int length = formattedValue.length;
+    if (length > 3) {
+      int commaPosition = length % 3;
+      if (commaPosition == 0) commaPosition = 3;
+      formattedValue = formattedValue.substring(0, commaPosition) + ',' + formattedValue.substring(commaPosition);
+      while (formattedValue.length > 4) {
+        commaPosition = formattedValue.length - 3;
+        formattedValue = formattedValue.substring(0, commaPosition) + ',' + formattedValue.substring(commaPosition);
+      }
+    }
+    return formattedValue;
+  }
+
+  // Helper method to format float values (like rating)
+  String _formatFloat(double value) {
+    return value.toStringAsFixed(2);  // Format to 2 decimal places
+  }
+
   // Helper method to build a rounded field for displaying profile information
-  Widget _buildProfileField(String label, String? value) {
-    // Handle null values
-    String displayValue = value ?? "Tidak tersedia";  // Default text for null values
+  Widget _buildProfileField(String label, dynamic value) {
+    String displayValue;
+
+    // Handle different types of values
+    if (value == null) {
+      displayValue = "Tidak tersedia";
+    } else if (value is double) {
+      displayValue = _formatFloat(value);
+    } else if (value is int) {
+      displayValue = _formatCurrency(value);
+    } else {
+      displayValue = value.toString();
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

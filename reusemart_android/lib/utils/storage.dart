@@ -30,4 +30,8 @@ class SecureStorage {
   static Future<void> clear() async {
     await _storage.deleteAll();
   }
+
+  static Future<String?> read(String key) async {
+    return await _storage.read(key: key);
+  }
 }

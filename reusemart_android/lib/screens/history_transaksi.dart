@@ -70,25 +70,11 @@ class _HistoryTransaksiScreenState extends State<HistoryTransaksiScreen> {
     }
   }
 
-  void _logout(BuildContext context) async {
-    await _storage.deleteAll();  // Hapus semua data login
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => LoginScreen()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("History Transaksi Pembelian"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () => _logout(context),
-            tooltip: 'Logout',
-          ),
-        ],
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator()) // Show loading spinner while fetching data
@@ -103,7 +89,7 @@ class _HistoryTransaksiScreenState extends State<HistoryTransaksiScreen> {
                       },
                     ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0, // Set current page index (Home is now highlighted)
+        currentIndex: 2, // Set current page index (Home is now highlighted)
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -167,13 +153,14 @@ class _HistoryTransaksiScreenState extends State<HistoryTransaksiScreen> {
               Text("${transaction['ID_PEMBELIAN']}", style: TextStyle(fontSize: 16)),
             ],
           ),
+          Divider(),
           SizedBox(height: 8),
           _buildTransactionDetail("Tanggal Pesan", transaction['TANGGAL_PESAN']),
           _buildTransactionDetail("Tanggal Ambil", transaction['TANGGAL_AMBIL']),
           _buildTransactionDetail("Status Rating", transaction['STATUS_RATING']),
           _buildTransactionDetail("Total Bayar", "Rp. ${transaction['TOTAL_BAYAR']}"),
           SizedBox(height: 10),
-          Divider(),
+
         ],
       ),
     );

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Alamat;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Notifikasi;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Komisi;
 
 class TransaksiPembelianController extends Controller
@@ -902,7 +904,6 @@ class TransaksiPembelianController extends Controller
             return Carbon::parse($item->TANGGAL_LUNAS)->format('F Y'); // Menggunakan nama bulan dan tahun (misalnya Januari 2025)
         });
 
-
         $pdf = Pdf::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan.pdf');
     }
@@ -963,5 +964,110 @@ class TransaksiPembelianController extends Controller
 
         // Return the transaction details as JSON
         return response()->json($transaksi);
+    }
+
+    public function findKurir($id)
+    {
+        $transaksi = TransaksiPembelian::with('alamat', 'pembeli')
+            ->where('ID_PEGAWAI', $id)
+            ->where('STATUS_PENGIRIMAN', 'delivery')
+            ->where('STATUS_TRANSAKSI', 'DIKIRIM')
+            ->get();
+
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        return response()->json($transaksi);
+    }
+    public function findKurirHistory($id)
+    {
+        $transaksi = TransaksiPembelian::with('alamat', 'pembeli')
+            ->where('ID_PEGAWAI', $id)
+            ->where('STATUS_PENGIRIMAN', 'delivery')
+            // ->where('STATUS_TRANSAKSI', 'SELESAI')
+            ->get();
+
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        return response()->json($transaksi);
+    }
+
+    public function selesaiKurir($id){
+        $transaksi = TransaksiPembelian::find($id);
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        $transaksi->STATUS_TRANSAKSI = 'SELESAI';
+        $transaksi->TANGGAL_SAMPAI = now();
+
+        $transaksi->save();
+
+        $produk = Produk::where('ID_PEMBELIAN', $transaksi->ID_PEMBELIAN)->first();
+        $tpen = TransaksiPenitipan::where('KODE_PRODUK', $produk->KODE_PRODUK)->first();
+
+        Notifikasi::createNotifikasi([
+            'ID_PEMBELI' => $transaksi->ID_PEMBELI,
+            'ISI' => 'Pesanan Anda :'.$produk->NAMA_PRODUK. ' telah sampai di alamat : '.$transaksi->alamat->LOKASI,
+            'TANGGAL' => \Carbon\Carbon::now(),
+            'JUDUL' => 'Pembelian ReuseMart sudah sampai'
+        ]);
+
+        Notifikasi::createNotifikasi([
+            'ID_PENITIP' => $tpen->ID_PENITIP,
+            'ISI' => 'Barang Anda :'.$produk->NAMA_PRODUK. ' telah dibeli dan sampai di pembeli : '.$transaksi->pembeli->NAMA_PEMBELI,
+            'TANGGAL' => \Carbon\Carbon::now(),
+            'JUDUL' => 'Penjualan Barang di ReuseMart telah berhasil'
+        ]);
+
+
+
+        // event(new notifSelesai($transaksi->ID_PEMBELI, $tpen->ID_PENITIP, 'TRANSAKSI PEMBELIAN KAMU SELESAI'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengiriman Berhasil'
+        ], 200);
+    }
+
+    public function leaderboardMobile(Request $request)
+    {
+        try {
+            // Ambil bulan dan tahun dari request (optional, default jika tidak ada)
+            $bulan = $request->input('bulan'); // Misal bulan 2
+            $tahun = $request->input('tahun'); // Misal tahun 2025
+
+            // Query untuk mengambil leaderboard berdasarkan transaksi pembelian dan penitip
+            $leaderboardQuery = TransaksiPembelian::selectRaw('penitip.ID_PENITIP, penitip.NAMA_PENITIP, SUM(transaksi_pembelian.TOTAL_BAYAR) as TOTAL_BAYAR')
+                ->join('produk', 'produk.ID_PEMBELIAN', '=', 'transaksi_pembelian.ID_PEMBELIAN')
+                ->join('transaksi_penitipan', 'transaksi_penitipan.KODE_PRODUK', '=', 'produk.KODE_PRODUK')
+                ->join('penitip', 'penitip.ID_PENITIP', '=', 'transaksi_penitipan.ID_PENITIP')
+                ->where('transaksi_pembelian.STATUS_TRANSAKSI', 'SELESAI'); // Hanya transaksi yang selesai
+
+            // Filter berdasarkan bulan dan tahun jika diberikan
+            if ($bulan && $tahun) {
+                $leaderboardQuery->whereYear('transaksi_pembelian.TANGGAL_LUNAS', $tahun)
+                                 ->whereMonth('transaksi_pembelian.TANGGAL_LUNAS', $bulan);
+            }
+
+            // Ambil data leaderboard
+            $leaderboard = $leaderboardQuery
+                ->groupBy('penitip.ID_PENITIP', 'penitip.NAMA_PENITIP')
+                ->orderByDesc('TOTAL_BAYAR') // Urutkan berdasarkan total bayar tertinggi
+                ->get();
+
+            // Cek jika data kosong
+            if ($leaderboard->isEmpty()) {
+                return response()->json(['message' => 'Tidak ada penitip yang memiliki penjualan.']);
+            }
+
+            // Mengembalikan data leaderboard
+            return response()->json($leaderboard);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Something went wrong.'], 500);
+        }
     }
 }

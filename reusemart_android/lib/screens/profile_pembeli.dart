@@ -69,7 +69,16 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Profile Pembeli"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => _logout(context),
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _profile == null

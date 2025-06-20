@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';  // Correct import for version 9.0.0
 import 'package:http/http.dart' as http;
-import 'package:reusemart_android/screens/profile_penitip.dart';
 import 'dart:convert';  // For JSON parsing
+import 'profile_penitip.dart';  // Navigate to login if the user is not logged in
 import 'penitip_screen.dart'; // Import PembeliScreen
 
-class HistoryPenitipanScreen extends StatefulWidget {
+class DaftarBarangTitipanScreen extends StatefulWidget {
   @override
-  _HistoryPenitipanScreenState createState() => _HistoryPenitipanScreenState();
+  _DaftarBarangTitipanScreenState createState() => _DaftarBarangTitipanScreenState();
 }
 
-class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
+class _DaftarBarangTitipanScreenState extends State<DaftarBarangTitipanScreen> {
   List<Map<String, dynamic>> _penitipan = [];  // To hold the list of penitipan
   bool _isLoading = true;
   bool _hasError = false; // Flag to check if there is an error
@@ -28,7 +28,7 @@ class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
     var userId = await _storage.read(key: 'userId'); // Get the userId from SecureStorage
 
     if (token != null && userId != null) {
-      var url = 'http://10.0.2.2:8000/api/transaksi-penitipan/mobile?ID_PENITIP=$userId'; // Use userId in the URL
+      var url = 'http://10.0.2.2:8000/api/transaksi-penitipan/$userId'; // Use userId in the URL
 
       try {
         var response = await http.get(
@@ -72,7 +72,7 @@ class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("History Penitipan"),
+        title: Text("Daftar Barang Titipan"),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator()) // Show loading spinner while fetching data
@@ -99,7 +99,7 @@ class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
           ),
         ],
         onTap: (index) {
-          if (index == 0) {
+          if (index == 1) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => PenitipScreen()),
@@ -115,8 +115,19 @@ class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
     );
   }
 
-  // Helper method to build each penitipan card with enhanced styling
+  // Helper method to build each penitipan card with relevant details
   Widget _buildPenitipanCard(Map<String, dynamic> penitipan) {
+    String statusPenitipan = penitipan['STATUS_PENITIPAN'];
+
+    // Convert Tanggal Expired to DateTime
+    DateTime tanggalExpired = DateTime.parse(penitipan['TANGGAL_EXPIRED']);
+    DateTime currentDate = DateTime.now();
+
+    // Check if Tanggal Expired is 7 days in the past
+    if (currentDate.isAfter(tanggalExpired.add(Duration(days: 7)))) {
+      statusPenitipan = "Barang untuk Donasi"; // Update status if expired + 7 days
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       margin: EdgeInsets.symmetric(vertical: 12),
@@ -135,20 +146,11 @@ class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Penitipan ID", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("${penitipan['ID_PENITIPAN'] ?? 'N/A'}", style: TextStyle(fontSize: 16)), // Convert int to String
-
-            ],
-          ),
-          SizedBox(height: 8),
-          Divider(),
-          _buildPenitipanDetail("Tanggal Penitipan", penitipan['TANGGAL_PENITIPAN']),
-          _buildPenitipanDetail("Status Penitipan", penitipan['STATUS_PENITIPAN']),
-          _buildPenitipanDetail("Kode Produk", "${penitipan['KODE_PRODUK'] ?? 'N/A'}"), // Convert int to String
+          _buildPenitipanDetail("Nama Barang", penitipan['produk']?['NAMA_PRODUK'] ?? 'N/A'), // Nama Barang
+          _buildPenitipanDetail("Tanggal Expired", penitipan['TANGGAL_EXPIRED'] ?? 'N/A'), // Tanggal Expired
+          _buildPenitipanDetail("Status Penitipan", statusPenitipan ?? 'N/A'), // Status Penitipan (updated)
           SizedBox(height: 10),
+          Divider(),
         ],
       ),
     );
