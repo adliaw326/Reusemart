@@ -33,4 +33,9 @@ class Pegawai extends Authenticatable
     {
         return $this->PASSWORD_PEGAWAI;
     }
+
+    public function produk2()
+    {
+        return $this->hasMany(Pegawai::class, 'ID_HUNTER');
+    }
 }

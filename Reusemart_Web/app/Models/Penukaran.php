@@ -8,7 +8,6 @@ class Penukaran extends Model
 {
     protected $table = 'penukaran';
     protected $primaryKey = 'ID_PENUKARAN';
-    public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [

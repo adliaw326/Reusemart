@@ -13,12 +13,14 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        // Fetch all categories and products
-        $kategori = KategoriProduk::all(); // Get all categories
-        $produk = Produk::all(); // Get all products
+        $produk = Produk::whereNull('ID_PEMBELI')
+            ->whereNull('ID_PEMBELIAN')
+            ->get();
 
-        // Pass both categories and products to the view
-        return view('general.home', compact('kategori', 'produk')); // Return home view from 'general' folder
+        return response()->json([
+            'status' => 'success',
+            'data' => $produk,
+        ]);
     }
 
     public function show($kode_produk)

@@ -143,7 +143,7 @@
                                 break;
                             case 'owner':
                                 userName = data.NAMA_PEGAWAI;
-                                profileLink = '/profile/owner';
+                                profileLink = '/owner/dashboard';
                                 break;
                             default:
                                 console.error('Role tidak dikenali:', role);

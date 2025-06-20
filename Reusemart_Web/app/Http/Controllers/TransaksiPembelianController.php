@@ -14,13 +14,21 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Alamat;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Notifikasi;
-// use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Komisi;
 
 class TransaksiPembelianController extends Controller
 {
+    public function indexI()
+    {
+        // Mengambil transaksi pembelian dengan relasi produk dan pembeli
+        $transaksiPembelian = TransaksiPembelian::where('STATUS_TRANSAKSI', 'MENUNGGU KONFIRMASI')->get();
+
+        return view('produk.CODING', compact('transaksiPembelian'));
+    }
+
     public function index()
     {
         // Mengambil transaksi pembelian dengan relasi produk dan pembeli
@@ -862,7 +870,7 @@ class TransaksiPembelianController extends Controller
             ->orderBy('bulan') // Mengurutkan berdasarkan bulan
             ->get();
 
-        $pdf = \PDF::loadView('owner.cetak_penjualan_bulanan', compact('penjualan'));
+        $pdf = Pdf::loadView('owner.cetak_penjualan_bulanan', compact('penjualan'));
         return $pdf->download('laporan_penjualan_bulanan.pdf');
     }
 
@@ -896,8 +904,7 @@ class TransaksiPembelianController extends Controller
             return Carbon::parse($item->TANGGAL_LUNAS)->format('F Y'); // Menggunakan nama bulan dan tahun (misalnya Januari 2025)
         });
 
-
-        $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
+        $pdf = Pdf::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan.pdf');
     }
 
@@ -920,7 +927,7 @@ class TransaksiPembelianController extends Controller
         });
 
         // Memuat tampilan dan mendownload PDF
-        $pdf = \PDF::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
+        $pdf = Pdf::loadView('owner.cetak_komisi_bulanan_pdf', compact('transaksiPembelianByMonth'));
         return $pdf->download('laporan_komisi_bulanan_' . $tahun . '_' . $bulan . '.pdf');
     }
 

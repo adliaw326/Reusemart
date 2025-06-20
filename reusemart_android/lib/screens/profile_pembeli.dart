@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';  // Correct import for version 9.0.0
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';  // For JSON parsing
+import 'dart:convert';
+
 import 'login_screen.dart';
-import 'tentang_kami.dart'; // Import Tentang Kami screen
-import 'pembeli_screen.dart'; // Import PembeliScreen
-import 'history_transaksi.dart'; // Import HistoryTransaksiScreen
+import 'tentang_kami.dart';
+import 'pembeli_screen.dart';
+import 'history_transaksi.dart';
+import 'merch_screen.dart';
+import 'claimed_merch_screen.dart';
 
 class ProfilePembeliScreen extends StatefulWidget {
   @override
@@ -15,7 +18,8 @@ class ProfilePembeliScreen extends StatefulWidget {
 class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
   Map<String, dynamic>? _profile;
   bool _isLoading = true;
-  final FlutterSecureStorage _storage = FlutterSecureStorage(); // Correct usage of SecureStorage
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
+  String? _token; // ✅ Tambahkan variabel token
 
   @override
   void initState() {
@@ -23,15 +27,15 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
     _loadProfile();
   }
 
-  // Fetch the profile when the screen is loaded
+  // ✅ Ambil profil & simpan token
   _loadProfile() async {
-    var token = await _storage.read(key: 'token'); // Get the token from SecureStorage
+    _token = await _storage.read(key: 'token'); // Simpan token
 
-    if (token != null) {
+    if (_token != null) {
       var response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/profile/mobile'), // Replace with your actual API URL
+        Uri.parse('http://10.0.2.2:8000/api/profile/mobile'),
         headers: {
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer $_token',
         },
       );
 
@@ -56,7 +60,7 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
   }
 
   void _logout(BuildContext context) async {
-    await _storage.deleteAll();  // Hapus semua data login
+    await _storage.deleteAll();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => LoginScreen()),
     );
@@ -90,22 +94,64 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
                       SizedBox(height: 16),
                       _buildRoundedField("Poin Reward", _profile!['points'].toString()),
                       SizedBox(height: 16),
-                      // Add "Melihat History Transaksi" button
-                      ElevatedButton(
-                        onPressed: () {
-                          // Navigate to HistoryTransaksiScreen when clicked
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => HistoryTransaksiScreen()), // Navigate to HistoryTransaksiScreen
-                          );
-                        },
-                        child: Text("Melihat History Transaksi", style: TextStyle(fontSize: 16)),
+                      Row(
+                        children: [
+                          // Tombol History Transaksi
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => HistoryTransaksiScreen()),
+                                );
+                              },
+                              child: Text("History Transaksi", style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // Tombol Tukar Merch
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => MerchScreen(_profile!['id_pembeli'].toString()),
+                                  ),
+                                );
+                              },
+                              child: Text("Tukar Merch", style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // ✅ Tombol Merch Diklaim (pakai token)
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: _token == null
+                                  ? null
+                                  : () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ClaimedMerchScreen(token: _token!),
+                                        ),
+                                      );
+                                    },
+                              child: Text("Merch Diklaim", style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                        ],
                       ),
                     ],
                   ),
                 ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2, // Set current page index (Profile is now highlighted)
+        currentIndex: 2,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -131,15 +177,13 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
               context,
               MaterialPageRoute(builder: (_) => TentangKami()),
             );
-          } else if (index == 2) {
-            // Stay on the Profile screen, since it's already selected
           }
         },
       ),
     );
   }
 
-  // Helper method to create a rounded field for displaying profile information
+  // Komponen untuk menampilkan data profil
   Widget _buildRoundedField(String label, String value) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -151,7 +195,7 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 6,
-            offset: Offset(0, 3), // Shadow position
+            offset: Offset(0, 3),
           ),
         ],
       ),

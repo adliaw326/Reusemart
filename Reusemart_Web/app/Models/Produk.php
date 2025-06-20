@@ -39,6 +39,11 @@ class Produk extends Model
         return $this->belongsTo(Pegawai::class, 'ID_PEGAWAI');
     }
 
+    public function pegawai2()
+    {
+        return $this->belongsTo(Pegawai::class, 'ID_HUNTER');
+    }
+
     public function pembeli()
     {
         return $this->belongsTo(Pembeli::class, 'ID_PEMBELI');

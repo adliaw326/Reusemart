@@ -17,6 +17,9 @@ use App\Http\Controllers\ProdukPenitipanController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\NotifikasiController;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\MerchController;
+use App\Http\Controllers\HunterController;
 
 Route::post('/run-check-transactions', function () {
     Artisan::call('transactions:check-pending');
@@ -33,6 +36,10 @@ Route::post('/run-check-transactions', function () {
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/produk', [ProdukController::class, 'index']);
+Route::get('/merch', [MerchController::class, 'index']);
+Route::post('/penukaran', [MerchController::class, 'store']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip', [PenitipPegawaiController::class, 'index']);
@@ -62,7 +69,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/penitip/profile/mobile', [PenitipController::class, 'showProfileMobile']);
     Route::get('/transaksi-penitipan/mobile', [TransaksiPenitipanController::class, 'indexMobile']);
     Route::get('/transaksi-penitipan/{id}/mobile', [TransaksiPenitipanController::class, 'showMobile']);
+
+    Route::get('/hunter/profile/mobile', [HunterController::class, 'showProfileMobile']);
+    Route::get('/history-komisi-mobile', [HunterController::class, 'historyKomisiMobile']);
+
+    Route::get('/penukaran/pembeli', [MerchController::class, 'getByPembeli']);
+
     Route::get('/transaksi-penitipan/{id}', [TransaksiPenitipanController::class, 'showBarangTitipan']);
+
 });
 
 //Mobile (Top Seller)
@@ -111,8 +125,6 @@ Route::get('/penitip/notif/{id}', [NotifikasiController::class, 'findPenitip']);
 use App\Http\Controllers\NotificationController;
 
 Route::post('/send-notification', [NotificationController::class, 'send']);
-
-    
 
 
 // Route khusus PENITIP
