@@ -533,4 +533,20 @@ public function update(Request $request, $id)
         // Return the penitipan transaction details as JSON
         return response()->json($penitipan);
     }
+
+    public function showBarangTitipan($id)
+    {
+        // Fetch all TransaksiPenitipan for the given ID_PENITIP
+        $transaksiPenitipan = TransaksiPenitipan::with(['produk', 'pegawai', 'penitip'])
+            ->where('ID_PENITIP', $id)
+            ->get();
+
+        // Check if data exists
+        if ($transaksiPenitipan->isEmpty()) {
+            return response()->json(['message' => 'No items found for this penitip.'], 404);
+        }
+
+        // Return the data as JSON
+        return response()->json($transaksiPenitipan, 200);
+    }
 }

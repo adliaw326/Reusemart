@@ -1025,4 +1025,42 @@ class TransaksiPembelianController extends Controller
             'message' => 'Pengiriman Berhasil'
         ], 200);
     }
+
+    public function leaderboardMobile(Request $request)
+    {
+        try {
+            // Ambil bulan dan tahun dari request (optional, default jika tidak ada)
+            $bulan = $request->input('bulan'); // Misal bulan 2
+            $tahun = $request->input('tahun'); // Misal tahun 2025
+
+            // Query untuk mengambil leaderboard berdasarkan transaksi pembelian dan penitip
+            $leaderboardQuery = TransaksiPembelian::selectRaw('penitip.ID_PENITIP, penitip.NAMA_PENITIP, SUM(transaksi_pembelian.TOTAL_BAYAR) as TOTAL_BAYAR')
+                ->join('produk', 'produk.ID_PEMBELIAN', '=', 'transaksi_pembelian.ID_PEMBELIAN')
+                ->join('transaksi_penitipan', 'transaksi_penitipan.KODE_PRODUK', '=', 'produk.KODE_PRODUK')
+                ->join('penitip', 'penitip.ID_PENITIP', '=', 'transaksi_penitipan.ID_PENITIP')
+                ->where('transaksi_pembelian.STATUS_TRANSAKSI', 'SELESAI'); // Hanya transaksi yang selesai
+
+            // Filter berdasarkan bulan dan tahun jika diberikan
+            if ($bulan && $tahun) {
+                $leaderboardQuery->whereYear('transaksi_pembelian.TANGGAL_LUNAS', $tahun)
+                                 ->whereMonth('transaksi_pembelian.TANGGAL_LUNAS', $bulan);
+            }
+
+            // Ambil data leaderboard
+            $leaderboard = $leaderboardQuery
+                ->groupBy('penitip.ID_PENITIP', 'penitip.NAMA_PENITIP')
+                ->orderByDesc('TOTAL_BAYAR') // Urutkan berdasarkan total bayar tertinggi
+                ->get();
+
+            // Cek jika data kosong
+            if ($leaderboard->isEmpty()) {
+                return response()->json(['message' => 'Tidak ada penitip yang memiliki penjualan.']);
+            }
+
+            // Mengembalikan data leaderboard
+            return response()->json($leaderboard);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Something went wrong.'], 500);
+        }
+    }
 }
