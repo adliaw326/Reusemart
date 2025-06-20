@@ -93,7 +93,7 @@
 
                     @foreach($transaksi as $transaksi)
                         @php
-                            $produk = $transaksi->produk;
+                            $produk = $transaksi->produk->first();
                             $tanggalMasuk = $transaksi->transaksiPenitipan->first() ? $transaksi->transaksiPenitipan->first()->TANGGAL_PENITIPAN : 'Tidak Ada Data';
                             $komisiHunter = optional($transaksi->komisi->first())->KOMISI_HUNTER ?? 0;
                             $komisiReUseMart = optional($transaksi->komisi->first())->KOMISI_REUSEMART ?? 0;

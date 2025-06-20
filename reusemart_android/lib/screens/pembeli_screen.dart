@@ -8,6 +8,12 @@ import 'notifikasi_screen.dart';
 import 'leaderboard_screen.dart'; // Import LeaderboardScreen
 
 class PembeliScreen extends StatelessWidget {
+  void _logout(BuildContext context) async {
+    await SecureStorage.clear();  // Hapus semua data login
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => LoginScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -15,7 +15,7 @@ use App\Models\Organisasi;
 use App\Models\RequestDonasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class TransaksiPenitipanController extends Controller
 {
@@ -318,7 +318,7 @@ public function update(Request $request, $id)
         ];
 
         // Generate the PDF using the view
-        $pdf = Pdf::loadView('pegawai_gudang.cetak_nota', compact('nota'));
+        $pdf = \PDF::loadView('pegawai_gudang.cetak_nota', compact('nota'));
 
         // Return the PDF for download
         return $pdf->download('Nota_Transaksi_Penitipan_' . $transaction->ID_PENITIPAN . '.pdf');
@@ -365,7 +365,7 @@ public function update(Request $request, $id)
         // Determine the current month and pass it to the view
         $month = now()->format('F Y');
 
-        $pdf = Pdf::loadView('owner.cetak_stok_gudang', compact('produk', 'month'));
+        $pdf = \PDF::loadView('owner.cetak_stok_gudang', compact('produk', 'month'));
         return $pdf->download('cetak_stok_gudang.pdf');
     }
 
@@ -393,7 +393,7 @@ public function update(Request $request, $id)
         // $month = now()->format('F Y');
 
         // Return the view with the filtered data and month
-        $pdf = Pdf::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
+        $pdf = \PDF::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
         return $pdf->stream('cetak_donasi_barang.pdf');
     }
 
@@ -413,7 +413,7 @@ public function update(Request $request, $id)
         // Determine the current month and pass it to the view
         // $month = now()->format('F Y');
 
-        $pdf = Pdf::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
+        $pdf = \PDF::loadView('owner.cetak_donasi_barang', compact('produk', 'tahun'));
         return $pdf->download('cetak_donasi_barang.pdf');
     }
 
@@ -428,7 +428,7 @@ public function update(Request $request, $id)
         // $month = now()->format('F Y');
 
         // Return the view with the filtered data and month
-        $pdf = Pdf::loadView('owner.cetak_request_donasi', compact('request'));
+        $pdf = \PDF::loadView('owner.cetak_request_donasi', compact('request'));
         return $pdf->stream('cetak_request_donasi.pdf');
     }
 
@@ -438,7 +438,7 @@ public function update(Request $request, $id)
                     ->whereNotNull('ID_ORGANISASI')    // pastikan request punya organisasi
                     ->get();
 
-        $pdf = Pdf::loadView('owner.cetak_request_donasi', compact('request'));
+        $pdf = \PDF::loadView('owner.cetak_request_donasi', compact('request'));
         return $pdf->download('cetak_request_donasi.pdf');
     }
 
@@ -468,7 +468,7 @@ public function update(Request $request, $id)
         // $month = now()->format('F Y');
 
         // Return the view with the filtered data and month
-        $pdf = Pdf::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
+        $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
         return $pdf->stream('cetak_transaksi_penitip.pdf');
     }
 
@@ -498,7 +498,7 @@ public function update(Request $request, $id)
         // $month = now()->format('F Y');
 
         // Return the view with the filtered data and month
-        $pdf = Pdf::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
+        $pdf = \PDF::loadView('owner.cetak_transaksi_penitip', compact('penitip', 'transaksi','bulan', 'tahun'));
         return $pdf->download('cetak_transaksi_penitip.pdf');
     }
 
@@ -577,7 +577,7 @@ public function update(Request $request, $id)
             $totalGagal += $jumlahGagalTerjual;
         }
 
-        $pdf = Pdf::loadView('owner.laporan_kategori_per_tahun', [
+        $pdf = \PDF::loadView('owner.laporan_kategori_per_tahun', [
             'tahun' => $tahun,
             'tanggal_cetak' => $tanggalCetak,
             'laporan' => $laporan,
@@ -612,7 +612,7 @@ public function update(Request $request, $id)
                 ];
             });
 
-        $pdf = PDF::loadView('owner.laporan_barang_penitipan_habis', [
+        $pdf = \PDF::loadView('owner.laporan_barang_penitipan_habis', [
             'produkExpired' => $produkExpired,
             'tanggal_cetak' => $tanggalCetak,
         ]);
@@ -660,7 +660,7 @@ public function update(Request $request, $id)
             $totalGagal += $jumlahGagalTerjual;
         }
 
-        $pdf = Pdf::loadView('owner.laporan_kategori_per_tahun', [
+        $pdf = \PDF::loadView('owner.laporan_kategori_per_tahun', [
             'tahun' => $tahun,
             'tanggal_cetak' => $tanggalCetak,
             'laporan' => $laporan,
@@ -695,7 +695,7 @@ public function update(Request $request, $id)
                 ];
             });
 
-        $pdf = PDF::loadView('owner.laporan_barang_penitipan_habis', [
+        $pdf = \PDF::loadView('owner.laporan_barang_penitipan_habis', [
             'produkExpired' => $produkExpired,
             'tanggal_cetak' => $tanggalCetak,
         ]);
