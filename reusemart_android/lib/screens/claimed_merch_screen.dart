@@ -30,7 +30,7 @@ class _ClaimedMerchScreenState extends State<ClaimedMerchScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://reusemartark.my.id/api/penukaran/pembeli'), // Ganti localhost ke 10.0.2.2 untuk emulator
+        Uri.parse('https://reusemartark.my.id/api/penukaran/pembeli'), // Ganti localhost ke 10.0.2.2 untuk emulator
         headers: {
           'Authorization': 'Bearer ${widget.token}',
           'Accept': 'application/json',

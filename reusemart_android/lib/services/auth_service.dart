@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import '../utils/storage.dart';
 
 class AuthService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api/login';
+  static const String baseUrl = 'https://reusemartark.my.id/api/login';
 
   // Fungsi login
   static Future<Map<String, dynamic>> login(String email, String password) async {

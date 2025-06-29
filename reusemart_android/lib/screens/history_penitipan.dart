@@ -28,7 +28,7 @@ class _HistoryPenitipanScreenState extends State<HistoryPenitipanScreen> {
     var userId = await _storage.read(key: 'userId'); // Get the userId from SecureStorage
 
     if (token != null && userId != null) {
-      var url = 'http://reusemartark.my.id/api/transaksi-penitipan/mobile?ID_PENITIP=$userId'; // Use userId in the URL
+      var url = 'https://reusemartark.my.id/api/transaksi-penitipan/mobile?ID_PENITIP=$userId'; // Use userId in the URL
 
       try {
         var response = await http.get(

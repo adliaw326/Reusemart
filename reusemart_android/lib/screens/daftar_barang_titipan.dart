@@ -28,7 +28,7 @@ class _DaftarBarangTitipanScreenState extends State<DaftarBarangTitipanScreen> {
     var userId = await _storage.read(key: 'userId'); // Get the userId from SecureStorage
 
     if (token != null && userId != null) {
-      var url = 'http://reusemartark.my.id/api/transaksi-penitipan/$userId'; // Use userId in the URL
+      var url = 'https://reusemartark.my.id/api/transaksi-penitipan/$userId'; // Use userId in the URL
 
       try {
         var response = await http.get(

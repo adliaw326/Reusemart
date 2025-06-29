@@ -23,7 +23,7 @@ class _MerchScreenState extends State<MerchScreen> {
   }
 
   Future<void> fetchMerch() async {
-    final url = Uri.parse('http://reusemartark.my.id/api/merch');
+    final url = Uri.parse('https://reusemartark.my.id/api/merch');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -45,7 +45,7 @@ class _MerchScreenState extends State<MerchScreen> {
 
   Future<bool> postTukarMerch(String idPembeli, String idMerch, int jumlah, int totalPoin) async {
     print("Mengirim idPembeli: $idPembeli"); // Tambahkan ini
-    final url = Uri.parse('http://reusemartark.my.id/api/penukaran');
+    final url = Uri.parse('https://reusemartark.my.id/api/penukaran');
     try {
       final response = await http.post(url,
           headers: {"Content-Type": "application/json"},
@@ -203,7 +203,7 @@ class _MerchScreenState extends State<MerchScreen> {
                       final nama = merch['NAMA_MERCHANDISE'] ?? '';
                       final poin = merch['HARGA_POIN'] ?? 0;
                       final stok = merch['JUMLAH_MERCH'] ?? 0;
-                      final fotoUrl = 'http://reusemartark.my.id/foto/merch/${idMerch}.jpg';
+                      final fotoUrl = 'https://reusemartark.my.id/foto/merch/${idMerch}.jpg';
 
                       return Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

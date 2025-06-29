@@ -38,7 +38,7 @@ class _KurirScreenState extends State<KurirScreen> {
     print('userId: $userId');
     print('token: $token');
 
-    final url = Uri.parse("http://reusemartark.my.id/api/kurir/findKurir/$userId");
+    final url = Uri.parse("https://reusemartark.my.id/api/kurir/findKurir/$userId");
 
     try {
       final response = await http.get(
@@ -68,7 +68,7 @@ class _KurirScreenState extends State<KurirScreen> {
     print('userId: $userId');
     print('token: $token');
 
-    final url = Uri.parse("http://reusemartark.my.id/api/kurir/findKurirHistory/$userId");
+    final url = Uri.parse("https://reusemartark.my.id/api/kurir/findKurirHistory/$userId");
 
     try {
       final response = await http.get(
@@ -106,7 +106,7 @@ class _KurirScreenState extends State<KurirScreen> {
       return;
     }
 
-    final url = Uri.parse("http://reusemartark.my.id/api/pegawai/showKurir/$userId");
+    final url = Uri.parse("https://reusemartark.my.id/api/pegawai/showKurir/$userId");
 
     try {
       final response = await http.get(
@@ -485,7 +485,7 @@ class _KurirScreenState extends State<KurirScreen> {
                   onPressed: () async {
                     Navigator.of(innerContext).pop(); // tutup dialog
                     final response = await http.post(
-                      Uri.parse('http://reusemartark.my.id/api/kurir/selesaiKurir/${item['ID_PEMBELIAN']}'),
+                      Uri.parse('https://reusemartark.my.id/api/kurir/selesaiKurir/${item['ID_PEMBELIAN']}'),
                       headers: {'Accept': 'application/json'},
                     );
 

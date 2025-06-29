@@ -33,7 +33,7 @@ class _ProfilePembeliScreenState extends State<ProfilePembeliScreen> {
 
     if (_token != null) {
       var response = await http.get(
-        Uri.parse('http://reusemartark.my.id/api/profile/mobile'),
+        Uri.parse('https://reusemartark.my.id/api/profile/mobile'),
         headers: {
           'Authorization': 'Bearer $_token',
         },

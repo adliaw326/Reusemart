@@ -29,7 +29,7 @@ class _ProfilePenitipScreenState extends State<ProfilePenitipScreen> {
 
     if (token != null) {
       var response = await http.get(
-        Uri.parse('http://reusemartark.my.id/api/penitip/profile/mobile'), // Replace with your actual API URL
+        Uri.parse('https://reusemartark.my.id/api/penitip/profile/mobile'), // Replace with your actual API URL
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -89,7 +89,7 @@ class _ProfilePenitipScreenState extends State<ProfilePenitipScreen> {
                           _buildProfileField("Email", _profile!['EMAIL_PENITIP']),
                           _buildProfileField("NIK", _profile!['NIK']),
                           _buildProfileField("Rating Rata-Rata", _profile!['RATING_RATA_RATA_P']),
-                          _buildProfileField("Saldo", "Rp. ${_formatCurrency(_profile!['SALDO_PENITIP'])}"),
+                          _buildProfileField("Saldo", "Rp. ${_formatCurrency(int.tryParse(_profile!['SALDO_PENITIP'].toString()) ?? 0)}"),
                           _buildProfileField("Poin Penitip", _profile!['POIN_PENITIP'].toString()),
                           _buildProfileField("Total Barang Terjual", _profile!['TOTAL_BARANG_TERJUAL'].toString()),
                           SizedBox(height: 20), // Add some spacing between fields and button

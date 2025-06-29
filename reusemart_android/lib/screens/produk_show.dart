@@ -18,7 +18,7 @@ class _ProdukShowState extends State<ProdukShow> {
   bool loading = true;
 
   Future<void> fetchProduk() async {
-    final url = Uri.parse('http://reusemartark.my.id/api/produk');
+    final url = Uri.parse('https://reusemartark.my.id/api/produk');
     // Sesuaikan url di atas dengan endpoint API backend-mu yang sebenarnya, bisa juga pakai query parameter lainnya
 
     try {
@@ -90,7 +90,7 @@ class _ProdukShowState extends State<ProdukShow> {
           }
 
           // Foto utama (1 dari 2 foto)
-          final fotoUtamaUrl = 'http://reusemartark.my.id/foto/foto_produk/${kodeProduk}_1.jpg';
+          final fotoUtamaUrl = 'https://reusemartark.my.id/foto/foto_produk/${kodeProduk}_1.jpg';
 
           return GestureDetector(
             onTap: () {
