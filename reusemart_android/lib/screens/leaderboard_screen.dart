@@ -38,7 +38,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   Future<void> fetchLeaderboardData() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://10.0.2.2:8000/api/leaderboard-mobile?bulan=$selectedMonth&tahun=$selectedYear'));
+          'http://reusemartark.my.id/api/leaderboard-mobile?bulan=$selectedMonth&tahun=$selectedYear'));
 
       // Check if the widget is still mounted before calling setState()
       if (!mounted) return;

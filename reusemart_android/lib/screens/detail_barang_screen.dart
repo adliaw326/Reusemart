@@ -25,8 +25,8 @@ class ProdukDetailScreen extends StatelessWidget {
     final harga = produk['HARGA'] ?? '';
     final berat = produk['BERAT'] ?? '';
 
-    final foto1 = 'http://10.0.2.2:8000/foto/foto_produk/${kodeProduk}_1.jpg';
-    final foto2 = 'http://10.0.2.2:8000/foto/foto_produk/${kodeProduk}_2.jpg';
+    final foto1 = 'http://reusemartark.my.id/foto/foto_produk/${kodeProduk}_1.jpg';
+    final foto2 = 'http://reusemartark.my.id/foto/foto_produk/${kodeProduk}_2.jpg';
 
     return Scaffold(
       appBar: AppBar(title: Text('Detail Produk')),

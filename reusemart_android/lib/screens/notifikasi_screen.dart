@@ -61,7 +61,7 @@ class _NotifikasiScreenState extends State<NotifikasiScreen> {
   }
 
   Future<void> fetchNotifikasi() async {
-    final baseUrl = 'http://10.0.2.2:8000/api'; // Ganti sesuai backend kamu
+    final baseUrl = 'http://reusemartark.my.id/api'; // Ganti sesuai backend kamu
     if (userId == null || role == null) return;
 
     final endpoint = role == 'pembeli'

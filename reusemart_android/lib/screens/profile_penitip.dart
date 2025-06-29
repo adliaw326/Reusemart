@@ -29,7 +29,7 @@ class _ProfilePenitipScreenState extends State<ProfilePenitipScreen> {
 
     if (token != null) {
       var response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/penitip/profile/mobile'), // Replace with your actual API URL
+        Uri.parse('http://reusemartark.my.id/api/penitip/profile/mobile'), // Replace with your actual API URL
         headers: {
           'Authorization': 'Bearer $token',
         },

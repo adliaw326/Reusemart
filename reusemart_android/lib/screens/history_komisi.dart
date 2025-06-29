@@ -29,7 +29,7 @@ class _HistoryKomisiScreenState extends State<HistoryKomisiScreen> {
     }
 
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:8000/api/history-komisi-mobile'),
+      Uri.parse('http://reusemartark.my.id/api/history-komisi-mobile'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
@@ -48,8 +48,8 @@ class _HistoryKomisiScreenState extends State<HistoryKomisiScreen> {
   void _showDetailDialog(dynamic komisiItem) {
     final produk = komisiItem['produk'];
     final kodeProduk = komisiItem['kode_produk'];
-    final foto1 = 'http://10.0.2.2:8000/foto/foto_produk/${kodeProduk}_1.jpg';
-    final foto2 = 'http://10.0.2.2:8000/foto/foto_produk/${kodeProduk}_2.jpg';
+    final foto1 = 'http://reusemartark.my.id/foto/foto_produk/${kodeProduk}_1.jpg';
+    final foto2 = 'http://reusemartark.my.id/foto/foto_produk/${kodeProduk}_2.jpg';
 
     showDialog(
       context: context,

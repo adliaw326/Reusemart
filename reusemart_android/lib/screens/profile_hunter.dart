@@ -29,7 +29,7 @@ class _ProfileHunterScreenState extends State<ProfileHunterScreen> {
 
     if (token != null) {
       var response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/hunter/profile/mobile'),
+        Uri.parse('http://reusemartark.my.id/api/hunter/profile/mobile'),
         headers: {
           'Authorization': 'Bearer $token',
         },
